@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>BrokerBase Dealer Dashboard</title>
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Spline+Sans:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#f9f506",
+                        "background-light": "#f8f8f5",
+                        "background-dark": "#23220f",
+                        "royal-blue": "#1e3a8a", // Custom royal blue based on request
+                    },
+                    fontFamily: {
+                        "display": ["Spline Sans", "sans-serif"]
+                    },
+                    borderRadius: {"DEFAULT": "1rem", "lg": "2rem", "xl": "3rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+</head>
+<body class="font-display bg-background-light dark:bg-background-dark text-[#181811] overflow-hidden">
+<div class="flex h-screen w-full bg-background-light">
+<!-- Sidebar (Desktop) -->
+<aside class="hidden lg:flex flex-col w-64 bg-royal-blue text-white h-full fixed left-0 top-0 bottom-0 z-30 shadow-xl transition-all duration-300">
+<div class="p-6 flex items-center gap-3">
+<div class="flex items-center justify-center size-10 rounded-full bg-primary/20 text-primary">
+<span class="material-symbols-outlined text-primary">apartment</span>
+</div>
+<h1 class="text-xl font-bold tracking-wide text-white">BrokerBase</h1>
+</div>
+<nav class="flex flex-col gap-2 px-4 mt-4 flex-1">
+<!-- Active Link -->
+<a class="flex items-center gap-3 px-4 py-3 rounded-full bg-[#172554] border-l-4 border-primary transition-all" href="#">
+<span class="material-symbols-outlined text-primary">dashboard</span>
+<span class="text-sm font-medium text-white">Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-full hover:bg-white/10 text-gray-300 hover:text-white transition-colors" href="#">
+<span class="material-symbols-outlined">warehouse</span>
+<span class="text-sm font-medium">My Inventory</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-full hover:bg-white/10 text-gray-300 hover:text-white transition-colors" href="#">
+<span class="material-symbols-outlined">group</span>
+<span class="text-sm font-medium">Leads</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-full hover:bg-white/10 text-gray-300 hover:text-white transition-colors" href="#">
+<span class="material-symbols-outlined">pie_chart</span>
+<span class="text-sm font-medium">Analytics</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-full hover:bg-white/10 text-gray-300 hover:text-white transition-colors" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="text-sm font-medium">Settings</span>
+</a>
+</nav>
+<div class="p-4 mt-auto border-t border-white/10">
+<div class="flex items-center gap-3 px-4 py-3 rounded-full hover:bg-white/10 cursor-pointer">
+<span class="material-symbols-outlined text-gray-400">logout</span>
+<span class="text-sm font-medium text-gray-300">Log Out</span>
+</div>
+</div>
+</aside>
+<!-- Main Content Wrapper -->
+<div class="flex flex-col flex-1 h-full lg:ml-64 relative overflow-hidden">
+<!-- Top Navbar -->
+<header class="flex items-center justify-between bg-white border-b border-[#f5f5f0] px-6 py-4 shadow-sm sticky top-0 z-20">
+<div class="flex items-center gap-4">
+<!-- Mobile Menu Button -->
+<button class="lg:hidden p-2 text-gray-600 hover:bg-gray-100 rounded-full">
+<span class="material-symbols-outlined">menu</span>
+</button>
+<div class="flex flex-col">
+<h2 class="text-[#181811] text-lg font-bold leading-tight">Welcome back, Elite Homes</h2>
+<p class="text-sm text-gray-500 hidden sm:block">Here's what's happening today.</p>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<button class="flex items-center justify-center size-10 rounded-full bg-[#f5f5f0] hover:bg-gray-200 text-[#181811] transition-colors relative">
+<span class="material-symbols-outlined text-[20px]">notifications</span>
+<span class="absolute top-2 right-2 size-2 bg-red-500 rounded-full border-2 border-white"></span>
+</button>
+<div class="bg-center bg-no-repeat bg-cover rounded-full size-10 ring-2 ring-gray-100 cursor-pointer" data-alt="Real estate agency profile logo showing abstract building" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDjlFF_nSTOQN2xN5XEhoei2r1xmo6006_o8UoGMAFUfEAomAjyJR-_bXnIPonwd3cqDG7sOU8o_DGuG6ynBK32KcH-lRZpx1OAvvrV7EALzre8oOHD4wHQDNcs1u-RqUpqp6rABg-PLwMMJpYI1mwd0rmsHsf0SI7DMC0X71sycCni1WxVUk61lnXtb-Wzonan3tvT7xcDV3vnvIuNyz4n4mt6oBDAaqb4Ch5zP_c1FPKCfCmqMwaC598j6zQlRK21aawjBmED-Tjo");'></div>
+</div>
+</header>
+<!-- Scrollable Content -->
+<main class="flex-1 overflow-y-auto p-4 md:p-8 bg-background-light">
+<div class="max-w-[1200px] mx-auto flex flex-col gap-8">
+<!-- Page Header & Action -->
+<div class="flex flex-wrap items-center justify-between gap-4">
+<p class="text-[#181811] text-3xl font-black leading-tight tracking-tight">Dashboard</p>
+<button class="flex items-center justify-center gap-2 rounded-full h-12 px-6 bg-primary hover:bg-[#e6e205] text-[#181811] text-sm font-bold shadow-lg shadow-primary/20 transition-all transform hover:scale-105">
+<span class="material-symbols-outlined text-[20px]">add</span>
+<span>Add New Property</span>
+</button>
+</div>
+<!-- Stats Grid -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+<!-- Card 1 -->
+<div class="flex flex-col gap-4 rounded-xl p-6 bg-white shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
+<div class="flex justify-between items-start">
+<div class="size-10 rounded-full bg-blue-50 flex items-center justify-center text-royal-blue">
+<span class="material-symbols-outlined">domain</span>
+</div>
+<span class="material-symbols-outlined text-gray-300">more_horiz</span>
+</div>
+<div>
+<p class="text-gray-500 text-sm font-medium mb-1">Active Properties</p>
+<p class="text-[#181811] text-3xl font-bold">12</p>
+</div>
+</div>
+<!-- Card 2 -->
+<div class="flex flex-col gap-4 rounded-xl p-6 bg-white shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
+<div class="flex justify-between items-start">
+<div class="size-10 rounded-full bg-blue-50 flex items-center justify-center text-royal-blue">
+<span class="material-symbols-outlined">visibility</span>
+</div>
+<div class="flex items-center gap-1 bg-green-100 px-2 py-1 rounded-full">
+<span class="material-symbols-outlined text-green-700 text-[14px]">trending_up</span>
+<span class="text-green-700 text-xs font-bold">+12%</span>
+</div>
+</div>
+<div>
+<p class="text-gray-500 text-sm font-medium mb-1">Total Views</p>
+<p class="text-[#181811] text-3xl font-bold">1,240</p>
+</div>
+</div>
+<!-- Card 3 -->
+<div class="flex flex-col gap-4 rounded-xl p-6 bg-white shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
+<div class="flex justify-between items-start">
+<div class="size-10 rounded-full bg-primary/20 flex items-center justify-center text-[#181811]">
+<span class="material-symbols-outlined text-primary-darker">contact_phone</span>
+</div>
+<div class="size-2 bg-primary rounded-full animate-pulse"></div>
+</div>
+<div>
+<p class="text-gray-500 text-sm font-medium mb-1">Pending Leads</p>
+<p class="text-[#181811] text-3xl font-bold">5</p>
+</div>
+</div>
+</div>
+<!-- Premium Banner -->
+<div class="relative overflow-hidden rounded-2xl bg-gradient-to-r from-royal-blue to-[#2563eb] p-8 shadow-lg">
+<div class="absolute top-0 right-0 -mt-10 -mr-10 w-64 h-64 bg-white opacity-5 rounded-full blur-3xl"></div>
+<div class="relative z-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+<div class="flex flex-col gap-2 max-w-lg">
+<h3 class="text-white text-xl font-bold">Unlock Premium Features?</h3>
+<p class="text-blue-100 text-sm md:text-base">Get your own custom domain, remove ads from your listings, and access advanced analytics.</p>
+</div>
+<button class="whitespace-nowrap rounded-full border-2 border-primary bg-transparent hover:bg-primary text-primary hover:text-black font-bold py-2.5 px-6 transition-colors duration-200">
+                                Upgrade Now
+                            </button>
+</div>
+</div>
+<!-- Recent Inventory Table -->
+<div class="flex flex-col bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+<div class="p-6 border-b border-gray-100 flex justify-between items-center">
+<h3 class="text-lg font-bold text-[#181811]">Recent Listings</h3>
+<a class="text-sm text-royal-blue font-medium hover:underline" href="#">View All</a>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full min-w-[700px]">
+<thead class="bg-gray-50">
+<tr>
+<th class="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Property</th>
+<th class="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Price</th>
+<th class="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Status</th>
+<th class="px-6 py-4 text-right text-xs font-semibold text-gray-500 uppercase tracking-wider">Actions</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-gray-100">
+<!-- Row 1 -->
+<tr class="hover:bg-gray-50/50 transition-colors">
+<td class="px-6 py-4 whitespace-nowrap">
+<div class="flex items-center gap-4">
+<div class="w-16 h-12 rounded-lg bg-cover bg-center shrink-0" data-alt="Modern villa with pool thumbnail" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCToc03ewI-R-MLH1VeaILvpzcsPrzcNl35tCllapTZwSgSR39FEB-O03otqjWOPaQcd-FItQ4ORhThF5Ph3HmSpDPRgp1FgiERkSyWa_HVyO0UAkX8ApEuSzr8Z15ELVzKGK2pqUeHYTW4Ar_ZjAVyN-hy7GRG9SX86kKSlbXaRaHpijSfGxAa_XmtxQxozG8aaQRu7OlewhaXfNoZLh9hcU0aPLn-Us23Btb3P7qcH_zGOl8RrHEakkzwn2n7KGBDwjm-oBB_f70f");'></div>
+<div class="flex flex-col">
+<span class="text-sm font-bold text-[#181811]">Seaside Villa</span>
+<span class="text-xs text-gray-500">12 Ocean Dr, Malibu</span>
+</div>
+</div>
+</td>
+<td class="px-6 py-4 whitespace-nowrap">
+<span class="text-sm font-bold text-royal-blue">$2,500,000</span>
+</td>
+<td class="px-6 py-4 whitespace-nowrap">
+<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-800">
+<span class="size-1.5 rounded-full bg-emerald-600"></span>
+                                                Available
+                                            </span>
+</td>
+<td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+<div class="flex items-center justify-end gap-2">
+<button class="p-2 text-gray-400 hover:text-royal-blue hover:bg-blue-50 rounded-full transition-colors">
+<span class="material-symbols-outlined text-[20px]">edit</span>
+</button>
+<button class="p-2 text-gray-400 hover:text-green-600 hover:bg-green-50 rounded-full transition-colors">
+<span class="material-symbols-outlined text-[20px]">share</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Row 2 -->
+<tr class="hover:bg-gray-50/50 transition-colors">
+<td class="px-6 py-4 whitespace-nowrap">
+<div class="flex items-center gap-4">
+<div class="w-16 h-12 rounded-lg bg-cover bg-center shrink-0" data-alt="Urban apartment interior thumbnail" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDdhjV4Kk0pc9BPnmOBfpnmUfWfZXgnJiKxKd0fBo3FkvF2Dw1_m-VUSfwR9RXPR9Mh_K6UP3m5MdbMtnevhMoJrYW9VcXQ0KkJcc3q3jt0T-8ADSIPTYb-T_SxL4I8HInHQ0ngU4p9h80Do3Ac7mXpX37jGdGqg4KkyMS2oZunrbaz8rrealQBNZd2sfkiIoKIxqvnAwuxwKG3267dMdaaTT_4aAlFfUdds9vqolu76zP8xpGfu04YE81DWahgI_ejytJbVjAk6OzQ");'></div>
+<div class="flex flex-col">
+<span class="text-sm font-bold text-[#181811]">Downtown Loft</span>
+<span class="text-xs text-gray-500">45 Main St, Seattle</span>
+</div>
+</div>
+</td>
+<td class="px-6 py-4 whitespace-nowrap">
+<span class="text-sm font-bold text-royal-blue">$850,000</span>
+</td>
+<td class="px-6 py-4 whitespace-nowrap">
+<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-rose-100 text-rose-800">
+<span class="size-1.5 rounded-full bg-rose-600"></span>
+                                                Sold
+                                            </span>
+</td>
+<td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+<div class="flex items-center justify-end gap-2">
+<button class="p-2 text-gray-400 hover:text-royal-blue hover:bg-blue-50 rounded-full transition-colors">
+<span class="material-symbols-outlined text-[20px]">edit</span>
+</button>
+<button class="p-2 text-gray-400 hover:text-green-600 hover:bg-green-50 rounded-full transition-colors">
+<span class="material-symbols-outlined text-[20px]">share</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Row 3 -->
+<tr class="hover:bg-gray-50/50 transition-colors">
+<td class="px-6 py-4 whitespace-nowrap">
+<div class="flex items-center gap-4">
+<div class="w-16 h-12 rounded-lg bg-cover bg-center shrink-0" data-alt="Suburban family home thumbnail" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBfzjxBa0QRGyirjWArZ9PEzGMK-80-ujNe0C_d6PslGsrAKlwY51dm59CQrX5PCl5EmDtYgaw76ydR5BVo2KlkyFVZpKuwn7Sh8Nm0VjWjn16rWRidqJgL0WWzZ0-M08Ohldedy0d1fJU65k9eHxppvivlAKcb7cia0ZfoVeIrKCy1HLsc7bVuQvjl2MFW_gOPLHw8H5Aw-3bnNHaZLFlwHgFk5BvZFtwSrDub-FuNFjfndRlF1bH6SyWGfLChuh_9OyViHfocIrBx");'></div>
+<div class="flex flex-col">
+<span class="text-sm font-bold text-[#181811]">The Oaks Estate</span>
+<span class="text-xs text-gray-500">892 Oak Ln, Austin</span>
+</div>
+</div>
+</td>
+<td class="px-6 py-4 whitespace-nowrap">
+<span class="text-sm font-bold text-royal-blue">$1,200,000</span>
+</td>
+<td class="px-6 py-4 whitespace-nowrap">
+<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-gray-100 text-gray-600">
+<span class="size-1.5 rounded-full bg-gray-500"></span>
+                                                Draft
+                                            </span>
+</td>
+<td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+<div class="flex items-center justify-end gap-2">
+<button class="p-2 text-gray-400 hover:text-royal-blue hover:bg-blue-50 rounded-full transition-colors">
+<span class="material-symbols-outlined text-[20px]">edit</span>
+</button>
+<button class="p-2 text-gray-400 hover:text-green-600 hover:bg-green-50 rounded-full transition-colors">
+<span class="material-symbols-outlined text-[20px]">share</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Row 4 -->
+<tr class="hover:bg-gray-50/50 transition-colors">
+<td class="px-6 py-4 whitespace-nowrap">
+<div class="flex items-center gap-4">
+<div class="w-16 h-12 rounded-lg bg-cover bg-center shrink-0" data-alt="Modern penthouse with city view thumbnail" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuC-rM8XtEjmHjmSkIrN2v2w6rllkeLlAp_OtMTCZTx3LeHXzMvGT83PQeYAg2cXf4GgHqnQCOHYZLcIZ3xyo96xtkWzDSUdK2Lk5yUoziYXOoH__gAxn8g-DzKXAMi_1mGQ4pFJokg0LVg8Y4iIHYQ_9OtUQhEvLZpSCSnSjym4brNTwUpBTmVbzQeuPKGwp4eQD6aPWH3_IfG8r5egaNvJS6D0PWHR_iCj_RsY3VJAg4f-CgFd3oMv8OsizjrpJuXs1geGPkhQUJei");'></div>
+<div class="flex flex-col">
+<span class="text-sm font-bold text-[#181811]">Skyline Penthouse</span>
+<span class="text-xs text-gray-500">101 Tower Rd, NYC</span>
+</div>
+</div>
+</td>
+<td class="px-6 py-4 whitespace-nowrap">
+<span class="text-sm font-bold text-royal-blue">$4,100,000</span>
+</td>
+<td class="px-6 py-4 whitespace-nowrap">
+<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-800">
+<span class="size-1.5 rounded-full bg-emerald-600"></span>
+                                                Available
+                                            </span>
+</td>
+<td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+<div class="flex items-center justify-end gap-2">
+<button class="p-2 text-gray-400 hover:text-royal-blue hover:bg-blue-50 rounded-full transition-colors">
+<span class="material-symbols-outlined text-[20px]">edit</span>
+</button>
+<button class="p-2 text-gray-400 hover:text-green-600 hover:bg-green-50 rounded-full transition-colors">
+<span class="material-symbols-outlined text-[20px]">share</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Row 5 -->
+<tr class="hover:bg-gray-50/50 transition-colors">
+<td class="px-6 py-4 whitespace-nowrap">
+<div class="flex items-center gap-4">
+<div class="w-16 h-12 rounded-lg bg-cover bg-center shrink-0" data-alt="Cozy cottage in the woods thumbnail" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDZQ1h5gajMn8U5gGwfOrWCKVWL7VHXHJMq0MaaOt3B4MeV4ipBbWSs9RTsUuAI1-ham_5nr2n1CCLr8y2VytmK2bnMk6UtMpwgnaKYudsto8BfD0Rw-lthz_UV9QwKDGCl-XQvQdaG7SRB1m0buhSHP-2QwyGiNpYEPuM4DQT1n2Bl38LpdnTnI93zhCbHG3wdijJZHS5w6wGDhSFixvqA-BUADXJAXbuAgzh5Zh9TEcNynTBErL21Wg0ZtPi4yxDvhU2UhSbeOUWo");'></div>
+<div class="flex flex-col">
+<span class="text-sm font-bold text-[#181811]">Highland Cottage</span>
+<span class="text-xs text-gray-500">22 Pine St, Denver</span>
+</div>
+</div>
+</td>
+<td class="px-6 py-4 whitespace-nowrap">
+<span class="text-sm font-bold text-royal-blue">$620,000</span>
+</td>
+<td class="px-6 py-4 whitespace-nowrap">
+<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-800">
+<span class="size-1.5 rounded-full bg-emerald-600"></span>
+                                                Available
+                                            </span>
+</td>
+<td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+<div class="flex items-center justify-end gap-2">
+<button class="p-2 text-gray-400 hover:text-royal-blue hover:bg-blue-50 rounded-full transition-colors">
+<span class="material-symbols-outlined text-[20px]">edit</span>
+</button>
+<button class="p-2 text-gray-400 hover:text-green-600 hover:bg-green-50 rounded-full transition-colors">
+<span class="material-symbols-outlined text-[20px]">share</span>
+</button>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</main>
+</div>
+</div>
+</body></html>
