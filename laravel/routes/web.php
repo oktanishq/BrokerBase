@@ -40,3 +40,7 @@ Route::get('/admin/inventory', function () {
 Route::get('/admin/leads', function () {
     return view('admin.leads');
 });
+
+Route::get('/admin/analytics', function () {
+    return view('admin.analytics');
+});

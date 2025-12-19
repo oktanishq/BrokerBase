@@ -11,6 +11,7 @@
     $isDashboard = $currentPath === 'admin/dashboard';
     $isInventory = $currentPath === 'admin/inventory';
     $isLeads = $currentPath === 'admin/leads';
+    $isAnalytics = $currentPath === 'admin/analytics';
 @endphp
 
 <a class="flex items-center gap-3 px-4 py-3 rounded-full transition-all {{ $isDashboard ? 'bg-[#172554] border-l-4 border-amber-500 shadow-inner text-white' : 'hover:bg-white/10 text-gray-300 hover:text-white' }}" href="{{ url('/admin/dashboard') }}">
@@ -25,9 +26,9 @@
 <span class="material-symbols-outlined {{ $isLeads ? 'text-amber-500' : '' }}">group</span>
 <span class="text-sm font-medium {{ $isLeads ? 'text-white' : '' }}">Leads</span>
 </a>
-<a class="flex items-center gap-3 px-4 py-3 rounded-full hover:bg-white/10 text-gray-300 hover:text-white transition-colors" href="#">
-<span class="material-symbols-outlined">pie_chart</span>
-<span class="text-sm font-medium">Analytics</span>
+<a class="flex items-center gap-3 px-4 py-3 rounded-full transition-all {{ $isAnalytics ? 'bg-[#172554] border-l-4 border-amber-500 shadow-inner text-white' : 'hover:bg-white/10 text-gray-300 hover:text-white' }}" href="{{ url('/admin/analytics') }}">
+<span class="material-symbols-outlined {{ $isAnalytics ? 'text-amber-500' : '' }}">pie_chart</span>
+<span class="text-sm font-medium {{ $isAnalytics ? 'text-white' : '' }}">Analytics</span>
 </a>
 <a class="flex items-center gap-3 px-4 py-3 rounded-full hover:bg-white/10 text-gray-300 hover:text-white transition-colors" href="#">
 <span class="material-symbols-outlined">settings</span>
