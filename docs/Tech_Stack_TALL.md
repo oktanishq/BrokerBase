@@ -128,22 +128,61 @@ Instead of a complex React State machine, we use a **Livewire Multi-Step Compone
 
 ---
 
-# **6. Deployment Strategy (Apache)**
+# **6. Deployment Strategy (Shared Hosting - cPanel)**
 
-This stack is designed to be "Drag and Drop" for standard hosting.
+This stack is optimized for shared hosting environments with Apache+PHP. The recommended approach uses subdomains to avoid document root limitations.
 
-### **Step 1: Build Assets (Once)**
-On your local machine:
+### **6.1 Local Preparation**
+Build assets on your local machine:
 ```bash
 npm run build
 ```
 *This compiles your Tailwind CSS and Alpine JS into standard `.css` and `.js` files.*
 
-### **Step 2: Upload**
-Upload the entire project folder to your server (e.g., `public_html`).
+### **6.2 Shared Hosting Deployment Steps**
 
-### **Step 3: Configure Apache**
-Point your domain to the `/public` folder.
+#### **Step 1: Create Subdomain**
+- In your hosting panel (cPanel), create a new subdomain (e.g., `app.yourdomain.com`)
+- Set the document root to `public_html/public`
+- This bypasses the shared hosting limitation of not being able to change document roots
+
+#### **Step 2: Upload Files**
+Upload the following structure to your server:
+```
+public_html/
+├── laravel/           (Upload entire Laravel project here)
+│   ├── app/
+│   ├── config/
+│   ├── routes/
+│   ├── resources/
+│   ├── vendor/        (Will be created by composer)
+│   └── ...
+└── public/            (Web root for subdomain)
+    ├── index.php      (Copy from laravel/public/)
+    ├── .htaccess      (Copy from laravel/public/)
+    └── build/         (Copy from laravel/public/build/)
+```
+
+#### **Step 3: Install Dependencies**
+Run this command in your hosting terminal/file manager:
+```bash
+cd public_html/laravel
+composer install --optimize-autoloader --no-dev
+```
+*If composer install doesn't work on server, upload the `vendor` folder from your local setup.*
+
+#### **Step 4: Configure Domain Redirect**
+Add this to `public_html/.htaccess` to redirect main domain to subdomain:
+```apache
+RewriteEngine On
+RewriteCond %{HTTP_HOST} ^(www\.)?yourdomain\.com$ [NC]
+RewriteRule ^(.*)$ https://app.yourdomain.com/$1 [R=301,L]
+```
+
+### **6.3 Production Optimization**
+- Set `APP_ENV=production` in `.env`
+- Run `php artisan config:cache` for better performance
+- Set proper file permissions (755 for directories, 644 for files)
 
 *No Node.js server required. No separate API configuration. No CORS issues.*
 
