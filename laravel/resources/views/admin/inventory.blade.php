@@ -36,6 +36,8 @@
     statusFilter: 'all',
     typeFilter: 'all',
     viewMode: 'list', // 'list' or 'grid'
+    perPage: 10, // Items per page
+    currentPage: 1, // Current page number
     
     // Sample properties data (will be replaced with real data later)
     properties: [
@@ -96,12 +98,52 @@
         });
     },
     
+    // Paginated properties
+    get paginatedProperties() {
+        const start = (this.currentPage - 1) * this.perPage;
+        const end = start + this.perPage;
+        return this.filteredProperties.slice(start, end);
+    },
+    
+    // Pagination info
+    get totalPages() {
+        return Math.ceil(this.filteredProperties.length / this.perPage);
+    },
+    
+    get showingFrom() {
+        if (this.filteredProperties.length === 0) return 0;
+        return (this.currentPage - 1) * this.perPage + 1;
+    },
+    
+    get showingTo() {
+        return Math.min(this.currentPage * this.perPage, this.filteredProperties.length);
+    },
+    
     get showingCount() {
         return this.filteredProperties.length;
     },
     
     get totalCount() {
         return this.properties.length;
+    },
+    
+    // Pagination controls
+    nextPage() {
+        if (this.currentPage < this.totalPages) {
+            this.currentPage++;
+        }
+    },
+    
+    prevPage() {
+        if (this.currentPage > 1) {
+            this.currentPage--;
+        }
+    },
+    
+    goToPage(page) {
+        if (page >= 1 && page <= this.totalPages) {
+            this.currentPage = page;
+        }
     }
 }" class="flex h-screen w-full bg-background-light">
     <!-- Sidebar -->
@@ -206,7 +248,7 @@
                 <div x-show="filteredProperties.length > 0" x-transition>
                     <!-- List View -->
                     <div x-show="viewMode === 'list'" class="flex flex-col gap-4">
-                        <template x-for="property in filteredProperties" :key="`list-${property.id}`">
+                        <template x-for="property in paginatedProperties" :key="`list-${property.id}`">
                             <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-all duration-300 group flex flex-col md:flex-row w-full" 
                                  :class="property.status === 'sold' ? 'opacity-90 hover:opacity-100' : ''">
                                 
@@ -332,7 +374,7 @@
 
                     <!-- Grid View -->
                     <div x-show="viewMode === 'grid'" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                        <template x-for="property in filteredProperties" :key="`grid-${property.id}`">
+                        <template x-for="property in paginatedProperties" :key="`grid-${property.id}`">
                             @include('components.PropertyGridCard')
                         </template>
                     </div>
@@ -350,11 +392,50 @@
                 </div>
 
                 <!-- Pagination -->
-                <div class="flex items-center justify-between border-t border-gray-200 pt-6 mt-4" x-show="filteredProperties.length > 0" x-transition>
-                    <span class="text-sm text-gray-500" x-text="`Showing ${showingCount} of ${totalCount} properties`"></span>
-                    <div class="flex gap-2">
-                        <button class="px-4 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-50">Previous</button>
-                        <button class="px-4 py-2 text-sm font-medium text-white bg-royal-blue rounded-lg hover:bg-blue-800">Next</button>
+                <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-t border-gray-200 pt-6 mt-4" x-show="filteredProperties.length > 0" x-transition>
+                    <div class="flex items-center gap-4">
+                        <!-- Items per page dropdown -->
+                        <div class="flex items-center gap-2">
+                            <label class="text-sm text-gray-500">Show:</label>
+                            <select x-model="perPage" @change="currentPage = 1" class="py-1 px-2 text-sm border border-gray-200 rounded focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                <option value="5">5</option>
+                                <option value="10">10</option>
+                                <option value="20">20</option>
+                                <option value="50">50</option>
+                            </select>
+                            <span class="text-sm text-gray-500">per page</span>
+                        </div>
+                        
+                        <!-- Results info -->
+                        <span class="text-sm text-gray-500" x-text="`Showing ${showingFrom}-${showingTo} of ${showingCount} properties`"></span>
+                    </div>
+                    
+                    <!-- Pagination controls -->
+                    <div class="flex items-center gap-2">
+                        <button @click="prevPage" 
+                                :disabled="currentPage === 1"
+                                :class="currentPage === 1 ? 'text-gray-400 cursor-not-allowed' : 'text-gray-500 hover:bg-gray-50'"
+                                class="px-4 py-2 text-sm font-medium bg-white border border-gray-300 rounded-lg transition-colors">
+                            Previous
+                        </button>
+                        
+                        <!-- Page numbers -->
+                        <div class="flex items-center gap-1">
+                            <template x-for="page in totalPages" :key="page">
+                                <button @click="goToPage(page)" 
+                                        :class="currentPage === page ? 'bg-royal-blue text-white' : 'text-gray-500 hover:bg-gray-50'"
+                                        class="px-3 py-2 text-sm font-medium border border-gray-300 rounded-lg transition-colors">
+                                    <span x-text="page"></span>
+                                </button>
+                            </template>
+                        </div>
+                        
+                        <button @click="nextPage" 
+                                :disabled="currentPage === totalPages"
+                                :class="currentPage === totalPages ? 'text-gray-400 cursor-not-allowed' : 'text-white bg-royal-blue hover:bg-blue-800'"
+                                class="px-4 py-2 text-sm font-medium border border-gray-300 rounded-lg transition-colors">
+                            Next
+                        </button>
                     </div>
                 </div>
             </div>
