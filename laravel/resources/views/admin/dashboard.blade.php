@@ -10,42 +10,7 @@
 </head>
 <body class="font-display bg-background-light dark:bg-background-dark text-slate-900 overflow-hidden">
 <div class="flex h-screen w-full bg-background-light">
-<aside class="hidden lg:flex flex-col w-64 bg-royal-blue text-white h-full fixed left-0 top-0 bottom-0 z-30 shadow-xl transition-all duration-300">
-<div class="p-6 flex items-center gap-3">
-<div class="flex items-center justify-center size-10 rounded-full bg-amber-500/20 text-amber-500">
-<span class="material-symbols-outlined text-amber-500">apartment</span>
-</div>
-<h1 class="text-xl font-bold tracking-wide text-white">BrokerBase</h1>
-</div>
-<nav class="flex flex-col gap-2 px-4 mt-4 flex-1">
-<a class="flex items-center gap-3 px-4 py-3 rounded-full bg-[#172554] border-l-4 border-amber-500 transition-all shadow-inner" href="#">
-<span class="material-symbols-outlined text-amber-500">dashboard</span>
-<span class="text-sm font-medium text-white">Dashboard</span>
-</a>
-<a class="flex items-center gap-3 px-4 py-3 rounded-full hover:bg-white/10 text-gray-300 hover:text-white transition-colors" href="#">
-<span class="material-symbols-outlined">warehouse</span>
-<span class="text-sm font-medium">My Inventory</span>
-</a>
-<a class="flex items-center gap-3 px-4 py-3 rounded-full hover:bg-white/10 text-gray-300 hover:text-white transition-colors" href="#">
-<span class="material-symbols-outlined">group</span>
-<span class="text-sm font-medium">Leads</span>
-</a>
-<a class="flex items-center gap-3 px-4 py-3 rounded-full hover:bg-white/10 text-gray-300 hover:text-white transition-colors" href="#">
-<span class="material-symbols-outlined">pie_chart</span>
-<span class="text-sm font-medium">Analytics</span>
-</a>
-<a class="flex items-center gap-3 px-4 py-3 rounded-full hover:bg-white/10 text-gray-300 hover:text-white transition-colors" href="#">
-<span class="material-symbols-outlined">settings</span>
-<span class="text-sm font-medium">Settings</span>
-</a>
-</nav>
-<div class="p-4 mt-auto border-t border-white/10">
-<div class="flex items-center gap-3 px-4 py-3 rounded-full hover:bg-white/10 cursor-pointer">
-<span class="material-symbols-outlined text-gray-400">logout</span>
-<span class="text-sm font-medium text-gray-300">Log Out</span>
-</div>
-</div>
-</aside>
+<x-sidebar />
 <div class="flex flex-col flex-1 h-full lg:ml-64 relative overflow-hidden bg-gray-50">
 <header class="flex items-center justify-between bg-white border-b border-gray-100 px-6 py-4 shadow-sm sticky top-0 z-20">
 <div class="flex items-center gap-4">
@@ -53,19 +18,8 @@
 <span class="material-symbols-outlined">menu</span>
 </button>
 <div class="flex flex-col">
-<nav aria-label="Breadcrumb" class="hidden sm:flex">
-<ol class="inline-flex items-center space-x-1 md:space-x-2 text-sm text-gray-500">
-<li class="inline-flex items-center">
-<a class="hover:text-royal-blue transition-colors" href="#">Home</a>
-</li>
-<li>
-<div class="flex items-center">
-<span class="material-symbols-outlined text-[16px] text-gray-400">chevron_right</span>
-<span class="ml-1 font-medium text-gray-700">Dashboard</span>
-</div>
-</li>
-</ol>
-</nav>
+<h2 class="text-slate-900 text-lg font-bold leading-tight">Welcome back, Elite Homes</h2>
+<p class="text-sm text-gray-500 hidden sm:block">Here's what's happening today.</p>
 </div>
 </div>
 <div class="flex items-center gap-4">
@@ -87,7 +41,7 @@
 </div>
 
 <!-- Stats Cards -->
-<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
 <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
 <div class="flex items-center justify-between">
 <div>
@@ -127,7 +81,7 @@
 <p class="text-2xl font-bold text-gray-900">6</p>
 </div>
 <div class="h-12 w-12 bg-amber-100 rounded-full flex items-center justify-center">
-<span class="material-symbols-outlined text-amber-600">sold</span>
+<span class="material-symbols-outlined text-amber-600">check_circle</span>
 </div>
 </div>
 <div class="mt-4 flex items-center text-sm">
@@ -135,71 +89,121 @@
 <span class="text-gray-500 ml-1">this month</span>
 </div>
 </div>
-
-<div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
-<div class="flex items-center justify-between">
-<div>
-<p class="text-sm text-gray-600">Total Views</p>
-<p class="text-2xl font-bold text-gray-900">1,248</p>
-</div>
-<div class="h-12 w-12 bg-purple-100 rounded-full flex items-center justify-center">
-<span class="material-symbols-outlined text-purple-600">trending_up</span>
-</div>
-</div>
-<div class="mt-4 flex items-center text-sm">
-<span class="text-green-600 font-medium">+24%</span>
-<span class="text-gray-500 ml-1">from last month</span>
-</div>
 </div>
 </div>
 
-<!-- Recent Activity -->
-<div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
-<h2 class="text-lg font-semibold text-gray-900 mb-4">Recent Activity</h2>
-<div class="space-y-4">
-<div class="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
-<span class="material-symbols-outlined text-green-600">add_circle</span>
-<div class="flex-1">
-<p class="text-sm font-medium text-gray-900">New property added</p>
-<p class="text-xs text-gray-500">Sunset Villa - Luxury Oceanfront Estate</p>
+<!-- Recent Listings Table -->
+<div class="flex flex-col bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+<div class="p-6 border-b border-gray-100 flex justify-between items-center">
+<h3 class="text-lg font-bold text-slate-900">Recent Listings</h3>
+<a class="text-sm text-royal-blue font-medium hover:underline" href="#">View All</a>
 </div>
-<span class="text-xs text-gray-400">2 hours ago</span>
-</div>
-<div class="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
-<span class="material-symbols-outlined text-blue-600">edit</span>
-<div class="flex-1">
-<p class="text-sm font-medium text-gray-900">Property updated</p>
-<p class="text-xs text-gray-500">City Apartment - Modern Downtown Living</p>
-</div>
-<span class="text-xs text-gray-400">1 day ago</span>
-</div>
-<div class="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
-<span class="material-symbols-outlined text-amber-600">visibility</span>
-<div class="flex-1">
-<p class="text-sm font-medium text-gray-900">Property viewed</p>
-<p class="text-xs text-gray-500">Commercial Office Space</p>
-</div>
-<span class="text-xs text-gray-400">2 days ago</span>
+<div class="overflow-x-auto">
+<table class="w-full min-w-[700px]">
+<thead class="bg-gray-50">
+<tr>
+<th class="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Property</th>
+<th class="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Price</th>
+<th class="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Status</th>
+<th class="px-6 py-4 text-right text-xs font-semibold text-gray-500 uppercase tracking-wider">Actions</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-gray-100">
+<!-- Row 1 -->
+<tr class="hover:bg-gray-50/50 transition-colors">
+<td class="px-6 py-4 whitespace-nowrap">
+<div class="flex items-center gap-4">
+<div class="w-16 h-12 rounded-lg bg-cover bg-center shrink-0" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCToc03ewI-R-MLH1VeaILvpzcsPrzcNl35tCllapTZwSgSR39FEB-O03otqjWOPaQcd-FItQ4ORhThF5Ph3HmSpDPRgp1FgiERkSyWa_HVyO0UAkX8ApEuSzr8Z15ELVzKGK2pqUeHYTW4Ar_ZjAVyN-hy7GRG9SX86kKSlbXaRaHpijSfGxAa_XmtxQxozG8aaQRu7OlewhaXfNoZLh9hcU0aPLn-Us23Btb3P7qcH_zGOl8RrHEakkzwn2n7KGBDwjm-oBB_f70f');"></div>
+<div class="flex flex-col">
+<span class="text-sm font-bold text-slate-900">Seaside Villa</span>
+<span class="text-xs text-gray-500">12 Ocean Dr, Malibu</span>
 </div>
 </div>
-</div>
-
-<!-- Quick Actions -->
-<div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
-<h2 class="text-lg font-semibold text-gray-900 mb-4">Quick Actions</h2>
-<div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-<button class="flex items-center gap-3 p-4 bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors">
-<span class="material-symbols-outlined text-blue-600">add</span>
-<span class="text-sm font-medium text-gray-900">Add Property</span>
+</td>
+<td class="px-6 py-4 whitespace-nowrap">
+<span class="text-sm font-bold text-royal-blue">$2,500,000</span>
+</td>
+<td class="px-6 py-4 whitespace-nowrap">
+<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-800">
+<span class="size-1.5 rounded-full bg-emerald-600"></span>
+Available
+</span>
+</td>
+<td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+<div class="flex items-center justify-end gap-2">
+<button class="p-2 text-gray-400 hover:text-royal-blue hover:bg-blue-50 rounded-full transition-colors">
+<span class="material-symbols-outlined text-[20px]">edit</span>
 </button>
-<button class="flex items-center gap-3 p-4 bg-green-50 hover:bg-green-100 rounded-lg transition-colors">
-<span class="material-symbols-outlined text-green-600">upload</span>
-<span class="text-sm font-medium text-gray-900">Import Properties</span>
+<button class="p-2 text-gray-400 hover:text-green-600 hover:bg-green-50 rounded-full transition-colors">
+<span class="material-symbols-outlined text-[20px]">share</span>
 </button>
-<button class="flex items-center gap-3 p-4 bg-purple-50 hover:bg-purple-100 rounded-lg transition-colors">
-<span class="material-symbols-outlined text-purple-600">analytics</span>
-<span class="text-sm font-medium text-gray-900">View Reports</span>
+</div>
+</td>
+</tr>
+<!-- Row 2 -->
+<tr class="hover:bg-gray-50/50 transition-colors">
+<td class="px-6 py-4 whitespace-nowrap">
+<div class="flex items-center gap-4">
+<div class="w-16 h-12 rounded-lg bg-cover bg-center shrink-0" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDdhjV4Kk0pc9BPnmOBfpnmUfWfZXgnJiKxKd0fBo3FkvF2Dw1_m-VUSfwR9RXPR9Mh_K6UP3m5MdbMtnevhMoJrYW9VcXQ0KkJcc3q3jt0T-8ADSIPTYb-T_SxL4I8HInHQ0ngU4p9h80Do3Ac7mXpX37jGdGqg4KkyMS2oZunrbaz8rrealQBNZd2sfkiIoKIxqvnAwuxwKG3267dMdaaTT_4aAlFfUdds9vqolu76zP8xpGfu04YE81DWahgI_ejytJbVjAk6OzQ');"></div>
+<div class="flex flex-col">
+<span class="text-sm font-bold text-slate-900">Downtown Loft</span>
+<span class="text-xs text-gray-500">45 Main St, Seattle</span>
+</div>
+</div>
+</td>
+<td class="px-6 py-4 whitespace-nowrap">
+<span class="text-sm font-bold text-royal-blue">$850,000</span>
+</td>
+<td class="px-6 py-4 whitespace-nowrap">
+<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-rose-100 text-rose-800">
+<span class="size-1.5 rounded-full bg-rose-600"></span>
+Sold
+</span>
+</td>
+<td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+<div class="flex items-center justify-end gap-2">
+<button class="p-2 text-gray-400 hover:text-royal-blue hover:bg-blue-50 rounded-full transition-colors">
+<span class="material-symbols-outlined text-[20px]">edit</span>
 </button>
+<button class="p-2 text-gray-400 hover:text-green-600 hover:bg-green-50 rounded-full transition-colors">
+<span class="material-symbols-outlined text-[20px]">share</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Row 3 -->
+<tr class="hover:bg-gray-50/50 transition-colors">
+<td class="px-6 py-4 whitespace-nowrap">
+<div class="flex items-center gap-4">
+<div class="w-16 h-12 rounded-lg bg-cover bg-center shrink-0" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBfzjxBa0QRGyirjWArZ9PEzGMK-80-ujNe0C_d6PslGsrAKlwY51dm59CQrX5PCl5EmDtYgaw76ydR5BVo2KlkyFVZpKuwn7Sh8Nm0VjWjn16rWRidqJgL0WWzZ0-M08Ohldedy0d1fJU65k9eHxppvivlAKcb7cia0ZfoVeIrKCy1HLsc7bVuQvjl2MFW_gOPLHw8H5Aw-3bnNHaZLFlwHgFk5BvZFtwSrDub-FuNFjfndRlF1bH6SyWGfLChuh_9OyViHfocIrBx');"></div>
+<div class="flex flex-col">
+<span class="text-sm font-bold text-slate-900">The Oaks Estate</span>
+<span class="text-xs text-gray-500">892 Oak Ln, Austin</span>
+</div>
+</div>
+</td>
+<td class="px-6 py-4 whitespace-nowrap">
+<span class="text-sm font-bold text-royal-blue">$1,200,000</span>
+</td>
+<td class="px-6 py-4 whitespace-nowrap">
+<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-gray-100 text-gray-600">
+<span class="size-1.5 rounded-full bg-gray-500"></span>
+Draft
+</span>
+</td>
+<td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+<div class="flex items-center justify-end gap-2">
+<button class="p-2 text-gray-400 hover:text-royal-blue hover:bg-blue-50 rounded-full transition-colors">
+<span class="material-symbols-outlined text-[20px]">edit</span>
+</button>
+<button class="p-2 text-gray-400 hover:text-green-600 hover:bg-green-50 rounded-full transition-colors">
+<span class="material-symbols-outlined text-[20px]">share</span>
+</button>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
 </div>
 </div>
 </div>
