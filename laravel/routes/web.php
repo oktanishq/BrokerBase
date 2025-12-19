@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Http\Request;
 
 /*
 |--------------------------------------------------------------------------
@@ -19,4 +20,15 @@ Route::get('/', function () {
 
 Route::get('/admin/login', function () {
     return view('admin.login');
+});
+
+Route::post('/admin/login', function (Request $request) {
+    if ($request->email && $request->password) {
+        return redirect('/admin/dashboard');
+    }
+    return back()->with('error', 'Invalid credentials');
+});
+
+Route::get('/admin/dashboard', function () {
+    return view('admin.dashboard');
 });

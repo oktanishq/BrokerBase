@@ -25,7 +25,8 @@
 <p class="mt-2 text-sm font-medium text-slate-500 dark:text-slate-400">The Digital Vault for Modern Real Estate Dealers</p>
 </div>
 <!-- Login Form -->
-<form action="#" class="flex flex-col gap-6" method="POST" onsubmit="event.preventDefault();">
+<form action="/admin/login" class="flex flex-col gap-6" method="POST">
+@csrf
 <!-- Email Field -->
 <div class="flex flex-col gap-2">
 <label class="text-sm font-medium leading-none text-[#181511] dark:text-gray-200" for="email">
