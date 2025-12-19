@@ -6,13 +6,19 @@
 <h1 class="text-xl font-bold tracking-wide text-white">BrokerBase</h1>
 </div>
 <nav class="flex flex-col gap-2 px-4 mt-4 flex-1">
-<a class="flex items-center gap-3 px-4 py-3 rounded-full hover:bg-white/10 text-gray-300 hover:text-white transition-colors" href="{{ url('/admin/dashboard') }}">
-<span class="material-symbols-outlined">dashboard</span>
-<span class="text-sm font-medium">Dashboard</span>
+@php
+    $currentPath = request()->path();
+    $isDashboard = $currentPath === 'admin/dashboard';
+    $isInventory = $currentPath === 'admin/inventory';
+@endphp
+
+<a class="flex items-center gap-3 px-4 py-3 rounded-full transition-all {{ $isDashboard ? 'bg-[#172554] border-l-4 border-amber-500 shadow-inner text-white' : 'hover:bg-white/10 text-gray-300 hover:text-white' }}" href="{{ url('/admin/dashboard') }}">
+<span class="material-symbols-outlined {{ $isDashboard ? 'text-amber-500' : '' }}">dashboard</span>
+<span class="text-sm font-medium {{ $isDashboard ? 'text-white' : '' }}">Dashboard</span>
 </a>
-<a class="flex items-center gap-3 px-4 py-3 rounded-full bg-[#172554] border-l-4 border-amber-500 transition-all shadow-inner" href="{{ url('/admin/inventory') }}">
-<span class="material-symbols-outlined text-amber-500">warehouse</span>
-<span class="text-sm font-medium text-white">My Inventory</span>
+<a class="flex items-center gap-3 px-4 py-3 rounded-full transition-all {{ $isInventory ? 'bg-[#172554] border-l-4 border-amber-500 shadow-inner text-white' : 'hover:bg-white/10 text-gray-300 hover:text-white' }}" href="{{ url('/admin/inventory') }}">
+<span class="material-symbols-outlined {{ $isInventory ? 'text-amber-500' : '' }}">warehouse</span>
+<span class="text-sm font-medium {{ $isInventory ? 'text-white' : '' }}">My Inventory</span>
 </a>
 <a class="flex items-center gap-3 px-4 py-3 rounded-full hover:bg-white/10 text-gray-300 hover:text-white transition-colors" href="#">
 <span class="material-symbols-outlined">group</span>

@@ -6,6 +6,7 @@
 <title>BrokerBase - Dealer Dashboard</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
 @vite('resources/css/app.css')
 </head>
 <body class="font-display bg-background-light dark:bg-background-dark text-slate-900 overflow-hidden">
@@ -34,10 +35,7 @@
 <div class="max-w-[1400px] mx-auto flex flex-col gap-6">
 <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
 <h1 class="text-slate-900 text-3xl font-black leading-tight tracking-tight">Dashboard</h1>
-<button class="flex items-center justify-center gap-2 rounded-full h-11 px-6 bg-blue-600 hover:bg-blue-700 text-white text-sm font-bold shadow-lg shadow-blue-200 transition-all transform hover:scale-105">
-<span class="material-symbols-outlined text-[20px]">add</span>
-<span>Add New Property</span>
-</button>
+@include('components.AddPropertyModal')
 </div>
 
 <!-- Stats Cards -->
