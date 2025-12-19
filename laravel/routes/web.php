@@ -32,3 +32,7 @@ Route::post('/admin/login', function (Request $request) {
 Route::get('/admin/dashboard', function () {
     return view('admin.dashboard');
 });
+
+Route::get('/admin/inventory', function () {
+    return view('admin.inventory');
+});
