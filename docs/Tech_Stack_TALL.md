@@ -150,13 +150,12 @@ npm run build
 Upload the following structure to your server:
 ```
 public_html/
-├── laravel/           (Upload entire Laravel project here)
-│   ├── app/
-│   ├── config/
-│   ├── routes/
-│   ├── resources/
-│   ├── vendor/        (Will be created by composer)
-│   └── ...
+├── app/
+├── config/
+├── routes/
+├── resources/
+├── vendor/        (Will be created by composer)
+└── ...
 └── public/            (Web root for subdomain)
     ├── index.php      (Copy from laravel/public/)
     ├── .htaccess      (Copy from laravel/public/)
@@ -166,17 +165,11 @@ public_html/
 #### **Step 3: Install Dependencies**
 Run this command in your hosting terminal/file manager:
 ```bash
-cd public_html/laravel
+cd public_html
 composer install --optimize-autoloader --no-dev
 ```
 *If composer install doesn't work on server, upload the `vendor` folder from your local setup.*
 
-#### **Step 4: Configure Domain Redirect**
-Add this to `public_html/.htaccess` to redirect main domain to subdomain:
-```apache
-RewriteEngine On
-RewriteCond %{HTTP_HOST} ^(www\.)?yourdomain\.com$ [NC]
-RewriteRule ^(.*)$ https://app.yourdomain.com/$1 [R=301,L]
 ```
 
 ### **6.3 Production Optimization**
