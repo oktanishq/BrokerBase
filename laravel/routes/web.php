@@ -36,3 +36,7 @@ Route::get('/admin/dashboard', function () {
 Route::get('/admin/inventory', function () {
     return view('admin.inventory');
 });
+
+Route::get('/admin/leads', function () {
+    return view('admin.leads');
+});
