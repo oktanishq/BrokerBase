@@ -45,6 +45,10 @@ Route::get('/admin/analytics', function () {
     return view('admin.analytics');
 });
 
+Route::get('/admin/settings', function () {
+    return view('admin.settings');
+});
+
 // Logout Route
 Route::post('/logout', function () {
     // In a real application, this would logout the user
