@@ -442,5 +442,31 @@
         </main>
     </div>
 </div>
+
+{{-- Global Logout Modal JavaScript --}}
+<script>
+// Global state object
+window.logoutModalState = {
+    showLogoutModal: false,
+    isLoggingOut: false
+};
+
+// Global functions
+window.openLogoutModal = function() {
+    window.logoutModalState.showLogoutModal = true;
+};
+
+window.closeLogoutModal = function() {
+    window.logoutModalState.showLogoutModal = false;
+};
+
+window.confirmLogout = function() {
+    window.logoutModalState.isLoggingOut = true;
+};
+</script>
+
+{{-- Include Logout Modal Component --}}
+<x-logout-confirmation-modal />
+
 </body>
 </html>

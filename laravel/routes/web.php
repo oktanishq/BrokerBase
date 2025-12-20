@@ -41,7 +41,7 @@ Route::get('/admin/leads', function () {
     return view('admin.leads');
 });
 
-Route::get('/analytics', function () {
+Route::get('/admin/analytics', function () {
     return view('admin.analytics');
 });
 

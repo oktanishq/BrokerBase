@@ -9,6 +9,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Spline+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <script id="tailwind-config">
         tailwind.config = {
             darkMode: "class",
@@ -31,7 +32,7 @@
 </head>
 <body class="font-display bg-background-light dark:bg-background-dark text-slate-900 overflow-hidden">
 
-<div class="flex h-screen w-full bg-background-light">
+<div class="flex h-screen w-full bg-background-light" x-data="{}">
     <!-- Sidebar -->
     <x-sidebar />
     
@@ -339,6 +340,31 @@
         </main>
     </div>
 </div>
+
+{{-- Global Logout Modal JavaScript --}}
+<script>
+// Global state object
+window.logoutModalState = {
+    showLogoutModal: false,
+    isLoggingOut: false
+};
+
+// Global functions
+window.openLogoutModal = function() {
+    window.logoutModalState.showLogoutModal = true;
+};
+
+window.closeLogoutModal = function() {
+    window.logoutModalState.showLogoutModal = false;
+};
+
+window.confirmLogout = function() {
+    window.logoutModalState.isLoggingOut = true;
+};
+</script>
+
+{{-- Include Logout Modal Component --}}
+<x-logout-confirmation-modal />
 
 </body>
 </html>

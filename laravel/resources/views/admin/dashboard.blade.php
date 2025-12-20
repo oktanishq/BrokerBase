@@ -223,32 +223,19 @@ window.logoutModalState = {
 // Global functions
 window.openLogoutModal = function() {
     window.logoutModalState.showLogoutModal = true;
-    updateModalDisplay();
 };
 
 window.closeLogoutModal = function() {
     window.logoutModalState.showLogoutModal = false;
-    updateModalDisplay();
 };
 
 window.confirmLogout = function() {
     window.logoutModalState.isLoggingOut = true;
-    updateModalDisplay();
 };
-
-// Update modal display
-function updateModalDisplay() {
-    // Force Alpine.js to re-evaluate modal
-    const modal = document.querySelector('[data-modal="logout"]');
-    if (modal) {
-        modal.__x.$data.showLogoutModal = window.logoutModalState.showLogoutModal;
-        modal.__x.$data.isLoggingOut = window.logoutModalState.isLoggingOut;
-    }
-}
 
 // Initialize when DOM is loaded
 document.addEventListener('DOMContentLoaded', function() {
-    updateModalDisplay();
+    // No initialization needed - modal handles its own sync
 });
 
 function dashboardData() {
