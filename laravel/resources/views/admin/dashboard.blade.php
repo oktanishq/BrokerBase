@@ -10,7 +10,7 @@
 @vite('resources/css/app.css')
 </head>
 <body class="font-display bg-background-light dark:bg-background-dark text-slate-900 overflow-hidden">
-<div class="flex h-screen w-full bg-background-light">
+<div class="flex h-screen w-full bg-background-light" x-data="dashboardData()">
 <x-sidebar />
 <div class="flex flex-col flex-1 h-full lg:ml-64 relative overflow-hidden bg-gray-50">
 <header class="flex items-center justify-between bg-white border-b border-gray-100 px-6 py-4 shadow-sm sticky top-0 z-20">
@@ -208,5 +208,69 @@ Draft
 </main>
 </div>
 </div>
+<x-logout-confirmation-modal />
 </body>
 </html>
+
+{{-- Alpine.js Dashboard Data --}}
+<script>
+// Global state object
+window.logoutModalState = {
+    showLogoutModal: false,
+    isLoggingOut: false
+};
+
+// Global functions
+window.openLogoutModal = function() {
+    window.logoutModalState.showLogoutModal = true;
+    updateModalDisplay();
+};
+
+window.closeLogoutModal = function() {
+    window.logoutModalState.showLogoutModal = false;
+    updateModalDisplay();
+};
+
+window.confirmLogout = function() {
+    window.logoutModalState.isLoggingOut = true;
+    updateModalDisplay();
+};
+
+// Update modal display
+function updateModalDisplay() {
+    // Force Alpine.js to re-evaluate modal
+    const modal = document.querySelector('[data-modal="logout"]');
+    if (modal) {
+        modal.__x.$data.showLogoutModal = window.logoutModalState.showLogoutModal;
+        modal.__x.$data.isLoggingOut = window.logoutModalState.isLoggingOut;
+    }
+}
+
+// Initialize when DOM is loaded
+document.addEventListener('DOMContentLoaded', function() {
+    updateModalDisplay();
+});
+
+function dashboardData() {
+    return {
+        // Simple Alpine.js data
+        showLogoutModal: false,
+        isLoggingOut: false,
+        
+        // Sync with global state
+        init() {
+            this.showLogoutModal = window.logoutModalState.showLogoutModal;
+            this.isLoggingOut = window.logoutModalState.isLoggingOut;
+            
+            // Watch for changes and update global state
+            this.$watch('showLogoutModal', (value) => {
+                window.logoutModalState.showLogoutModal = value;
+            });
+            
+            this.$watch('isLoggingOut', (value) => {
+                window.logoutModalState.isLoggingOut = value;
+            });
+        }
+    }
+}
+</script>

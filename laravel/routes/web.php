@@ -41,6 +41,13 @@ Route::get('/admin/leads', function () {
     return view('admin.leads');
 });
 
-Route::get('/admin/analytics', function () {
+Route::get('/analytics', function () {
     return view('admin.analytics');
+});
+
+// Logout Route
+Route::post('/logout', function () {
+    // In a real application, this would logout the user
+    // For demo purposes, just redirect to login
+    return redirect('/admin/login');
 });

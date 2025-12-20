@@ -36,7 +36,7 @@
 </a>
 </nav>
 <div class="p-4 mt-auto border-t border-white/10">
-<div class="flex items-center gap-3 px-4 py-3 rounded-full hover:bg-white/10 cursor-pointer">
+<div class="flex items-center gap-3 px-4 py-3 rounded-full hover:bg-white/10 cursor-pointer" @click="window.openLogoutModal()">
 <span class="material-symbols-outlined text-gray-400">logout</span>
 <span class="text-sm font-medium text-gray-300">Log Out</span>
 </div>
