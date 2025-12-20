@@ -22,8 +22,6 @@
         </li>
     </ol>
 </nav>
-<h2 class="text-slate-900 text-lg font-bold leading-tight">Account Settings</h2>
-<p class="text-sm text-gray-500 hidden sm:block">Manage your profile and website branding.</p>
 @endsection
 
 @section('content')
@@ -44,7 +42,6 @@
 
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
         <div class="lg:col-span-7 xl:col-span-8 flex flex-col gap-8">
-            <!-- Agency Details Form -->
             <div class="bg-white p-6 md:p-8 rounded-xl shadow-sm border border-gray-100">
                 <div class="flex items-center gap-3 mb-6 pb-4 border-b border-gray-50">
                     <div class="p-2 bg-blue-50 text-royal-blue rounded-lg">
@@ -79,8 +76,6 @@
                     </div>
                 </div>
             </div>
-
-            <!-- Branding Section -->
             <div class="bg-white p-6 md:p-8 rounded-xl shadow-sm border border-gray-100">
                 <div class="flex items-center gap-3 mb-6 pb-4 border-b border-gray-50">
                     <div class="p-2 bg-amber-50 text-amber-600 rounded-lg">
@@ -92,7 +87,6 @@
                     </div>
                 </div>
                 <div class="space-y-8">
-                    <!-- Logo Upload -->
                     <div>
                         <label class="block text-sm font-medium text-slate-700 mb-3">Agency Logo</label>
                         <div class="flex items-start gap-6">
@@ -118,17 +112,15 @@
                             </div>
                         </div>
                     </div>
-
-                    <!-- Color Picker -->
                     <div>
                         <label class="block text-sm font-medium text-slate-700 mb-3">Primary Theme Color</label>
                         <div class="flex flex-col md:flex-row items-start md:items-center gap-6">
                             <div class="flex items-center gap-3">
-                                <button @click="selectColor('blue')" :class="selectedColor === 'blue' ? 'ring-2 ring-offset-2 ring-blue-900' : ''" class="size-8 rounded-full bg-blue-900 focus:outline-none hover:scale-110 transition-transform"></button>
-                                <button @click="selectColor('emerald')" :class="selectedColor === 'emerald' ? 'ring-2 ring-offset-2 ring-emerald-600' : ''" class="size-8 rounded-full bg-emerald-600 focus:outline-none hover:scale-110 transition-all"></button>
-                                <button @click="selectColor('red')" :class="selectedColor === 'red' ? 'ring-2 ring-offset-2 ring-red-600' : ''" class="size-8 rounded-full bg-red-600 focus:outline-none hover:scale-110 transition-all"></button>
-                                <button @click="selectColor('amber')" :class="selectedColor === 'amber' ? 'ring-2 ring-offset-2 ring-amber-500' : ''" class="size-8 rounded-full bg-amber-500 focus:outline-none hover:scale-110 transition-all"></button>
-                                <button @click="selectColor('black')" :class="selectedColor === 'black' ? 'ring-2 ring-offset-2 ring-gray-900' : ''" class="size-8 rounded-full bg-black focus:outline-none hover:scale-110 transition-all"></button>
+                                <button aria-label="Select Royal Blue" class="size-8 rounded-full bg-blue-900 ring-2 ring-offset-2 ring-blue-900 focus:outline-none shadow-sm hover:scale-110 transition-transform"></button>
+                                <button aria-label="Select Emerald Green" class="size-8 rounded-full bg-emerald-600 focus:outline-none hover:ring-2 hover:ring-offset-2 hover:ring-emerald-600 shadow-sm hover:scale-110 transition-all"></button>
+                                <button aria-label="Select Red" class="size-8 rounded-full bg-red-600 focus:outline-none hover:ring-2 hover:ring-offset-2 hover:ring-red-600 shadow-sm hover:scale-110 transition-all"></button>
+                                <button aria-label="Select Gold" class="size-8 rounded-full bg-amber-500 focus:outline-none hover:ring-2 hover:ring-offset-2 hover:ring-amber-500 shadow-sm hover:scale-110 transition-all"></button>
+                                <button aria-label="Select Black" class="size-8 rounded-full bg-black focus:outline-none hover:ring-2 hover:ring-offset-2 hover:ring-gray-900 shadow-sm hover:scale-110 transition-all"></button>
                             </div>
                             <div class="h-8 w-px bg-gray-200 hidden md:block"></div>
                             <div class="flex items-center gap-2 w-full md:w-auto">
@@ -146,19 +138,17 @@
             </div>
         </div>
 
-        <!-- Live Mobile Preview -->
         <div class="lg:col-span-5 xl:col-span-4 relative">
             <div class="sticky top-6">
                 <div class="flex items-center justify-between mb-4 px-2">
                     <h3 class="font-bold text-slate-800">Live Mobile Preview</h3>
                     <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-700 animate-pulse">
                         <span class="size-2 bg-green-500 rounded-full"></span>
-                        Real-time
-                    </span>
+                                         Real-time
+                                     </span>
                 </div>
                 <div class="mx-auto border-[12px] border-gray-900 rounded-[2.5rem] overflow-hidden shadow-2xl bg-gray-900 max-w-[320px]">
                     <div class="bg-gray-50 h-[600px] w-full relative flex flex-col overflow-hidden">
-                        <!-- Phone Header -->
                         <div class="h-6 bg-black text-white text-[10px] flex justify-between items-center px-4 select-none">
                             <span>9:41</span>
                             <div class="flex gap-1">
@@ -167,7 +157,6 @@
                                 <span class="material-symbols-outlined text-[12px]">battery_full</span>
                             </div>
                         </div>
-                        <!-- App Header -->
                         <div class="bg-royal-blue px-4 py-3 flex items-center justify-between shadow-md z-10" :style="`background-color: ${getPreviewColor()}`">
                             <div class="flex items-center gap-2">
                                 <div class="size-8 rounded-full bg-white p-0.5 overflow-hidden">
@@ -177,19 +166,16 @@
                             </div>
                             <span class="material-symbols-outlined text-white">menu</span>
                         </div>
-                        <!-- Content -->
                         <div class="flex-1 overflow-y-auto no-scrollbar">
-                            <!-- Property Image -->
                             <div class="relative h-48 bg-gray-200">
                                 <img alt="Property" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCToc03ewI-R-MLH1VeaILvpzcsPrzcNl35tCllapTZwSgSR39FEB-O03otqjWOPaQcd-FItQ4ORhThF5Ph3HmSpDPRgp1FgiERkSyWa_HVyO0UAkX8ApEuSzr8Z15ELVzKGK2pqUeHYTW4Ar_ZjAVyN-hy7GRG9SX86kKSlbXaRaHpijSfGxAa_XmtxQxozG8aaQRu7OlewhaXfNoZLh9hcU0aPLn-Us23Btb3P7qcH_zGOl8RrHEakkzwn2n7KGBDwjm-oBB_f70f"/>
                                 <div class="absolute top-3 left-3 bg-white/90 backdrop-blur-sm px-2 py-1 rounded text-[10px] font-bold uppercase tracking-wide text-gray-800">
-                                    Featured
-                                </div>
+                                                     Featured
+                                                 </div>
                                 <div class="absolute bottom-3 right-3 bg-gray-900/80 backdrop-blur-sm px-2 py-1 rounded text-white text-xs flex items-center gap-1">
                                     <span class="material-symbols-outlined text-[12px]">photo_camera</span> 1/12
-                                </div>
+                                                 </div>
                             </div>
-                            <!-- Property Details -->
                             <div class="p-4 bg-white">
                                 <div class="flex justify-between items-start mb-2">
                                     <h2 class="text-base font-bold text-gray-900 leading-tight">Luxury Villa in Palms</h2>
@@ -197,8 +183,8 @@
                                 </div>
                                 <p class="text-xs text-gray-500 mb-3 flex items-center gap-1">
                                     <span class="material-symbols-outlined text-[14px]">location_on</span>
-                                    Palm Jumeirah, Dubai
-                                </p>
+                                                     Palm Jumeirah, Dubai
+                                                 </p>
                                 <div class="flex items-end gap-1 mb-4">
                                     <span class="text-lg font-bold text-blue-900">AED 15,000,000</span>
                                 </div>
@@ -218,22 +204,21 @@
                                 </div>
                                 <div class="space-y-2">
                                     <p class="text-xs text-gray-600 line-clamp-3 leading-relaxed">
-                                        Experience luxury living at its finest in this stunning villa located in the heart of Palm Jumeirah. Featuring private beach access, infinity pool, and state-of-the-art amenities...
-                                    </p>
+                                                         Experience luxury living at its finest in this stunning villa located in the heart of Palm Jumeirah. Featuring private beach access, infinity pool, and state-of-the-art amenities...
+                                                     </p>
                                     <span class="text-blue-900 text-xs font-semibold cursor-pointer">Read more</span>
                                 </div>
                             </div>
                         </div>
-                        <!-- Action Buttons -->
                         <div class="bg-white p-4 border-t border-gray-100 grid grid-cols-2 gap-3 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]">
                             <button class="flex items-center justify-center gap-2 bg-blue-900 text-white rounded-lg py-2.5 text-xs font-bold shadow-sm active:scale-95 transition-transform" :style="`background-color: ${getPreviewColor()}`">
                                 <span class="material-symbols-outlined text-[16px]">call</span>
-                                Call Now
-                            </button>
+                                                 Call Now
+                                             </button>
                             <button class="flex items-center justify-center gap-2 bg-green-600 text-white rounded-lg py-2.5 text-xs font-bold shadow-sm active:scale-95 transition-transform">
                                 <span class="material-symbols-outlined text-[16px]">chat</span>
-                                WhatsApp
-                            </button>
+                                                 WhatsApp
+                                             </button>
                         </div>
                         <div class="h-4 bg-white flex justify-center items-end pb-1">
                             <div class="w-1/3 h-1 bg-gray-300 rounded-full"></div>
@@ -241,8 +226,8 @@
                     </div>
                 </div>
                 <div class="text-center mt-4 text-xs text-gray-400">
-                    Preview updates as you type
-                </div>
+                                     Preview updates as you type
+                                 </div>
             </div>
         </div>
     </div>
