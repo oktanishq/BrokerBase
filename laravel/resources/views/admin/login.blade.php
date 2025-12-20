@@ -27,6 +27,16 @@
 <!-- Login Form -->
 <form action="/admin/login" class="flex flex-col gap-6" method="POST">
 @csrf
+<!-- Error Messages -->
+@if ($errors->any())
+    <div class="p-4 bg-red-50 border border-red-200 rounded-lg">
+        <ul class="text-sm text-red-600">
+            @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+@endif
 <!-- Email Field -->
 <div class="flex flex-col gap-2">
 <label class="text-sm font-medium leading-none text-[#181511] dark:text-gray-200" for="email">
