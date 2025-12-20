@@ -6,6 +6,7 @@
 <title>BrokerBase - Dealer Login</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
 @vite('resources/css/app.css')
 </head>
 <body class="font-display antialiased">
@@ -25,7 +26,7 @@
 <p class="mt-2 text-sm font-medium text-slate-500 dark:text-slate-400">The Digital Vault for Modern Real Estate Dealers</p>
 </div>
 <!-- Login Form -->
-<form action="/admin/login" class="flex flex-col gap-6" method="POST">
+<form action="/admin/login" class="flex flex-col gap-6" method="POST" x-data="{ showPassword: false }">
 @csrf
 <!-- Error Messages -->
 @if ($errors->any())
@@ -57,9 +58,9 @@ Password
 </label>
 </div>
 <div class="relative">
-<input class="flex h-12 w-full rounded-lg border border-[#e6e2db] bg-white px-3 py-2 text-sm text-[#181511] placeholder:text-[#8a7b60]/60 focus:border-primary-admin focus:outline-none focus:ring-1 focus:ring-primary-admin dark:border-gray-700 dark:bg-gray-800 dark:text-white dark:placeholder:text-gray-500" id="password" name="password" placeholder="••••••••••••" required="" type="password"/>
-<button class="absolute right-3 top-1/2 flex -translate-y-1/2 items-center justify-center text-slate-400 transition-colors hover:text-slate-600 dark:hover:text-slate-300" type="button">
-<span class="material-symbols-outlined text-[20px]">visibility</span>
+<input class="flex h-12 w-full rounded-lg border border-[#e6e2db] bg-white px-3 py-2 text-sm text-[#181511] placeholder:text-[#8a7b60]/60 focus:border-primary-admin focus:outline-none focus:ring-1 focus:ring-primary-admin dark:border-gray-700 dark:bg-gray-800 dark:text-white dark:placeholder:text-gray-500 pr-12" id="password" name="password" placeholder="••••••••••••" required="" :type="showPassword ? 'text' : 'password'"/>
+<button class="absolute right-3 top-1/2 flex -translate-y-1/2 items-center justify-center text-slate-400 transition-colors hover:text-slate-600 dark:hover:text-slate-300 z-10" type="button" @click="showPassword = !showPassword" title="Toggle password visibility">
+<span class="material-symbols-outlined text-[20px]" x-text="showPassword ? 'visibility_off' : 'visibility'"></span>
 </button>
 </div>
 </div>
