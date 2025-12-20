@@ -45,7 +45,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/admin/settings', function () {
         return view('admin.settings');
     });
-});
 
-// Logout Route
-Route::post('/logout', [LoginController::class, 'logout']);
+    // Logout Route
+    Route::post('/logout', [LoginController::class, 'logout']);
+});
