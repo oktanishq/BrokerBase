@@ -1,36 +1,50 @@
-<!DOCTYPE html>
-<html class="light" lang="en">
-<head>
-    <meta charset="utf-8"/>
-    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-    <title>BrokerBase Dealer Inventory - List View</title>
-    <link href="https://fonts.googleapis.com" rel="preconnect"/>
-    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
-    <link href="https://fonts.googleapis.com/css2?family=Spline+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
-    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
-    <script id="tailwind-config">
-        tailwind.config = {
-            darkMode: "class",
-            theme: {
-                extend: {
-                    colors: {
-                        "primary": "#f59e0b", // Amber-500
-                        "background-light": "#f9fafb", // gray-50
-                        "background-dark": "#23220f",
-                        "royal-blue": "#1e3a8a", // blue-900
-                    },
-                    fontFamily: {
-                        "display": ["Spline Sans", "sans-serif"]
-                    },
-                    borderRadius: {"DEFAULT": "0.5rem", "lg": "0.75rem", "xl": "1rem", "full": "9999px"},
+@extends('layouts.admin')
+
+@section('title', 'BrokerBase Dealer Inventory - List View')
+
+@section('head')
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Spline+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+        darkMode: "class",
+        theme: {
+            extend: {
+                colors: {
+                    "primary": "#f59e0b", // Amber-500
+                    "background-light": "#f9fafb", // gray-50
+                    "background-dark": "#23220f",
+                    "royal-blue": "#1e3a8a", // blue-900
                 },
+                fontFamily: {
+                    "display": ["Spline Sans", "sans-serif"]
+                },
+                borderRadius: {"DEFAULT": "0.5rem", "lg": "0.75rem", "xl": "1rem", "full": "9999px"},
             },
-        }
-    </script>
-</head>
-<body class="font-display bg-background-light dark:bg-background-dark text-slate-900 overflow-hidden">
+        },
+    }
+</script>
+@endsection
+
+@section('header-content')
+<nav aria-label="Breadcrumb" class="hidden sm:flex">
+    <ol class="inline-flex items-center space-x-1 md:space-x-2 text-sm text-gray-500">
+        <li class="inline-flex items-center">
+            <a class="hover:text-royal-blue transition-colors" href="{{ url('/admin/dashboard') }}">Home</a>
+        </li>
+        <li>
+            <div class="flex items-center">
+                <span class="material-symbols-outlined text-[16px] text-gray-400">chevron_right</span>
+                <span class="ml-1 font-medium text-gray-700">Properties</span>
+            </div>
+        </li>
+    </ol>
+</nav>
+@endsection
+
+@section('content')
 <div x-data="{
     searchTerm: '',
     statusFilter: 'all',
@@ -38,7 +52,7 @@
     viewMode: 'list', // 'list' or 'grid'
     perPage: 10, // Items per page
     currentPage: 1, // Current page number
-    
+
     // Sample properties data (will be replaced with real data later)
     properties: [
         {
@@ -84,110 +98,68 @@
             edited_ago: 'today'
         }
     ],
-    
+
     // Computed filtered properties
     get filteredProperties() {
         return this.properties.filter(property => {
             const matchesSearch = property.title.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
                                 property.location.toLowerCase().includes(this.searchTerm.toLowerCase());
-            
+
             const matchesStatus = this.statusFilter === 'all' || property.status === this.statusFilter;
             const matchesType = this.typeFilter === 'all' || property.type === this.typeFilter;
-            
+
             return matchesSearch && matchesStatus && matchesType;
         });
     },
-    
+
     // Paginated properties
     get paginatedProperties() {
         const start = (this.currentPage - 1) * this.perPage;
         const end = start + this.perPage;
         return this.filteredProperties.slice(start, end);
     },
-    
+
     // Pagination info
     get totalPages() {
         return Math.ceil(this.filteredProperties.length / this.perPage);
     },
-    
+
     get showingFrom() {
         if (this.filteredProperties.length === 0) return 0;
         return (this.currentPage - 1) * this.perPage + 1;
     },
-    
+
     get showingTo() {
         return Math.min(this.currentPage * this.perPage, this.filteredProperties.length);
     },
-    
+
     get showingCount() {
         return this.filteredProperties.length;
     },
-    
+
     get totalCount() {
         return this.properties.length;
     },
-    
+
     // Pagination controls
     nextPage() {
         if (this.currentPage < this.totalPages) {
             this.currentPage++;
         }
     },
-    
+
     prevPage() {
         if (this.currentPage > 1) {
             this.currentPage--;
         }
     },
-    
+
     goToPage(page) {
         if (page >= 1 && page <= this.totalPages) {
             this.currentPage = page;
         }
     }
-}" class="flex h-screen w-full bg-background-light">
-    <!-- Sidebar -->
-    @include('components.sidebar')
-    
-    <!-- Main Content -->
-    <div class="flex flex-col flex-1 h-full lg:ml-64 relative overflow-hidden bg-gray-50">
-        <!-- Header -->
-        <header class="flex items-center justify-between bg-white border-b border-gray-100 px-6 py-4 shadow-sm sticky top-0 z-20">
-            <div class="flex items-center gap-4">
-                <button class="lg:hidden p-2 text-gray-600 hover:bg-gray-100 rounded-full">
-                    <span class="material-symbols-outlined">menu</span>
-                </button>
-                <div class="flex flex-col">
-                    <nav aria-label="Breadcrumb" class="hidden sm:flex">
-                        <ol class="inline-flex items-center space-x-1 md:space-x-2 text-sm text-gray-500">
-                            <li class="inline-flex items-center">
-                                <a class="hover:text-royal-blue transition-colors" href="{{ url('/admin/dashboard') }}">Home</a>
-                            </li>
-                            <li>
-                                <div class="flex items-center">
-                                    <span class="material-symbols-outlined text-[16px] text-gray-400">chevron_right</span>
-                                    <span class="ml-1 font-medium text-gray-700">Properties</span>
-                                </div>
-                            </li>
-                        </ol>
-                    </nav>
-                </div>
-            </div>
-            <div class="flex items-center gap-4">
-                <button class="flex items-center justify-center size-10 rounded-full bg-gray-50 hover:bg-gray-200 text-slate-700 transition-colors relative">
-                    <span class="material-symbols-outlined text-[20px]">notifications</span>
-                    <span class="absolute top-2 right-2 size-2 bg-red-500 rounded-full border-2 border-white"></span>
-                </button>
-                <div class="bg-center bg-no-repeat bg-cover rounded-full size-10 ring-2 ring-gray-100 cursor-pointer" 
-                     data-alt="Real estate agency profile logo showing abstract building" 
-                     style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDjlFF_nSTOQN2xN5XEhoei2r1xmo6006_o8UoGMAFUfEAomAjyJR-_bXnIPonwd3cqDG7sOU8o_DGuG6ynBK32KcH-lRZpx1OAvvrV7EALzre8oOHD4wHQDNcs1u-RqUpqp6rABg-PLwMMJpYI1mwd0rmsHsf0SI7DMC0X71sycCni1WxVUk61lnXtb-Wzonan3tvT7xcDV3vnvIuNyz4n4mt6oBDAaqb4Ch5zP_c1FPKCfCmqMwaC598j6zQlRK21aawjBmED-Tjo');">
-                </div>
-            </div>
-        </header>
-
-        <!-- Main Content -->
-        <main class="flex-1 overflow-y-auto p-4 md:p-8">
-            <div class="max-w-[1400px] mx-auto flex flex-col gap-6">
+}">
                 <!-- Page Header -->
                 <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                     <h1 class="text-slate-900 text-3xl font-black leading-tight tracking-tight">My Inventory</h1>
@@ -438,9 +410,5 @@
                         </button>
                     </div>
                 </div>
-            </div>
-        </main>
-    </div>
 </div>
-</body>
-</html>
+@endsection

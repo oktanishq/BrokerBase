@@ -44,3 +44,10 @@ Route::get('/admin/leads', function () {
 Route::get('/admin/analytics', function () {
     return view('admin.analytics');
 });
+
+// Logout Route
+Route::post('/logout', function () {
+    // In a real application, this would logout the user
+    // For demo purposes, just redirect to login
+    return redirect('/admin/login');
+});

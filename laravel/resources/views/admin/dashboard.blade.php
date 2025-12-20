@@ -1,38 +1,13 @@
-<!DOCTYPE html>
-<html class="light" lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-<head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>BrokerBase - Dealer Dashboard</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
-<script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
-@vite('resources/css/app.css')
-</head>
-<body class="font-display bg-background-light dark:bg-background-dark text-slate-900 overflow-hidden">
-<div class="flex h-screen w-full bg-background-light">
-<x-sidebar />
-<div class="flex flex-col flex-1 h-full lg:ml-64 relative overflow-hidden bg-gray-50">
-<header class="flex items-center justify-between bg-white border-b border-gray-100 px-6 py-4 shadow-sm sticky top-0 z-20">
-<div class="flex items-center gap-4">
-<button class="lg:hidden p-2 text-gray-600 hover:bg-gray-100 rounded-full">
-<span class="material-symbols-outlined">menu</span>
-</button>
-<div class="flex flex-col">
+@extends('layouts.admin')
+
+@section('title', 'BrokerBase - Dealer Dashboard')
+
+@section('header-content')
 <h2 class="text-slate-900 text-lg font-bold leading-tight">Welcome back, Elite Homes</h2>
 <p class="text-sm text-gray-500 hidden sm:block">Here's what's happening today.</p>
-</div>
-</div>
-<div class="flex items-center gap-4">
-<button class="flex items-center justify-center size-10 rounded-full bg-gray-50 hover:bg-gray-200 text-slate-700 transition-colors relative">
-<span class="material-symbols-outlined text-[20px]">notifications</span>
-<span class="absolute top-2 right-2 size-2 bg-red-500 rounded-full border-2 border-white"></span>
-</button>
-<div class="bg-center bg-no-repeat bg-cover rounded-full size-10 ring-2 ring-gray-100 cursor-pointer" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDjlFF_nSTOQN2xN5XEhoei2r1xmo6006_o8UoGMAFUfEAomAjyJR-_bXnIPonwd3cqDG7sOU8o_DGuG6ynBK32KcH-lRZpx1OAvvrV7EALzre8oOHD4wHQDNcs1u-RqUpqp6rABg-PLwMMJpYI1mwd0rmsHsf0SI7DMC0X71sycCni1WxVUk61lnXtb-Wzonan3tvT7xcDV3vnvIuNyz4n4mt6oBDAaqb4Ch5zP_c1FPKCfCmqMwaC598j6zQlRK21aawjBmED-Tjo');"></div>
-</div>
-</header>
-<main class="flex-1 overflow-y-auto p-4 md:p-8">
-<div class="max-w-[1400px] mx-auto flex flex-col gap-6">
+@endsection
+
+@section('content')
 <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
 <h1 class="text-slate-900 text-3xl font-black leading-tight tracking-tight">Dashboard</h1>
 @include('components.AddPropertyModal')
@@ -204,9 +179,4 @@ Draft
 </table>
 </div>
 </div>
-</div>
-</main>
-</div>
-</div>
-</body>
-</html>
+@endsection
