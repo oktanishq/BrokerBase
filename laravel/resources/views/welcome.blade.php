@@ -17,53 +17,53 @@
 }
 </style>
 </head>
-<body class="bg-background-light dark:bg-background-dark text-[#121317] font-display min-h-screen flex flex-col">
+<body class="bg-background-light dark:bg-background-dark text-[#121317] font-display min-h-screen flex flex-col" x-data="{ showMoreFilters: false }">
 <main class="w-full bg-white min-h-screen flex flex-col relative pb-12 mx-auto">
-<header class="sticky top-0 z-50 bg-white/95 backdrop-blur-sm border-b border-[#f1f1f4] px-6 lg:px-10 py-4 flex items-center justify-between transition-all duration-200">
+<header class="sticky top-0 z-50 bg-white/95 backdrop-blur-sm border-b border-[#f1f1f4] px-4 sm:px-6 lg:px-10 py-3 sm:py-4 flex items-center justify-between transition-all duration-200">
 <div class="flex items-center gap-4">
 <div class="h-12 w-12 rounded-full bg-cover bg-center border border-gray-100" data-alt="Elite Homes company logo avatar" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCZGvkDKAF1w7WbeFeUNmOM3NRSjHgmhSeryZM7vDVZ1m4ipcSRXPbXSEd2id5wazq_oIOrOECQqI9YWyoWlbbH2hXEX33P14Q3zghNi1ql4tBZGpuTE5NvyUY4ZTQJBmwaOlHrNFtmKJZ5hlyLxVkDdbsRnUKh523LtkEq96u8kK6SNVuz5caz2ymq71nBnay5rA4-tCzvVqaPnmBNsnRYGgYVWooVyVl0TRj85yqteKd7hSy3zjvwglp6ZBELj2yif6o7tUd4K-Hz');"></div>
 <h1 class="text-xl font-bold text-[#121317] tracking-tight">Elite Homes</h1>
 </div>
-<div class="flex gap-3">
-<button class="flex items-center justify-center gap-2 h-10 px-4 rounded-full bg-[#f1f1f4] text-[#121317] hover:bg-gray-200 transition-colors font-medium text-sm">
-<span class="material-symbols-outlined text-[20px]">ios_share</span>
+<div class="flex gap-2 sm:gap-3">
+<button class="flex items-center justify-center gap-2 h-10 px-3 sm:px-4 rounded-full bg-[#f1f1f4] text-[#121317] hover:bg-gray-200 transition-colors font-medium text-sm">
+<span class="material-symbols-outlined text-[18px] sm:text-[20px]">ios_share</span>
 <span class="hidden sm:inline">Share Profile</span>
 </button>
 <button class="flex items-center justify-center h-10 w-10 rounded-full bg-[#f1f1f4] text-[#121317] hover:bg-gray-200 transition-colors">
-<span class="material-symbols-outlined text-[20px]">menu</span>
+<span class="material-symbols-outlined text-[18px] sm:text-[20px]">menu</span>
 </button>
 </div>
 </header>
-<section class="bg-gradient-to-b from-white to-[#f6f6f8] px-6 lg:px-10 py-10">
-<div class="max-w-[1280px] mx-auto grid grid-cols-1 lg:grid-cols-[2fr_1fr] gap-10 items-start">
+<section class="bg-gradient-to-b from-white to-[#f6f6f8] px-4 sm:px-6 lg:px-10 py-6 sm:py-8 lg:py-10">
+<div class="max-w-[1280px] mx-auto grid grid-cols-1 lg:grid-cols-[2fr_1fr] gap-6 sm:gap-8 lg:gap-10 items-start">
 <div class="flex flex-col gap-8">
-<div class="flex items-start gap-6">
-<div class="h-28 w-28 lg:h-32 lg:w-32 shrink-0 rounded-full bg-cover bg-center border-4 border-white shadow-lg ring-1 ring-gray-100" data-alt="Large profile picture of Elite Homes dealer" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDfVJGVzANp1NAi6tmqqdpbcRS7QYyqe9ksTG2UPH8r9snYAI-9ySrfL8rZ7r3j_LgPJCsthYOhRhez_8mxmm0Zpbr98BNZuX8jfQzYP_X1mBD_PivHUqoq3nmTjpVB-5VyRkBU0PhcfpICwJx1jdS-jXi7ty72wmF8lGrhcFL3wxEn8Fyx2WghziGtKozdELe8_-cTc56jAdTsG18w5vCDbQkRqSES-kjcsgocnYErJmwBbhyB5m9Llhb-yp9ISHJV_OKp9h5N3BtI');"></div>
-<div class="flex flex-col gap-2 pt-2">
-<div class="flex flex-wrap items-center gap-3">
-<h2 class="text-3xl font-bold text-[#121317]">Elite Homes</h2>
-<span class="px-3 py-1 rounded-full bg-green-100 text-green-700 text-xs font-bold uppercase tracking-wide border border-green-200">RERA Registered</span>
+<div class="flex items-start gap-4 sm:gap-5 lg:gap-6">
+<div class="h-20 w-20 sm:h-24 sm:w-24 lg:h-28 lg:w-28 lg:h-32 lg:w-32 shrink-0 rounded-full bg-cover bg-center border-4 border-white shadow-lg ring-1 ring-gray-100" data-alt="Large profile picture of Elite Homes dealer" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDfVJGVzANp1NAi6tmqqdpbcRS7QYyqe9ksTG2UPH8r9snYAI-9ySrfL8rZ7r3j_LgPJCsthYOhRhez_8mxmm0Zpbr98BNZuX8jfQzYP_X1mBD_PivHUqoq3nmTjpVB-5VyRkBU0PhcfpICwJx1jdS-jXi7ty72wmF8lGrhcFL3wxEn8Fyx2WghziGtKozdELe8_-cTc56jAdTsG18w5vCDbQkRqSES-kjcsgocnYErJmwBbhyB5m9Llhb-yp9ISHJV_OKp9h5N3BtI');"></div>
+<div class="flex flex-col gap-1 sm:gap-2 pt-1 sm:pt-2">
+<div class="flex flex-wrap items-center gap-2 sm:gap-3">
+<h2 class="text-2xl sm:text-3xl font-bold text-[#121317]">Elite Homes</h2>
+<span class="px-2 sm:px-3 py-1 rounded-full bg-green-100 text-green-700 text-xs font-bold uppercase tracking-wide border border-green-200">RERA Registered</span>
 </div>
-<div class="flex items-center gap-2 text-[#666e85] text-base">
-<span class="material-symbols-outlined text-[20px] text-primary">location_on</span>
-<p>123 Market St, Downtown, Metropolis</p>
+<div class="flex items-center gap-1 sm:gap-2 text-[#666e85] text-sm sm:text-base">
+<span class="material-symbols-outlined text-[18px] sm:text-[20px] text-primary">location_on</span>
+<p class="text-sm sm:text-base">123 Market St, Downtown, Metropolis</p>
 </div>
 <p class="text-[#666e85] text-sm font-medium">RERA ID: 12345678</p>
-<div class="flex gap-6 mt-4">
+<div class="flex gap-3 sm:gap-4 lg:gap-6 mt-3 sm:mt-4">
 <div class="bg-white rounded-xl px-6 py-3 shadow-sm border border-gray-100 flex flex-col items-center min-w-[120px]">
-<span class="text-2xl font-bold text-primary">12</span>
+<span class="text-xl sm:text-2xl font-bold text-primary">12</span>
 <span class="text-xs text-[#666e85] font-medium uppercase tracking-wider">Active Listings</span>
 </div>
 <div class="bg-white rounded-xl px-6 py-3 shadow-sm border border-gray-100 flex flex-col items-center min-w-[120px]">
-<span class="text-2xl font-bold text-primary">50+</span>
+<span class="text-xl sm:text-2xl font-bold text-primary">50+</span>
 <span class="text-xs text-[#666e85] font-medium uppercase tracking-wider">Properties Sold</span>
 </div>
 </div>
 </div>
 </div>
 </div>
-<div class="flex flex-col gap-4">
-<div class="flex gap-4 h-[180px]">
+<div class="flex flex-col gap-3 sm:gap-4">
+<div class="flex gap-3 sm:gap-4 h-[160px] sm:h-[180px]">
 <div class="relative flex-1 rounded-xl overflow-hidden border border-gray-200 shadow-sm bg-gray-100">
 <iframe allowfullscreen="" class="absolute inset-0 w-full h-full border-0 grayscale-[20%] opacity-90 hover:opacity-100 transition-opacity" loading="lazy" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3022.1839487053644!2d-73.98773128459413!3d40.75890017932676!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89c25855c6480299%3A0x55194ec5a1ae072e!2sTimes%20Square!5e0!3m2!1sen!2sus!4v1633023222533!5m2!1sen!2sus">
 </iframe>
@@ -77,7 +77,8 @@ Locate Us
 <span class="material-symbols-outlined text-[20px] group-hover:scale-110 transition-transform">call</span>
 Call Dealer
 </button>
-<button class="flex-1 h-12 bg-whatsapp hover:brightness-105 text-white font-bold rounded-xl shadow-md shadow-green-900/10 hover:shadow-lg transition-all flex items-center justify-center gap-2 group">
+<button class="flex-1 h-12 bg-whatsapp hover:brightness-105 text-white font-bold rounded-xl shadow-md shadow-green-900/10 hover:shadow-lg transition-all flex items-center justify-center gap-2 group sm:hidden">
+<button class="hidden sm:flex flex-1 h-12 bg-whatsapp hover:brightness-105 text-white font-bold rounded-xl shadow-md shadow-green-900/10 hover:shadow-lg transition-all flex items-center justify-center gap-2 group">
 <img alt="Whatsapp logo icon" class="w-5 h-5 invert brightness-0 grayscale-0 group-hover:scale-110 transition-transform" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAgPEGUEKjZPSkEHYkFnZ9Gx1JHOB4A1agO_DBYEWBuFwMC36Rd8RmQNnZI_gHOSxcW5jm5j7er5TGrbgjT0sz7NoQN3hgJN7vM_63MQhWoNuxGvHhkJhVwUgUA60YXth8XRgsFWRJCOj--W6_Q7ArnfLQpB8r7x-pvzyq0-DuRKBPv130bg0xhlun76EKVNL9J8LIuP-EyPP6RH-5JiA_PIrkeawFrQ2OCm_azTjM6_kaNnj0ET0fIB7wr692Oty0lpjIh_qdYfCpc"/>
 WhatsApp
 </button>
@@ -85,38 +86,39 @@ WhatsApp
 </div>
 </div>
 </section>
-<section class="sticky top-[73px] z-40 bg-white shadow-sm border-b border-gray-100 px-6 lg:px-10 py-4">
-<div class="max-w-[1280px] mx-auto flex flex-col gap-4">
+<section class="sticky top-[60px] sm:top-[73px] z-40 bg-white shadow-sm border-b border-gray-100 px-4 sm:px-6 lg:px-10 py-3 sm:py-4">
+<div class="max-w-[1280px] mx-auto flex flex-col gap-3 sm:gap-4">
 <div class="flex flex-col lg:flex-row items-center gap-4">
 <div class="w-full lg:w-1/3 relative">
 <label class="relative flex w-full items-center">
 <span class="absolute left-4 text-[#666e85] material-symbols-outlined">search</span>
-<input class="w-full bg-[#f1f1f4] text-[#121317] placeholder:text-[#666e85] h-11 rounded-full pl-12 pr-4 focus:outline-none focus:ring-2 focus:ring-primary/20 border-none text-base transition-all" placeholder="Search location, building, project..." type="text"/>
+<input class="w-full bg-[#f1f1f4] text-[#121317] placeholder:text-[#666e85] h-12 sm:h-11 rounded-full pl-12 pr-4 focus:outline-none focus:ring-2 focus:ring-primary/20 border-none text-base transition-all" placeholder="Search location or building..." type="text"/>
 </label>
 </div>
 <div class="w-full lg:w-2/3 flex flex-wrap gap-2 items-center justify-start lg:justify-end">
-<button class="h-9 px-5 rounded-full bg-primary text-white text-sm font-semibold shadow-md shadow-blue-900/10 hover:bg-blue-800 transition-colors">
+<button class="h-9 px-4 sm:px-5 rounded-full bg-primary text-white text-sm font-semibold shadow-md shadow-blue-900/10 hover:bg-blue-800 transition-colors">
 All
 </button>
-<button class="h-9 px-5 rounded-full bg-[#f1f1f4] text-[#121317] text-sm font-medium hover:bg-gray-200 transition-colors">
+<button class="h-9 px-4 sm:px-5 rounded-full bg-[#f1f1f4] text-[#121317] text-sm font-medium hover:bg-gray-200 transition-colors">
 For Sale
 </button>
-<button class="h-9 px-5 rounded-full bg-[#f1f1f4] text-[#121317] text-sm font-medium hover:bg-gray-200 transition-colors">
+<button class="h-9 px-4 sm:px-5 rounded-full bg-[#f1f1f4] text-[#121317] text-sm font-medium hover:bg-gray-200 transition-colors">
 For Rent
 </button>
 <div class="w-px h-6 bg-gray-300 mx-1 hidden lg:block"></div>
-<button class="h-9 px-5 rounded-full bg-[#f1f1f4] text-[#121317] text-sm font-medium hover:bg-gray-200 transition-colors">
+<button class="h-9 px-4 sm:px-5 rounded-full bg-[#f1f1f4] text-[#121317] text-sm font-medium hover:bg-gray-200 transition-colors">
 2 BHK
 </button>
-<button class="h-9 px-5 rounded-full bg-[#f1f1f4] text-[#121317] text-sm font-medium hover:bg-gray-200 transition-colors">
+<button class="h-9 px-4 sm:px-5 rounded-full bg-[#f1f1f4] text-[#121317] text-sm font-medium hover:bg-gray-200 transition-colors">
 3 BHK
 </button>
-<button class="h-9 px-5 rounded-full bg-[#f1f1f4] text-[#121317] text-sm font-medium hover:bg-gray-200 transition-colors">
+<button class="h-9 px-4 sm:px-5 rounded-full bg-[#f1f1f4] text-[#121317] text-sm font-medium hover:bg-gray-200 transition-colors">
 Commercial
 </button>
 </div>
 </div>
-<div class="flex flex-wrap items-center gap-3 pt-2 border-t border-gray-50">
+<!-- Desktop Advanced Filters -->
+<div class="hidden sm:flex flex-wrap items-center gap-3 pt-2 border-t border-gray-50">
 <span class="text-xs font-semibold text-gray-400 uppercase tracking-wider mr-1">Advanced Filters:</span>
 <div class="relative inline-block">
 <select class="appearance-none h-9 pl-4 pr-9 rounded-lg bg-white border border-gray-200 text-[#121317] text-sm font-medium hover:border-gray-300 hover:bg-gray-50 transition-colors focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none cursor-pointer min-w-[140px]">
@@ -159,12 +161,69 @@ Commercial
 </div>
 <button class="ml-auto text-sm text-primary hover:text-blue-700 font-medium underline-offset-2 hover:underline">Reset Filters</button>
 </div>
+
+<!-- Mobile More Filters Button -->
+<div class="sm:hidden">
+<button @click="showMoreFilters = !showMoreFilters" class="w-full h-10 bg-[#f1f1f4] text-[#121317] rounded-full flex items-center justify-center gap-2 text-sm font-medium hover:bg-gray-200 transition-colors">
+<span class="material-symbols-outlined text-[18px]">tune</span>
+More Filters
+<span class="material-symbols-outlined text-[16px] transition-transform" :class="showMoreFilters ? 'rotate-180' : ''">expand_more</span>
+</button>
+
+<!-- Mobile Advanced Filters Dropdown -->
+<div x-show="showMoreFilters" x-transition="transition ease-out duration-200" x-transition:enter-start="opacity-0 -translate-y-2" x-transition:enter-end="opacity-0 translate-y-0" class="mt-3 bg-white border border-gray-200 rounded-xl p-4 shadow-lg">
+<div class="grid grid-cols-2 gap-3">
+<div class="relative">
+<select class="appearance-none w-full h-9 pl-4 pr-8 rounded-lg bg-[#f1f1f4] text-[#121317] text-sm font-medium hover:bg-gray-200 transition-colors border-none focus:ring-0 cursor-pointer">
+<option value="">Floor</option>
+<option value="ground">Ground Floor</option>
+<option value="1-5">1st - 5th Floor</option>
+<option value="5-10">5th - 10th Floor</option>
+<option value="10+">10th+ Floor</option>
+</select>
+<span class="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none material-symbols-outlined text-[16px] text-gray-500">expand_more</span>
+</div>
+<div class="relative">
+<select class="appearance-none w-full h-9 pl-4 pr-8 rounded-lg bg-[#f1f1f4] text-[#121317] text-sm font-medium hover:bg-gray-200 transition-colors border-none focus:ring-0 cursor-pointer">
+<option value="">Bathroom</option>
+<option value="1">1 Bath</option>
+<option value="2">2 Baths</option>
+<option value="3">3+ Baths</option>
+</select>
+<span class="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none material-symbols-outlined text-[16px] text-gray-500">expand_more</span>
+</div>
+<div class="relative">
+<select class="appearance-none w-full h-9 pl-4 pr-8 rounded-lg bg-[#f1f1f4] text-[#121317] text-sm font-medium hover:bg-gray-200 transition-colors border-none focus:ring-0 cursor-pointer">
+<option value="">BHK Type</option>
+<option value="1">1 BHK</option>
+<option value="2">2 BHK</option>
+<option value="3">3 BHK</option>
+<option value="4">4+ BHK</option>
+</select>
+<span class="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none material-symbols-outlined text-[16px] text-gray-500">expand_more</span>
+</div>
+<div class="relative">
+<select class="appearance-none w-full h-9 pl-4 pr-8 rounded-lg bg-[#f1f1f4] text-[#121317] text-sm font-medium hover:bg-gray-200 transition-colors border-none focus:ring-0 cursor-pointer">
+<option value="">Carpet Area</option>
+<option value="0-500">0 - 500 sqft</option>
+<option value="500-1000">500 - 1000 sqft</option>
+<option value="1000-1500">1000 - 1500 sqft</option>
+<option value="1500+">1500+ sqft</option>
+</select>
+<span class="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none material-symbols-outlined text-[16px] text-gray-500">expand_more</span>
+</div>
+</div>
+<button class="w-full mt-3 h-10 bg-primary text-white rounded-full font-medium text-sm hover:bg-blue-800 transition-colors">
+Apply Filters
+</button>
+</div>
+</div>
 </div>
 </section>
-<section class="px-6 lg:px-10 py-8 bg-gray-50/50 flex-1">
+<section class="px-4 sm:px-6 lg:px-10 py-6 sm:py-8 bg-gray-50/50 flex-1">
 <div class="max-w-[1280px] mx-auto">
-<h3 class="text-xl font-bold text-[#121317] mb-6">Featured Properties</h3>
-<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+<h3 class="text-lg sm:text-xl font-bold text-[#121317] mb-4 sm:mb-6">Featured Properties</h3>
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
 <article class="group bg-white rounded-2xl overflow-hidden border border-gray-100 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col">
 <div class="relative aspect-[4/3] overflow-hidden">
 <div class="absolute top-3 left-3 z-10 bg-primary text-white text-xs font-bold px-3 py-1.5 rounded-full shadow-sm">
@@ -181,8 +240,8 @@ New Arrival
 <div class="p-5 flex flex-col gap-3 flex-1">
 <div class="flex justify-between items-start">
 <div>
-<h3 class="text-gold font-bold text-xl tracking-tight">$ 1,200,000</h3>
-<h4 class="text-[#121317] font-bold text-lg leading-tight mt-1 group-hover:text-primary transition-colors">Luxury Hillside Villa</h4>
+<h3 class="text-gold font-bold text-lg sm:text-xl tracking-tight">$ 1,200,000</h3>
+<h4 class="text-[#121317] font-bold text-base sm:text-lg leading-tight mt-1 group-hover:text-primary transition-colors">Luxury Hillside Villa</h4>
 </div>
 </div>
 <div class="flex items-center gap-1 text-[#666e85] text-sm">
@@ -228,8 +287,8 @@ Popular
 </div>
 <div class="p-5 flex flex-col gap-3 flex-1">
 <div>
-<h3 class="text-gold font-bold text-xl tracking-tight">$ 2,500 <span class="text-sm font-normal text-gray-500">/mo</span></h3>
-<h4 class="text-[#121317] font-bold text-lg leading-tight mt-1 group-hover:text-primary transition-colors">Skyline City Apartment</h4>
+<h3 class="text-gold font-bold text-lg sm:text-xl tracking-tight">$ 2,500 <span class="text-sm font-normal text-gray-500">/mo</span></h3>
+<h4 class="text-[#121317] font-bold text-base sm:text-lg leading-tight mt-1 group-hover:text-primary transition-colors">Skyline City Apartment</h4>
 </div>
 <div class="flex items-center gap-1 text-[#666e85] text-sm">
 <span class="material-symbols-outlined text-[18px]">location_on</span>
@@ -274,8 +333,8 @@ Verified
 </div>
 <div class="p-5 flex flex-col gap-3 flex-1">
 <div>
-<h3 class="text-gold font-bold text-xl tracking-tight">$ 15,000 <span class="text-sm font-normal text-gray-500">/mo</span></h3>
-<h4 class="text-[#121317] font-bold text-lg leading-tight mt-1 group-hover:text-primary transition-colors">Tech Park Office Space</h4>
+<h3 class="text-gold font-bold text-lg sm:text-xl tracking-tight">$ 15,000 <span class="text-sm font-normal text-gray-500">/mo</span></h3>
+<h4 class="text-[#121317] font-bold text-base sm:text-lg leading-tight mt-1 group-hover:text-primary transition-colors">Tech Park Office Space</h4>
 </div>
 <div class="flex items-center gap-1 text-[#666e85] text-sm">
 <span class="material-symbols-outlined text-[18px]">location_on</span>
@@ -309,10 +368,10 @@ WhatsApp
 </div>
 </div>
 </section>
-<div class="fixed bottom-6 right-6 z-50 lg:hidden">
-<button class="group flex items-center gap-2 bg-primary text-white h-14 pl-5 pr-6 rounded-full shadow-xl shadow-blue-900/30 hover:scale-105 hover:bg-blue-800 transition-all duration-300">
-<span class="material-symbols-outlined text-[24px]">call</span>
-<span class="font-bold text-base">Contact Dealer</span>
+<div class="fixed bottom-4 sm:bottom-6 right-4 sm:right-6 z-50 lg:hidden">
+<button class="group flex items-center gap-2 bg-primary text-white h-12 sm:h-14 pl-4 sm:pl-5 pr-4 sm:pr-6 rounded-full shadow-xl shadow-blue-900/30 hover:scale-105 hover:bg-blue-800 transition-all duration-300">
+<span class="material-symbols-outlined text-[20px] sm:text-[24px]">call</span>
+<span class="font-bold text-sm sm:text-base">Contact Dealer</span>
 </button>
 </div>
 </main>
