@@ -11,6 +11,9 @@
 @yield('head')
 </head>
 <body class="font-display bg-background-light dark:bg-background-dark text-slate-900 overflow-hidden">
+@if (!auth()->check())
+    <script>window.location.href = '/admin/login';</script>
+@endif
 <div class="flex h-screen w-full bg-background-light" x-data="adminLayoutData()">
 <x-sidebar />
 <div class="flex flex-col flex-1 h-full lg:ml-64 relative overflow-hidden bg-gray-50">
@@ -64,7 +67,23 @@ window.confirmLogout = function() {
 // Initialize when DOM is loaded
 document.addEventListener('DOMContentLoaded', function() {
     // No initialization needed - modal handles its own sync
+
+    // Check authentication state periodically
+    setInterval(checkAuthentication, 60000); // Check every minute
 });
+
+function checkAuthentication() {
+    fetch('/admin/dashboard', { method: 'HEAD', headers: { 'X-Requested-With': 'XMLHttpRequest' } })
+        .then(response => {
+            if (response.redirected && response.url.includes('/admin/login')) {
+                window.location.href = '/admin/login';
+            }
+        })
+        .catch(() => {
+            // If fetch fails, assume not authenticated
+            window.location.href = '/admin/login';
+        });
+}
 
 function adminLayoutData() {
     return {

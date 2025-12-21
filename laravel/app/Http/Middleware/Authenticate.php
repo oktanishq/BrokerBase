@@ -12,6 +12,7 @@ class Authenticate extends Middleware
      */
     protected function redirectTo(Request $request): ?string
     {
-        return $request->expectsJson() ? null : route('login');
+        \Log::info('Authentication failed, redirecting to login', ['url' => $request->url(), 'ip' => $request->ip()]);
+        return $request->expectsJson() ? null : '/admin/login'; // Fixed: use direct URL instead of route('login')
     }
 }

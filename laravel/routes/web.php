@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
+use App\Http\Controllers\LoginController;
 
 /*
 |--------------------------------------------------------------------------
@@ -22,36 +23,29 @@ Route::get('/admin/login', function () {
     return view('admin.login');
 });
 
-Route::post('/admin/login', function (Request $request) {
-    if ($request->email && $request->password) {
-        return redirect('/admin/dashboard');
-    }
-    return back()->with('error', 'Invalid credentials');
-});
+Route::post('/admin/login', [LoginController::class, 'login']);
 
-Route::get('/admin/dashboard', function () {
-    return view('admin.dashboard');
-});
+Route::middleware('auth')->group(function () {
+    Route::get('/admin/dashboard', function () {
+        return view('admin.dashboard');
+    });
 
-Route::get('/admin/inventory', function () {
-    return view('admin.inventory');
-});
+    Route::get('/admin/inventory', function () {
+        return view('admin.inventory');
+    });
 
-Route::get('/admin/leads', function () {
-    return view('admin.leads');
-});
+    Route::get('/admin/leads', function () {
+        return view('admin.leads');
+    });
 
-Route::get('/admin/analytics', function () {
-    return view('admin.analytics');
-});
+    Route::get('/admin/analytics', function () {
+        return view('admin.analytics');
+    });
 
-Route::get('/admin/settings', function () {
-    return view('admin.settings');
-});
+    Route::get('/admin/settings', function () {
+        return view('admin.settings');
+    });
 
-// Logout Route
-Route::post('/logout', function () {
-    // In a real application, this would logout the user
-    // For demo purposes, just redirect to login
-    return redirect('/admin/login');
+    // Logout Route
+    Route::post('/logout', [LoginController::class, 'logout']);
 });
