@@ -7,6 +7,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
 @vite('resources/css/app.css')
+<script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
 <style>
 .no-scrollbar::-webkit-scrollbar {
     display: none;
@@ -17,7 +18,7 @@
 }
 </style>
 </head>
-<body class="bg-background-light dark:bg-background-dark text-[#121317] font-display min-h-screen flex flex-col" x-data="{ showMoreFilters: false }">
+<body class="bg-background-light dark:bg-background-dark text-[#121317] font-display min-h-screen flex flex-col">
 <main class="w-full bg-white min-h-screen flex flex-col relative pb-12 mx-auto">
 <header class="sticky top-0 z-50 bg-white/95 backdrop-blur-sm border-b border-[#f1f1f4] px-4 sm:px-6 lg:px-10 py-3 sm:py-4 flex items-center justify-between transition-all duration-200">
 <div class="flex items-center gap-4">
@@ -162,8 +163,8 @@ Commercial
 <button class="ml-auto text-sm text-primary hover:text-blue-700 font-medium underline-offset-2 hover:underline">Reset Filters</button>
 </div>
 
+<div x-data="{ showMoreFilters: false }" class="sm:hidden">
 <!-- Mobile More Filters Button -->
-<div class="sm:hidden">
 <button @click="showMoreFilters = !showMoreFilters" class="w-full h-10 bg-[#f1f1f4] text-[#121317] rounded-full flex items-center justify-center gap-2 text-sm font-medium hover:bg-gray-200 transition-colors">
 <span class="material-symbols-outlined text-[18px]">tune</span>
 More Filters
@@ -171,7 +172,14 @@ More Filters
 </button>
 
 <!-- Mobile Advanced Filters Dropdown -->
-<div x-show="showMoreFilters" x-transition="transition ease-out duration-200" x-transition:enter-start="opacity-0 -translate-y-2" x-transition:enter-end="opacity-0 translate-y-0" class="mt-3 bg-white border border-gray-200 rounded-xl p-4 shadow-lg">
+<div x-show="showMoreFilters" 
+     x-transition:enter="transition ease-out duration-200"
+     x-transition:enter-start="opacity-0 -translate-y-2" 
+     x-transition:enter-end="opacity-0 translate-y-0"
+     x-transition:leave="transition ease-in duration-150"
+     x-transition:leave-start="opacity-0 translate-y-0"
+     x-transition:leave-end="opacity-0 -translate-y-2"
+     class="mt-3 bg-white border border-gray-200 rounded-xl p-4 shadow-lg">
 <div class="grid grid-cols-2 gap-3">
 <div class="relative">
 <select class="appearance-none w-full h-9 pl-4 pr-8 rounded-lg bg-[#f1f1f4] text-[#121317] text-sm font-medium hover:bg-gray-200 transition-colors border-none focus:ring-0 cursor-pointer">
