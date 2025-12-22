@@ -35,87 +35,82 @@
 </button>
 </div>
 </header>
-<section class="bg-gradient-to-b from-white to-[#f6f6f8] px-4 sm:px-6 lg:px-10 py-6 sm:py-8 lg:py-10">
-<div class="max-w-[1280px] mx-auto grid grid-cols-1 lg:grid-cols-[2fr_1fr] gap-6 sm:gap-8 lg:gap-10 items-start">
+<section class="bg-gradient-to-b from-white to-[#f6f6f8] px-6 lg:px-10 py-10">
+<div class="max-w-[1280px] mx-auto grid grid-cols-1 lg:grid-cols-[2fr_1fr] gap-10 items-start">
 <div class="flex flex-col gap-8">
-<div class="flex items-start gap-4 sm:gap-5 lg:gap-6">
-<div class="h-20 w-20 sm:h-24 sm:w-24 lg:h-32 lg:w-32 shrink-0 rounded-full bg-cover bg-center border-4 border-white shadow-lg ring-1 ring-gray-100" data-alt="Large profile picture of Elite Homes dealer" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDfVJGVzANp1NAi6tmqqdpbcRS7QYyqe9ksTG2UPH8r9snYAI-9ySrfL8rZ7r3j_LgPJCsthYOhRhez_8mxmm0Zpbr98BNZuX8jfQzYP_X1mBD_PivHUqoq3nmTjpVB-5VyRkBU0PhcfpICwJx1jdS-jXi7ty72wmF8lGrhcFL3wxEn8Fyx2WghziGtKozdELe8_-cTc56jAdTsG18w5vCDbQkRqSES-kjcsgocnYErJmwBbhyB5m9Llhb-yp9ISHJV_OKp9h5N3BtI');"></div>
-<div class="flex flex-col gap-1 sm:gap-2 pt-1 sm:pt-2">
-<div class="flex flex-wrap items-center gap-2 sm:gap-3">
-<h2 class="text-2xl sm:text-3xl font-bold text-[#121317]">Elite Homes</h2>
-<span class="px-2 sm:px-3 py-1 rounded-full bg-green-100 text-green-700 text-xs font-bold uppercase tracking-wide border border-green-200">RERA Registered</span>
+<div class="flex items-start gap-6">
+<div class="h-28 w-28 lg:h-32 lg:w-32 shrink-0 rounded-full bg-cover bg-center border-4 border-white shadow-lg ring-1 ring-gray-100" data-alt="Large profile picture of Elite Homes dealer" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDfVJGVzANp1NAi6tmqqdpbcRS7QYyqe9ksTG2UPH8r9snYAI-9ySrfL8rZ7r3j_LgPJCsthYOhRhez_8mxmm0Zpbr98BNZuX8jfQzYP_X1mBD_PivHUqoq3nmTjpVB-5VyRkBU0PhcfpICwJx1jdS-jXi7ty72wmF8lGrhcFL3wxEn8Fyx2WghziGtKozdELe8_-cTc56jAdTsG18w5vCDbQkRqSES-kjcsgocnYErJmwBbhyB5m9Llhb-yp9ISHJV_OKp9h5N3BtI');"></div>
+<div class="flex flex-col gap-2 pt-2">
+<div class="flex flex-wrap items-center gap-3">
+<h2 class="text-3xl font-bold text-[#121317]">Elite Homes</h2>
+<span class="px-3 py-1 rounded-full bg-green-100 text-green-700 text-xs font-bold uppercase tracking-wide border border-green-200">RERA Registered</span>
 </div>
-<div class="flex items-center gap-1 sm:gap-2 text-[#666e85] text-sm sm:text-base">
-<span class="material-symbols-outlined text-[18px] sm:text-[20px] text-primary">location_on</span>
-<p class="text-sm sm:text-base">123 Market St, Downtown, Metropolis</p>
+<div class="flex items-center gap-2 text-[#666e85] text-base">
+<span class="material-symbols-outlined text-[20px] text-primary">location_on</span>
+<p>123 Market St, Downtown, Metropolis</p>
 </div>
 <p class="text-[#666e85] text-sm font-medium">RERA ID: 12345678</p>
-<div class="flex gap-3 sm:gap-4 lg:gap-6 mt-3 sm:mt-4">
-<div class="bg-white rounded-xl px-6 py-3 shadow-sm border border-gray-100 flex flex-col items-center min-w-[120px]">
-<span class="text-xl sm:text-2xl font-bold text-primary">12</span>
+</div>
+</div>
+<div class="flex gap-6 mt-4">
+<div class="bg-white rounded-xl p-4 flex flex-col items-center shadow-sm border border-[#eef0f3]">
+<span class="text-2xl font-bold text-primary">12</span>
 <span class="text-xs text-[#666e85] font-medium uppercase tracking-wider">Active Listings</span>
 </div>
-<div class="bg-white rounded-xl px-6 py-3 shadow-sm border border-gray-100 flex flex-col items-center min-w-[120px]">
-<span class="text-xl sm:text-2xl font-bold text-primary">50+</span>
+<div class="bg-white rounded-xl p-4 flex flex-col items-center shadow-sm border border-[#eef0f3]">
+<span class="text-2xl font-bold text-primary">50+</span>
 <span class="text-xs text-[#666e85] font-medium uppercase tracking-wider">Properties Sold</span>
 </div>
 </div>
 </div>
-</div>
-</div>
-<div class="flex flex-col gap-3 sm:gap-4">
-<div class="flex gap-3 sm:gap-4 h-[160px] sm:h-[180px]">
-<div class="relative flex-1 rounded-xl overflow-hidden border border-gray-200 shadow-sm bg-gray-100">
+<div class="flex flex-col gap-3 h-full min-h-[220px] md:min-h-0">
+<div class="relative flex-1 rounded-xl overflow-hidden border border-gray-200 shadow-sm bg-gray-100 min-h-[160px]">
 <iframe allowfullscreen="" class="absolute inset-0 w-full h-full border-0 grayscale-[20%] opacity-90 hover:opacity-100 transition-opacity" loading="lazy" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3022.1839487053644!2d-73.98773128459413!3d40.75890017932676!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89c25855c6480299%3A0x55194ec5a1ae072e!2sTimes%20Square!5e0!3m2!1sen!2sus!4v1633023222533!5m2!1sen!2sus">
 </iframe>
-<div class="absolute bottom-2 right-2 bg-white/90 backdrop-blur px-3 py-1 rounded-md text-[10px] font-bold shadow-sm pointer-events-none text-gray-600">
-Locate Us
-</div>
-</div>
+<div class="absolute bottom-2 right-2 bg-white/90 backdrop-blur px-2 py-1 rounded-md text-[10px] font-bold shadow-sm pointer-events-none text-gray-600">
+                        Locate Us
+                    </div>
 </div>
 <div class="flex gap-3">
 <button class="flex-1 h-12 bg-primary hover:bg-blue-800 text-white font-bold rounded-xl shadow-md shadow-blue-900/10 hover:shadow-lg transition-all flex items-center justify-center gap-2 group">
 <span class="material-symbols-outlined text-[20px] group-hover:scale-110 transition-transform">call</span>
-Call Dealer
-</button>
-<button class="flex-1 h-12 bg-whatsapp hover:brightness-105 text-white font-bold rounded-xl shadow-md shadow-green-900/10 hover:shadow-lg transition-all flex items-center justify-center gap-2 group sm:hidden">
-<button class="hidden sm:flex flex-1 h-12 bg-whatsapp hover:brightness-105 text-white font-bold rounded-xl shadow-md shadow-green-900/10 hover:shadow-lg transition-all items-center justify-center gap-2 group">
+                        Call Dealer
+                    </button>
+<button class="flex-1 h-12 bg-whatsapp hover:brightness-105 text-white font-bold rounded-xl shadow-md shadow-green-900/10 hover:shadow-lg transition-all flex items-center justify-center gap-2 group">
 <img alt="Whatsapp logo icon" class="w-5 h-5 invert brightness-0 grayscale-0 group-hover:scale-110 transition-transform" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAgPEGUEKjZPSkEHYkFnZ9Gx1JHOB4A1agO_DBYEWBuFwMC36Rd8RmQNnZI_gHOSxcW5jm5j7er5TGrbgjT0sz7NoQN3hgJN7vM_63MQhWoNuxGvHhkJhVwUgUA60YXth8XRgsFWRJCOj--W6_Q7ArnfLQpB8r7x-pvzyq0-DuRKBPv130bg0xhlun76EKVNL9J8LIuP-EyPP6RH-5JiA_PIrkeawFrQ2OCm_azTjM6_kaNnj0ET0fIB7wr692Oty0lpjIh_qdYfCpc"/>
-WhatsApp
-</button>
+                        WhatsApp
+                    </button>
 </div>
 </div>
 </div>
 </section>
-<section class="sticky top-[60px] sm:top-[73px] z-40 bg-white shadow-sm border-b border-gray-100 px-4 sm:px-6 lg:px-10 py-3 sm:py-4">
-<div class="max-w-[1280px] mx-auto flex flex-col gap-3 sm:gap-4">
-<div class="flex flex-col lg:flex-row items-center gap-4">
-<div class="w-full lg:w-1/3 relative">
+<section class="px-6 lg:px-10 py-10 pb-2 sticky top-[71px] z-40 bg-white shadow-sm border-b border-gray-100 pt-3">
+<div class="mb-3">
 <label class="relative flex w-full items-center">
 <span class="absolute left-4 text-[#666e85] material-symbols-outlined">search</span>
-<input class="w-full bg-[#f1f1f4] text-[#121317] placeholder:text-[#666e85] h-12 sm:h-11 rounded-full pl-12 pr-4 focus:outline-none focus:ring-2 focus:ring-primary/20 border-none text-base transition-all" placeholder="Search location or building..." type="text"/>
+<input class="w-full bg-[#f1f1f4] text-[#121317] placeholder:text-[#666e85] h-12 rounded-full pl-12 pr-4 focus:outline-none focus:ring-2 focus:ring-primary/20 border-none text-base transition-all" placeholder="Search location or building..." type="text"/>
 </label>
 </div>
-<div class="w-full lg:w-2/3 flex flex-wrap gap-2 items-center justify-start lg:justify-end">
-<button class="h-9 px-4 sm:px-5 rounded-full bg-primary text-white text-sm font-semibold shadow-md shadow-blue-900/10 hover:bg-blue-800 transition-colors">
-All
-</button>
-<button class="h-9 px-4 sm:px-5 rounded-full bg-[#f1f1f4] text-[#121317] text-sm font-medium hover:bg-gray-200 transition-colors">
-For Sale
-</button>
-<button class="h-9 px-4 sm:px-5 rounded-full bg-[#f1f1f4] text-[#121317] text-sm font-medium hover:bg-gray-200 transition-colors">
-For Rent
-</button>
-<div class="w-px h-6 bg-gray-300 mx-1 hidden lg:block"></div>
-<button class="h-9 px-4 sm:px-5 rounded-full bg-[#f1f1f4] text-[#121317] text-sm font-medium hover:bg-gray-200 transition-colors">
-2 BHK
-</button>
-<button class="h-9 px-4 sm:px-5 rounded-full bg-[#f1f1f4] text-[#121317] text-sm font-medium hover:bg-gray-200 transition-colors">
-3 BHK
-</button>
-<button class="h-9 px-4 sm:px-5 rounded-full bg-[#f1f1f4] text-[#121317] text-sm font-medium hover:bg-gray-200 transition-colors">
-Commercial
-</button>
+<div class="flex flex-col gap-3">
+<div class="flex gap-2 overflow-x-auto no-scrollbar mask-linear-fade pb-2">
+<button class="whitespace-nowrap h-9 px-5 rounded-full bg-primary text-white text-sm font-semibold shadow-md shadow-blue-900/10 flex-shrink-0">
+                All
+            </button>
+<button class="whitespace-nowrap h-9 px-5 rounded-full bg-[#f1f1f4] text-[#121317] text-sm font-medium hover:bg-gray-200 transition-colors flex-shrink-0">
+                For Sale
+            </button>
+<button class="whitespace-nowrap h-9 px-5 rounded-full bg-[#f1f1f4] text-[#121317] text-sm font-medium hover:bg-gray-200 transition-colors flex-shrink-0">
+                For Rent
+            </button>
+<button class="whitespace-nowrap h-9 px-5 rounded-full bg-[#f1f1f4] text-[#121317] text-sm font-medium hover:bg-gray-200 transition-colors flex-shrink-0">
+                2 BHK
+            </button>
+<button class="whitespace-nowrap h-9 px-5 rounded-full bg-[#f1f1f4] text-[#121317] text-sm font-medium hover:bg-gray-200 transition-colors flex-shrink-0">
+                3 BHK
+            </button>
+<button class="whitespace-nowrap h-9 px-5 rounded-full bg-[#f1f1f4] text-[#121317] text-sm font-medium hover:bg-gray-200 transition-colors flex-shrink-0">
+                Commercial
+            </button>
 </div>
 </div>
 <!-- Desktop Advanced Filters -->
@@ -376,10 +371,10 @@ WhatsApp
 </div>
 </div>
 </section>
-<div class="fixed bottom-4 sm:bottom-6 right-4 sm:right-6 z-50 lg:hidden">
-<button class="group flex items-center gap-2 bg-primary text-white h-12 sm:h-14 pl-4 sm:pl-5 pr-4 sm:pr-6 rounded-full shadow-xl shadow-blue-900/30 hover:scale-105 hover:bg-blue-800 transition-all duration-300">
-<span class="material-symbols-outlined text-[20px] sm:text-[24px]">call</span>
-<span class="font-bold text-sm sm:text-base">Contact Dealer</span>
+<div class="fixed bottom-6 right-6 z-50 lg:hidden">
+<button class="group flex items-center gap-2 bg-primary text-white h-14 pl-5 pr-6 rounded-full shadow-xl shadow-blue-900/30 hover:scale-105 hover:bg-blue-800 transition-all duration-300">
+<span class="material-symbols-outlined text-[24px]">call</span>
+<span class="font-bold text-base">Contact Dealer</span>
 </button>
 </div>
 </main>
