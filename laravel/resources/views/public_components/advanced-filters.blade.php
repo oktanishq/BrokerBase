@@ -32,7 +32,7 @@
     <!-- Filter Modal -->
     <div 
         x-show="showFilters" 
-        class="fixed inset-0 z-[99999]"
+        class="fixed inset-0 z-[10]"
         x-transition
         style="display: none;"
     >

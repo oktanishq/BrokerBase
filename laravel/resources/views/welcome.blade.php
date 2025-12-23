@@ -21,7 +21,7 @@
 </head>
 <body class="bg-background-light dark:bg-background-dark text-[#121317] font-display min-h-screen flex flex-col">
 <main class="w-full bg-white min-h-screen flex flex-col relative pb-12 mx-auto">
-<header class="sticky top-0 z-50 bg-white/95 backdrop-blur-sm border-b border-[#f1f1f4] px-4 sm:px-6 lg:px-10 py-3 sm:py-4 flex items-center justify-between transition-all duration-200">
+<header class="sticky top-0 z-10 bg-white/95 backdrop-blur-sm border-b border-[#f1f1f4] px-4 sm:px-6 lg:px-10 py-3 sm:py-4 flex items-center justify-between transition-all duration-200">
 <div class="flex items-center gap-4">
 <div class="h-12 w-12 rounded-full bg-cover bg-center border border-gray-100" data-alt="Elite Homes company logo avatar" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCZGvkDKAF1w7WbeFeUNmOM3NRSjHgmhSeryZM7vDVZ1m4ipcSRXPbXSEd2id5wazq_oIOrOECQqI9YWyoWlbbH2hXEX33P14Q3zghNi1ql4tBZGpuTE5NvyUY4ZTQJBmwaOlHrNFtmKJZ5hlyLxVkDdbsRnUKh523LtkEq96u8kK6SNVuz5caz2ymq71nBnay5rA4-tCzvVqaPnmBNsnRYGgYVWooVyVl0TRj85yqteKd7hSy3zjvwglp6ZBELj2yif6o7tUd4K-Hz');"></div>
 <h1 class="text-xl font-bold text-[#121317] tracking-tight">Elite Homes</h1>
@@ -270,7 +270,7 @@ WhatsApp
 </div>
 </div>
 </section>
-<div class="fixed bottom-6 right-6 z-40 lg:hidden">
+<div class="fixed bottom-6 right-6 z-10 lg:hidden">
 <button class="group flex items-center gap-2 bg-primary text-white h-14 pl-5 pr-6 rounded-full shadow-xl shadow-blue-900/30 hover:scale-105 hover:bg-blue-800 transition-all duration-300">
 <span class="material-symbols-outlined text-[24px]">call</span>
 <span class="font-bold text-base">Contact Dealer</span>
