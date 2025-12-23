@@ -7,6 +7,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
 @vite('resources/css/app.css')
+<script src="{{ asset('js/alpine-components.js') }}"></script>
 <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
 <style>
 .no-scrollbar::-webkit-scrollbar {
@@ -20,7 +21,7 @@
 </head>
 <body class="bg-background-light dark:bg-background-dark text-[#121317] font-display min-h-screen flex flex-col">
 <main class="w-full bg-white min-h-screen flex flex-col relative pb-12 mx-auto">
-<header class="sticky top-0 z-50 bg-white/95 backdrop-blur-sm border-b border-[#f1f1f4] px-4 sm:px-6 lg:px-10 py-3 sm:py-4 flex items-center justify-between transition-all duration-200">
+<header class="sticky top-0 z-10 bg-white/95 backdrop-blur-sm border-b border-[#f1f1f4] px-4 sm:px-6 lg:px-10 py-3 sm:py-4 flex items-center justify-between transition-all duration-200">
 <div class="flex items-center gap-4">
 <div class="h-12 w-12 rounded-full bg-cover bg-center border border-gray-100" data-alt="Elite Homes company logo avatar" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCZGvkDKAF1w7WbeFeUNmOM3NRSjHgmhSeryZM7vDVZ1m4ipcSRXPbXSEd2id5wazq_oIOrOECQqI9YWyoWlbbH2hXEX33P14Q3zghNi1ql4tBZGpuTE5NvyUY4ZTQJBmwaOlHrNFtmKJZ5hlyLxVkDdbsRnUKh523LtkEq96u8kK6SNVuz5caz2ymq71nBnay5rA4-tCzvVqaPnmBNsnRYGgYVWooVyVl0TRj85yqteKd7hSy3zjvwglp6ZBELj2yif6o7tUd4K-Hz');"></div>
 <h1 class="text-xl font-bold text-[#121317] tracking-tight">Elite Homes</h1>
@@ -86,10 +87,16 @@
 </section>
 <section class="px-6 lg:px-10 py-10 pb-2 sticky top-[71px] z-40 bg-white shadow-sm border-b border-gray-100 pt-3">
 <div class="mb-3">
-<label class="relative flex w-full items-center">
-<span class="absolute left-4 text-[#666e85] material-symbols-outlined">search</span>
-<input class="w-full bg-[#f1f1f4] text-[#121317] placeholder:text-[#666e85] h-12 rounded-full pl-12 pr-4 focus:outline-none focus:ring-2 focus:ring-primary/20 border-none text-base transition-all" placeholder="Search location or building..." type="text"/>
+<div class="flex gap-3">
+@include('public_components.advanced-filters', [
+    'onApply' => 'function(filters) { console.log("Applying filters:", filters); }',
+    'onReset' => 'function() { console.log("Resetting filters"); }'
+])
+<label class="relative flex-1 items-center">
+<span class="absolute left-4 text-[#666e85] material-symbols-outlined top-1/2 -translate-y-1/2">search</span>
+<input class="w-full bg-[#f1f1f4] text-[#121317] placeholder:text-[#666e85] h-12 rounded-full pl-20 pr-4 focus:outline-none focus:ring-2 focus:ring-primary/20 border-none text-base transition-all" placeholder="Search location or building..." type="text"/>
 </label>
+</div>
 </div>
 <div class="flex flex-col gap-3">
 <div class="flex gap-2 overflow-x-auto no-scrollbar mask-linear-fade pb-2">
@@ -113,115 +120,7 @@
             </button>
 </div>
 </div>
-<!-- Desktop Advanced Filters -->
-<div class="hidden sm:flex flex-wrap items-center gap-3 pt-2 border-t border-gray-50">
-<span class="text-xs font-semibold text-gray-400 uppercase tracking-wider mr-1">Advanced Filters:</span>
-<div class="relative inline-block">
-<select class="appearance-none h-9 pl-4 pr-9 rounded-lg bg-white border border-gray-200 text-[#121317] text-sm font-medium hover:border-gray-300 hover:bg-gray-50 transition-colors focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none cursor-pointer min-w-[140px]">
-<option value="">Floor Preference</option>
-<option value="ground">Ground Floor</option>
-<option value="1-5">1st - 5th Floor</option>
-<option value="5-10">5th - 10th Floor</option>
-<option value="10+">10th+ Floor</option>
-</select>
-<span class="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none material-symbols-outlined text-[16px] text-gray-500">expand_more</span>
-</div>
-<div class="relative inline-block">
-<select class="appearance-none h-9 pl-4 pr-9 rounded-lg bg-white border border-gray-200 text-[#121317] text-sm font-medium hover:border-gray-300 hover:bg-gray-50 transition-colors focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none cursor-pointer min-w-[120px]">
-<option value="">Bathrooms</option>
-<option value="1">1 Bath</option>
-<option value="2">2 Baths</option>
-<option value="3">3+ Baths</option>
-</select>
-<span class="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none material-symbols-outlined text-[16px] text-gray-500">expand_more</span>
-</div>
-<div class="relative inline-block">
-<select class="appearance-none h-9 pl-4 pr-9 rounded-lg bg-white border border-gray-200 text-[#121317] text-sm font-medium hover:border-gray-300 hover:bg-gray-50 transition-colors focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none cursor-pointer min-w-[120px]">
-<option value="">BHK Type</option>
-<option value="1">1 BHK</option>
-<option value="2">2 BHK</option>
-<option value="3">3 BHK</option>
-<option value="4">4+ BHK</option>
-</select>
-<span class="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none material-symbols-outlined text-[16px] text-gray-500">expand_more</span>
-</div>
-<div class="relative inline-block">
-<select class="appearance-none h-9 pl-4 pr-9 rounded-lg bg-white border border-gray-200 text-[#121317] text-sm font-medium hover:border-gray-300 hover:bg-gray-50 transition-colors focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none cursor-pointer min-w-[160px]">
-<option value="">Carpet Area (sqft)</option>
-<option value="0-500">0 - 500</option>
-<option value="500-1000">500 - 1000</option>
-<option value="1000-1500">1000 - 1500</option>
-<option value="1500+">1500+</option>
-</select>
-<span class="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none material-symbols-outlined text-[16px] text-gray-500">expand_more</span>
-</div>
-<button class="ml-auto text-sm text-primary hover:text-blue-700 font-medium underline-offset-2 hover:underline">Reset Filters</button>
-</div>
 
-<div x-data="{ showMoreFilters: false }" class="sm:hidden">
-<!-- Mobile More Filters Button -->
-<button @click="showMoreFilters = !showMoreFilters" class="w-full h-10 bg-[#f1f1f4] text-[#121317] rounded-full flex items-center justify-center gap-2 text-sm font-medium hover:bg-gray-200 transition-colors">
-<span class="material-symbols-outlined text-[18px]">tune</span>
-More Filters
-<span class="material-symbols-outlined text-[16px] transition-transform" :class="showMoreFilters ? 'rotate-180' : ''">expand_more</span>
-</button>
-
-<!-- Mobile Advanced Filters Dropdown -->
-<div x-show="showMoreFilters" 
-     x-transition:enter="transition ease-out duration-200"
-     x-transition:enter-start="opacity-0 -translate-y-2" 
-     x-transition:enter-end="opacity-0 translate-y-0"
-     x-transition:leave="transition ease-in duration-150"
-     x-transition:leave-start="opacity-0 translate-y-0"
-     x-transition:leave-end="opacity-0 -translate-y-2"
-     class="mt-3 bg-white border border-gray-200 rounded-xl p-4 shadow-lg">
-<div class="grid grid-cols-2 gap-3">
-<div class="relative">
-<select class="appearance-none w-full h-9 pl-4 pr-8 rounded-lg bg-[#f1f1f4] text-[#121317] text-sm font-medium hover:bg-gray-200 transition-colors border-none focus:ring-0 cursor-pointer">
-<option value="">Floor</option>
-<option value="ground">Ground Floor</option>
-<option value="1-5">1st - 5th Floor</option>
-<option value="5-10">5th - 10th Floor</option>
-<option value="10+">10th+ Floor</option>
-</select>
-<span class="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none material-symbols-outlined text-[16px] text-gray-500">expand_more</span>
-</div>
-<div class="relative">
-<select class="appearance-none w-full h-9 pl-4 pr-8 rounded-lg bg-[#f1f1f4] text-[#121317] text-sm font-medium hover:bg-gray-200 transition-colors border-none focus:ring-0 cursor-pointer">
-<option value="">Bathroom</option>
-<option value="1">1 Bath</option>
-<option value="2">2 Baths</option>
-<option value="3">3+ Baths</option>
-</select>
-<span class="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none material-symbols-outlined text-[16px] text-gray-500">expand_more</span>
-</div>
-<div class="relative">
-<select class="appearance-none w-full h-9 pl-4 pr-8 rounded-lg bg-[#f1f1f4] text-[#121317] text-sm font-medium hover:bg-gray-200 transition-colors border-none focus:ring-0 cursor-pointer">
-<option value="">BHK Type</option>
-<option value="1">1 BHK</option>
-<option value="2">2 BHK</option>
-<option value="3">3 BHK</option>
-<option value="4">4+ BHK</option>
-</select>
-<span class="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none material-symbols-outlined text-[16px] text-gray-500">expand_more</span>
-</div>
-<div class="relative">
-<select class="appearance-none w-full h-9 pl-4 pr-8 rounded-lg bg-[#f1f1f4] text-[#121317] text-sm font-medium hover:bg-gray-200 transition-colors border-none focus:ring-0 cursor-pointer">
-<option value="">Carpet Area</option>
-<option value="0-500">0 - 500 sqft</option>
-<option value="500-1000">500 - 1000 sqft</option>
-<option value="1000-1500">1000 - 1500 sqft</option>
-<option value="1500+">1500+ sqft</option>
-</select>
-<span class="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none material-symbols-outlined text-[16px] text-gray-500">expand_more</span>
-</div>
-</div>
-<button class="w-full mt-3 h-10 bg-primary text-white rounded-full font-medium text-sm hover:bg-blue-800 transition-colors">
-Apply Filters
-</button>
-</div>
-</div>
-</div>
 </section>
 <section class="px-4 sm:px-6 lg:px-10 py-6 sm:py-8 bg-gray-50/50 flex-1">
 <div class="max-w-[1280px] mx-auto">
@@ -371,12 +270,13 @@ WhatsApp
 </div>
 </div>
 </section>
-<div class="fixed bottom-6 right-6 z-50 lg:hidden">
+<div class="fixed bottom-6 right-6 z-10 lg:hidden">
 <button class="group flex items-center gap-2 bg-primary text-white h-14 pl-5 pr-6 rounded-full shadow-xl shadow-blue-900/30 hover:scale-105 hover:bg-blue-800 transition-all duration-300">
 <span class="material-symbols-outlined text-[24px]">call</span>
 <span class="font-bold text-base">Contact Dealer</span>
 </button>
 </div>
 </main>
+@stack('scripts')
 </body>
 </html>
