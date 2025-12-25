@@ -21,21 +21,7 @@
 </head>
 <body class="bg-background-light dark:bg-background-dark text-[#121317] font-display min-h-screen flex flex-col">
 <main class="w-full bg-white min-h-screen flex flex-col relative pb-12 mx-auto">
-<header class="sticky top-0 z-10 bg-white/95 backdrop-blur-sm border-b border-[#f1f1f4] px-4 sm:px-6 lg:px-10 py-3 sm:py-4 flex items-center justify-between transition-all duration-200">
-<div class="flex items-center gap-4">
-<div class="h-12 w-12 rounded-full bg-cover bg-center border border-gray-100" data-alt="Elite Homes company logo avatar" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCZGvkDKAF1w7WbeFeUNmOM3NRSjHgmhSeryZM7vDVZ1m4ipcSRXPbXSEd2id5wazq_oIOrOECQqI9YWyoWlbbH2hXEX33P14Q3zghNi1ql4tBZGpuTE5NvyUY4ZTQJBmwaOlHrNFtmKJZ5hlyLxVkDdbsRnUKh523LtkEq96u8kK6SNVuz5caz2ymq71nBnay5rA4-tCzvVqaPnmBNsnRYGgYVWooVyVl0TRj85yqteKd7hSy3zjvwglp6ZBELj2yif6o7tUd4K-Hz');"></div>
-<h1 class="text-xl font-bold text-[#121317] tracking-tight">Elite Homes</h1>
-</div>
-<div class="flex gap-2 sm:gap-3">
-<button class="flex items-center justify-center gap-2 h-10 px-3 sm:px-4 rounded-full bg-[#f1f1f4] text-[#121317] hover:bg-gray-200 transition-colors font-medium text-sm">
-<span class="material-symbols-outlined text-[18px] sm:text-[20px]">ios_share</span>
-<span class="hidden sm:inline">Share Profile</span>
-</button>
-<button class="flex items-center justify-center h-10 w-10 rounded-full bg-[#f1f1f4] text-[#121317] hover:bg-gray-200 transition-colors">
-<span class="material-symbols-outlined text-[18px] sm:text-[20px]">menu</span>
-</button>
-</div>
-</header>
+<x-site-header />
 <section class="bg-gradient-to-b from-white to-[#f6f6f8] px-6 lg:px-10 py-10">
 <div class="max-w-[1280px] mx-auto grid grid-cols-1 lg:grid-cols-[2fr_1fr] gap-10 items-start">
 <div class="flex flex-col gap-8">
@@ -165,9 +151,9 @@ New Arrival
 </div>
 </div>
 <div class="flex gap-3 mt-1">
-<button class="flex-1 h-10 rounded-full border border-primary text-primary font-bold text-sm hover:bg-primary/5 transition-colors">
+<a href="{{ route('property.show', ['id' => 1]) }}" class="flex-1 h-10 rounded-full border border-primary text-primary font-bold text-sm hover:bg-primary/5 transition-colors inline-flex items-center justify-center">
 View Details
-</button>
+</a>
 <button class="flex-1 h-10 rounded-full bg-whatsapp text-white font-bold text-sm flex items-center justify-center gap-2 hover:brightness-105 transition-all">
 <img alt="Whatsapp logo icon" class="w-4 h-4 invert brightness-0 grayscale-0" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAgPEGUEKjZPSkEHYkFnZ9Gx1JHOB4A1agO_DBYEWBuFwMC36Rd8RmQNnZI_gHOSxcW5jm5j7er5TGrbgjT0sz7NoQN3hgJN7vM_63MQhWoNuxGvHhkJhVwUgUA60YXth8XRgsFWRJCOj--W6_Q7ArnfLQpB8r7x-pvzyq0-DuRKBPv130bg0xhlun76EKVNL9J8LIuP-EyPP6RH-5JiA_PIrkeawFrQ2OCm_azTjM6_kaNnj0ET0fIB7wr692Oty0lpjIh_qdYfCpc"/>
 WhatsApp
@@ -211,9 +197,9 @@ Popular
 </div>
 </div>
 <div class="flex gap-3 mt-1">
-<button class="flex-1 h-10 rounded-full border border-primary text-primary font-bold text-sm hover:bg-primary/5 transition-colors">
+<a href="{{ route('property.show', ['id' => 2]) }}" class="flex-1 h-10 rounded-full border border-primary text-primary font-bold text-sm hover:bg-primary/5 transition-colors inline-flex items-center justify-center">
 View Details
-</button>
+</a>
 <button class="flex-1 h-10 rounded-full bg-whatsapp text-white font-bold text-sm flex items-center justify-center gap-2 hover:brightness-105 transition-all">
 <img alt="Whatsapp logo icon" class="w-4 h-4 invert brightness-0 grayscale-0" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDfsRkg7mANErfpfOt2Lv0x9EyxbJJR8EeXaXdAFalJjXCSbI4E7MTbmNwOv2WpZhD0p8QQRbLFIt6f98x1xWEIbPVtl1B-3NeV6AIqCHQ1mZh6UQqMKy6x448e68CRI48wu4OvpPElDum8QSlBrSK6L2iVCUICswg0VLMc4PPVvDpZ_o7u2ZIs7-vkIv6hWWbaS5mnOY0QvV3gss355KXNhk3Mb-YZWjeG1Xnx6tI89DfGoZVkIQ3P5W29A7bADevSTPBOzpYqi5ZH"/>
 WhatsApp
@@ -257,9 +243,9 @@ Verified
 </div>
 </div>
 <div class="flex gap-3 mt-1">
-<button class="flex-1 h-10 rounded-full border border-primary text-primary font-bold text-sm hover:bg-primary/5 transition-colors">
+<a href="{{ route('property.show', ['id' => 3]) }}" class="flex-1 h-10 rounded-full border border-primary text-primary font-bold text-sm hover:bg-primary/5 transition-colors inline-flex items-center justify-center">
 View Details
-</button>
+</a>
 <button class="flex-1 h-10 rounded-full bg-whatsapp text-white font-bold text-sm flex items-center justify-center gap-2 hover:brightness-105 transition-all">
 <img alt="Whatsapp logo icon" class="w-4 h-4 invert brightness-0 grayscale-0" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDYqWWB9wOKmYJr--ShfsGDmtb2rzJmUpSe_JUlvPVmIW8-4oArP11gGH8iNh96Opz7O-D5d7IZWU5wx0SiCy9h_hoXTy949M-hHP9bIkegNN50H5Eow6ajyG5YlVfCWNK6b4ajh_XErxxgDqm2L6DXhxfj-v23gy3pbZ2KuFZPEbY8qkJoA0LgOpX9DJr_1uWyy4p9CEs3Q4kTWSVMeGtqESCILFZ4MV7o3ZsmM3O6BN5TNw0U9bZSGNMKLL1tEO7VaZ-xOjTnD80o"/>
 WhatsApp
