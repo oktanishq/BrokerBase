@@ -6,7 +6,7 @@
     <div class="flex gap-2 sm:gap-3">
         <button class="flex items-center justify-center gap-2 h-10 px-3 sm:px-4 rounded-full bg-[#f1f1f4] text-[#121317] hover:bg-gray-200 transition-colors font-medium text-sm">
             <span class="material-symbols-outlined text-[18px] sm:text-[20px]">ios_share</span>
-            <span class="hidden sm:inline">Sare Profile</span>
+            <span class="hidden sm:inline">Share Profile</span>
         </button>
         <button class="flex items-center justify-center h-10 w-10 rounded-full bg-[#f1f1f4] text-[#121317] hover:bg-gray-200 transition-colors">
             <span class="material-symbols-outlined text-[18px] sm:text-[20px]">menu</span>
