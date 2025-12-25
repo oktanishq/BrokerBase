@@ -1,8 +1,9 @@
 <!DOCTYPE html>
-<html class="light" lang="en"><head>
+<html class="light" lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>Single Property Detail View</title>
+<title>{{ $property->name ?? 'Property Detail' }} - Elite Homes</title>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com" rel="preconnect"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
@@ -39,21 +40,7 @@
 </head>
 <body class="bg-background-light dark:bg-background-dark text-[#121317] font-display min-h-screen flex flex-col">
 <main class="w-full bg-white min-h-screen flex flex-col relative pb-20 lg:pb-12 mx-auto">
-<header class="sticky top-0 z-10 bg-white/95 backdrop-blur-sm border-b border-[#f1f1f4] px-4 sm:px-6 lg:px-10 py-3 sm:py-4 flex items-center justify-between transition-all duration-200">
-<div class="flex items-center gap-4">
-<div class="h-12 w-12 rounded-full bg-cover bg-center border border-gray-100" data-alt="Elite Homes company logo avatar" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCZGvkDKAF1w7WbeFeUNmOM3NRSjHgmhSeryZM7vDVZ1m4ipcSRXPbXSEd2id5wazq_oIOrOECQqI9YWyoWlbbH2hXEX33P14Q3zghNi1ql4tBZGpuTE5NvyUY4ZTQJBmwaOlHrNFtmKJZ5hlyLxVkDdbsRnUKh523LtkEq96u8kK6SNVuz5caz2ymq71nBnay5rA4-tCzvVqaPnmBNsnRYGgYVWooVyVl0TRj85yqteKd7hSy3zjvwglp6ZBELj2yif6o7tUd4K-Hz');"></div>
-<h1 class="text-xl font-bold text-[#121317] tracking-tight">Elite Homes</h1>
-</div>
-<div class="flex gap-2 sm:gap-3">
-<button class="flex items-center justify-center gap-2 h-10 px-3 sm:px-4 rounded-full bg-[#f1f1f4] text-[#121317] hover:bg-gray-200 transition-colors font-medium text-sm">
-<span class="material-symbols-outlined text-[18px] sm:text-[20px]">ios_share</span>
-<span class="hidden sm:inline">Share Profile</span>
-</button>
-<button class="flex items-center justify-center h-10 w-10 rounded-full bg-[#f1f1f4] text-[#121317] hover:bg-gray-200 transition-colors">
-<span class="material-symbols-outlined text-[18px] sm:text-[20px]">menu</span>
-</button>
-</div>
-</header>
+<x-site-header />
 
 <!-- Main Content Grid -->
 <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 px-4 sm:px-6 lg:px-10 mt-6 items-start">
@@ -61,16 +48,16 @@
     <div class="lg:col-span-8">
         <!-- Hero Section / Image Slideshow -->
         <div class="relative w-full h-[500px] bg-gray-100 dark:bg-gray-800 group rounded-2xl overflow-hidden shadow-lg">
-            <div class="w-full h-full bg-cover bg-center transition-transform duration-700 hover:scale-105" data-alt="Spacious modern living room with large windows and sea view" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDUIUDPDXt4RSWELVs0pw2cOd9_NEcGMtImwP-LeEDVi10-dCSU0LKvkEOMRCHCT5eZZEERz1ONjnkV2zeDN7MagX11-cyg4UlO5JRXFAUx3DiGD7VFAGfKLXrKvkgAbC06Wd-C9SSpBPqto_WrEcL8zANFZfq4wk_FTSCBr3Kd65P0Do6-iz3E4oWxEUJN0jqDODd_R-tDtKnoVf46qRqJXhIG9jzeTiA32X6yeXhiVxq_mjrKIKX9du6Puf40bvcuKzaAgcyjSIai');"></div>
+            <div class="w-full h-full bg-cover bg-center transition-transform duration-700 hover:scale-105" data-alt="{{ $property->image_alt ?? 'Property image' }}" style="background-image: url('{{ $property->image_url ?? 'https://lh3.googleusercontent.com/aida-public/AB6AXuDUIUDPDXt4RSWELVs0pw2cOd9_NEcGMtImwP-LeEDVi10-dCSU0LKvkEOMRCHCT5eZZEERz1ONjnkV2zeDN7MagX11-cyg4UlO5JRXFAUx3DiGD7VFAGfKLXrKvkgAbC06Wd-C9SSpBPqto_WrEcL8zANFZfq4wk_FTSCBr3Kd65P0Do6-iz3E4oWxEUJN0jqDODd_R-tDtKnoVf46qRqJXhIG9jzeTiA32X6yeXhiVxq_mjrKIKX9du6Puf40bvcuKzaAgcyjSIai' }}"></div>
             <div class="absolute top-6 left-6">
                 <span class="inline-flex items-center px-4 py-1.5 rounded-full text-sm font-bold bg-green-500 text-white shadow-md uppercase tracking-wider">
-                    For Sale
+                    {{ $property->status ?? 'For Sale' }}
                 </span>
             </div>
             <div class="absolute bottom-6 right-6">
                 <button class="inline-flex items-center px-4 py-2 rounded-full text-sm font-medium bg-black/60 hover:bg-black/70 backdrop-blur-md text-white transition-colors">
-                    <span class="material-symbols-outlined text-[16px] mr-2">photo_camera</span> 
-                    Show all photos (12)
+                    <span class="material-symbols-outlined text-[16px] mr-2">photo_camera</span>
+                    Show all photos ({{ count($property->images ?? []) }})
                 </button>
             </div>
             <button class="absolute left-4 top-1/2 -translate-y-1/2 size-12 bg-white/90 rounded-full flex items-center justify-center text-gray-800 opacity-0 group-hover:opacity-100 transition-all hover:bg-white shadow-lg">
@@ -87,20 +74,20 @@
             <div>
                 <!-- Mobile: Price merged with title (hide "Price" label) -->
                 <div class="lg:hidden">
-                    <h1 class="text-gold text-[32px] font-bold leading-tight tracking-tight mb-3">$ 850,000</h1>
-                    <h2 class="text-gray-900 dark:text-white text-2xl font-bold leading-snug mb-3">Luxury 3BHK with Sea View</h2>
+                    <h1 class="text-gold text-[32px] font-bold leading-tight tracking-tight mb-3">$ {{ number_format($property->price ?? 850000) }}</h1>
+                    <h2 class="text-gray-900 dark:text-white text-2xl font-bold leading-snug mb-3">{{ $property->name ?? 'Luxury 3BHK with Sea View' }}</h2>
                     <div class="flex items-start gap-2 text-gray-500 dark:text-gray-400">
                         <span class="material-symbols-outlined text-primary mt-0.5 text-[20px]">location_on</span>
-                        <p class="text-base font-normal">Palm Jumeirah, Dubai</p>
+                        <p class="text-base font-normal">{{ $property->location ?? 'Palm Jumeirah, Dubai' }}</p>
                     </div>
                 </div>
-                
+
                 <!-- Desktop: Title and Location only (price in sidebar) -->
                 <div class="hidden lg:block mb-8">
-                    <h1 class="text-gray-900 dark:text-white text-3xl lg:text-4xl font-extrabold leading-tight mb-3">Luxury 3BHK with Sea View</h1>
+                    <h1 class="text-gray-900 dark:text-white text-3xl lg:text-4xl font-extrabold leading-tight mb-3">{{ $property->name ?? 'Luxury 3BHK with Sea View' }}</h1>
                     <div class="flex items-center gap-2 text-gray-500 dark:text-gray-400">
                         <span class="material-symbols-outlined text-primary text-[22px]">location_on</span>
-                        <p class="text-lg font-medium">Palm Jumeirah, Dubai</p>
+                        <p class="text-lg font-medium">{{ $property->location ?? 'Palm Jumeirah, Dubai' }}</p>
                     </div>
                 </div>
 
@@ -110,19 +97,19 @@
                     <div class="grid grid-cols-4 gap-2 lg:flex lg:flex-wrap lg:gap-4">
                         <div class="flex flex-col items-center justify-center p-3 rounded-xl bg-background-light dark:bg-gray-800/50 lg:flex-row lg:px-5 lg:py-3">
                             <span class="material-symbols-outlined text-gray-700 dark:text-gray-300 mb-1 lg:mb-0 lg:mr-3">bed</span>
-                            <span class="text-xs font-bold text-gray-900 dark:text-white lg:text-sm">3 Beds</span>
+                            <span class="text-xs font-bold text-gray-900 dark:text-white lg:text-sm">{{ $property->beds ?? 3 }} Beds</span>
                         </div>
                         <div class="flex flex-col items-center justify-center p-3 rounded-xl bg-background-light dark:bg-gray-800/50 lg:flex-row lg:px-5 lg:py-3">
                             <span class="material-symbols-outlined text-gray-700 dark:text-gray-300 mb-1 lg:mb-0 lg:mr-3">bathtub</span>
-                            <span class="text-xs font-bold text-gray-900 dark:text-white lg:text-sm">2 Baths</span>
+                            <span class="text-xs font-bold text-gray-900 dark:text-white lg:text-sm">{{ $property->baths ?? 2 }} Baths</span>
                         </div>
                         <div class="flex flex-col items-center justify-center p-3 rounded-xl bg-background-light dark:bg-gray-800/50 lg:flex-row lg:px-5 lg:py-3">
                             <span class="material-symbols-outlined text-gray-700 dark:text-gray-300 mb-1 lg:mb-0 lg:mr-3">square_foot</span>
-                            <span class="text-xs font-bold text-gray-900 dark:text-white lg:text-sm">1.800 Sqft</span>
+                            <span class="text-xs font-bold text-gray-900 dark:text-white lg:text-sm">{{ number_format($property->sqft ?? 1800) }} Sqft</span>
                         </div>
                         <div class="flex flex-col items-center justify-center p-3 rounded-xl bg-background-light dark:bg-gray-800/50 lg:flex-row lg:px-5 lg:py-3">
                             <span class="material-symbols-outlined text-gray-700 dark:text-gray-300 mb-1 lg:mb-0 lg:mr-3">apartment</span>
-                            <span class="text-xs font-bold text-gray-900 dark:text-white lg:text-sm">5th Flr</span>
+                            <span class="text-xs font-bold text-gray-900 dark:text-white lg:text-sm">{{ $property->floor ?? '5th' }} Flr</span>
                         </div>
                     </div>
                 </div>
@@ -136,7 +123,7 @@
                 <h3 class="text-gray-900 dark:text-white font-bold text-xl mb-4">About this property</h3>
                 <div class="prose dark:prose-invert max-w-none">
                     <p class="text-gray-600 dark:text-gray-300 text-base leading-relaxed">
-                        Experience the pinnacle of luxury living in this exclusive apartment located in the heart of Palm Jumeirah. Offering breathtaking sea views, premium finishes throughout, and direct access to the beach. The open-plan living area is flooded with natural light, seamlessly connecting to a spacious terrace perfect for entertaining. The kitchen comes fully equipped with high-end appliances, while the bedrooms offer a serene retreat with en-suite bathrooms.
+                        {!! $property->description ?? 'Experience the pinnacle of luxury living in this exclusive apartment located in the heart of Palm Jumeirah. Offering breathtaking sea views, premium finishes throughout, and direct access to the beach. The open-plan living area is flooded with natural light, seamlessly connecting to a spacious terrace perfect for entertaining. The kitchen comes fully equipped with high-end appliances, while the bedrooms offer a serene retreat with en-suite bathrooms.' !!}
                     </p>
                     <a class="inline-flex items-center gap-1 mt-3 text-primary font-semibold text-sm hover:underline cursor-pointer">
                         Read full description <span class="material-symbols-outlined text-[16px]">arrow_downward</span>
@@ -148,30 +135,12 @@
             <div class="mb-10">
                 <h3 class="text-gray-900 dark:text-white font-bold text-xl mb-6">Amenities</h3>
                 <div class="grid grid-cols-2 md:grid-cols-3 gap-y-4 gap-x-6">
+                    @foreach($property->amenities ?? ['Covered Parking', 'Swimming Pool', '24/7 Security', 'Gym & Spa', 'Concierge Service', 'Central A/C'] as $amenity)
                     <div class="flex items-center gap-3 text-gray-700 dark:text-gray-300">
                         <span class="material-symbols-outlined text-green-500 text-[20px]">check_circle</span>
-                        <span class="text-base">Covered Parking</span>
+                        <span class="text-base">{{ $amenity }}</span>
                     </div>
-                    <div class="flex items-center gap-3 text-gray-700 dark:text-gray-300">
-                        <span class="material-symbols-outlined text-green-500 text-[20px]">check_circle</span>
-                        <span class="text-base">Swimming Pool</span>
-                    </div>
-                    <div class="flex items-center gap-3 text-gray-700 dark:text-gray-300">
-                        <span class="material-symbols-outlined text-green-500 text-[20px]">check_circle</span>
-                        <span class="text-base">24/7 Security</span>
-                    </div>
-                    <div class="flex items-center gap-3 text-gray-700 dark:text-gray-300">
-                        <span class="material-symbols-outlined text-green-500 text-[20px]">check_circle</span>
-                        <span class="text-base">Gym & Spa</span>
-                    </div>
-                    <div class="flex items-center gap-3 text-gray-700 dark:text-gray-300">
-                        <span class="material-symbols-outlined text-green-500 text-[20px]">check_circle</span>
-                        <span class="text-base">Concierge Service</span>
-                    </div>
-                    <div class="flex items-center gap-3 text-gray-700 dark:text-gray-300">
-                        <span class="material-symbols-outlined text-green-500 text-[20px]">check_circle</span>
-                        <span class="text-base">Central A/C</span>
-                    </div>
+                    @endforeach
                 </div>
             </div>
 
@@ -179,7 +148,7 @@
             <div>
                 <h3 class="text-gray-900 dark:text-white font-bold text-xl mb-4">Location</h3>
                 <div class="rounded-2xl overflow-hidden bg-gray-200 dark:bg-gray-800 mb-4 relative group h-[300px] border border-gray-200 dark:border-gray-700">
-                    <div class="w-full h-full bg-cover bg-center opacity-90 group-hover:opacity-100 transition-opacity" data-alt="Map view showing the location of the property in Palm Jumeirah, Dubai" data-location="Palm Jumeirah, Dubai" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCQF3U8wwqWahzqydH8tpCM9mKKqGUhz-f-IMll0FkwDcp4nlX07epV-AneVFXxuYmLtB4kPr9rgzSOnJMQ1vk6j6TvHgO7GAVG_-D29HeqQOcJhEjqlR6x2NqQqNnlbnN8BFsPN6_WgbRg9JMPth8k-xtki32fTrshtNqgmGeozCjPAWOe7jKjLW4phYIc2pAdFwlCXrxtYrH8mNTDM9ypz3GYPkTpkt6sLtDbW_VHjYDrh3FH-b2VPqHBEmI5nwPI19un-Qi8hj1n');"></div>
+                    <div class="w-full h-full bg-cover bg-center opacity-90 group-hover:opacity-100 transition-opacity" data-alt="Map view showing the location of the property" data-location="{{ $property->location ?? 'Palm Jumeirah, Dubai' }}" style="background-image: url('{{ $property->map_image_url ?? 'https://lh3.googleusercontent.com/aida-public/AB6AXuCQF3U8wwqWahzqydH8tpCM9mKKqGUhz-f-IMll0FkwDcp4nlX07epV-AneVFXxuYmLtB4kPr9rgzSOnJMQ1vk6j6TvHgO7GAVG_-D29HeqQOcJhEjqlR6x2NqQqNnlbnN8BFsPN6_WgbRg9JMPth8k-xtki32fTrshtNqgmGeozCjPAWOe7jKjLW4phYIc2pAdFwlCXrxtYrH8mNTDM9ypz3GYPkTpkt6sLtDbW_VHjYDrh3FH-b2VPqHBEmI5nwPI19un-Qi8hj1n' }}"></div>
                     <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
                         <div class="bg-primary text-white rounded-full p-3 shadow-xl ring-4 ring-white/30 animate-bounce">
                             <span class="material-symbols-outlined block text-2xl">location_on</span>
@@ -202,18 +171,18 @@
         <div class="bg-white dark:bg-background-dark rounded-2xl p-6 shadow-lg border border-gray-100 dark:border-gray-800 hidden lg:block">
             <div class="mb-6">
                 <p class="text-gray-500 dark:text-gray-400 text-sm font-medium mb-1">Price</p>
-                <h1 class="text-gold text-4xl font-extrabold leading-tight tracking-tight">$ 850,000</h1>
+                <h1 class="text-gold text-4xl font-extrabold leading-tight tracking-tight">$ {{ number_format($property->price ?? 850000) }}</h1>
                 <p class="text-xs text-gray-400 mt-1">Plus taxes & fees</p>
             </div>
             <div class="w-full h-px bg-gray-100 dark:bg-gray-800 my-6"></div>
             <div class="space-y-4">
                 <div class="flex items-center gap-3 mb-2">
                     <div class="size-12 rounded-full bg-gray-100 dark:bg-gray-800 overflow-hidden">
-                        <div class="w-full h-full bg-cover bg-center" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCZGvkDKAF1w7WbeFeUNmOM3NRSjHgmhSeryZM7vDVZ1m4ipcSRXPbXSEd2id5wazq_oIOrOECQqI9YWyoWlbbH2hXEX33P14Q3zghNi1ql4tBZGpuTE5NvyUY4ZTQJBmwaOlHrNFtmKJZ5hlyLxVkDdbsRnUKh523LtkEq96u8kK6SNVuz5caz2ymq71nBnay5rA4-tCzvVqaPnmBNsnRYGgYVWooVyVl0TRj85yqteKd7hSy3zjvwglp6ZBELj2yif6o7tUd4K-Hz');"></div>
+                        <div class="w-full h-full bg-cover bg-center" style="background-image: url('{{ $property->agent_logo_url ?? 'https://lh3.googleusercontent.com/aida-public/AB6AXuCZGvkDKAF1w7WbeFeUNmOM3NRSjHgmhSeryZM7vDVZ1m4ipcSRXPbXSEd2id5wazq_oIOrOECQqI9YWyoWlbbH2hXEX33P14Q3zghNi1ql4tBZGpuTE5NvyUY4ZTQJBmwaOlHrNFtmKJZ5hlyLxVkDdbsRnUKh523LtkEq96u8kK6SNVuz5caz2ymq71nBnay5rA4-tCzvVqaPnmBNsnRYGgYVWooVyVl0TRj85yqteKd7hSy3zjvwglp6ZBELj2yif6o7tUd4K-Hz' }}"></div>
                     </div>
                     <div>
                         <p class="text-sm text-gray-500 dark:text-gray-400">Listing Agent</p>
-                        <p class="font-bold text-gray-900 dark:text-white">Elite Homes</p>
+                        <p class="font-bold text-gray-900 dark:text-white">{{ $property->agent_name ?? 'Elite Homes' }}</p>
                     </div>
                 </div>
                 <button class="w-full flex items-center justify-center gap-2 h-14 rounded-xl border-2 border-primary bg-white hover:bg-gray-50 text-primary font-bold text-lg transition-transform active:scale-[0.98] shadow-sm">
@@ -244,11 +213,11 @@
         <div class="lg:hidden mt-6 p-4 bg-gray-50 dark:bg-gray-800/50 rounded-xl">
             <div class="flex items-center gap-3">
                 <div class="size-10 rounded-full bg-gray-200 dark:bg-gray-700 overflow-hidden">
-                    <div class="w-full h-full bg-cover bg-center" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCZGvkDKAF1w7WbeFeUNmOM3NRSjHgmhSeryZM7vDVZ1m4ipcSRXPbXSEd2id5wazq_oIOrOECQqI9YWyoWlbbH2hXEX33P14Q3zghNi1ql4tBZGpuTE5NvyUY4ZTQJBmwaOlHrNFtmKJZ5hlyLxVkDdbsRnUKh523LtkEq96u8kK6SNVuz5caz2ymq71nBnay5rA4-tCzvVqaPnmBNsnRYGgYVWooVyVl0TRj85yqteKd7hSy3zjvwglp6ZBELj2yif6o7tUd4K-Hz');"></div>
+                    <div class="w-full h-full bg-cover bg-center" style="background-image: url('{{ $property->agent_logo_url ?? 'https://lh3.googleusercontent.com/aida-public/AB6AXuCZGvkDKAF1w7WbeFeUNmOM3NRSjHgmhSeryZM7vDVZ1m4ipcSRXPbXSEd2id5wazq_oIOrOECQqI9YWyoWlbbH2hXEX33P14Q3zghNi1ql4tBZGpuTE5NvyUY4ZTQJBmwaOlHrNFtmKJZ5hlyLxVkDdbsRnUKh523LtkEq96u8kK6SNVuz5caz2ymq71nBnay5rA4-tCzvVqaPnmBNsnRYGgYVWooVyVl0TRj85yqteKd7hSy3zjvwglp6ZBELj2yif6o7tUd4K-Hz' }}"></div>
                 </div>
                 <div>
                     <p class="text-xs text-gray-500 dark:text-gray-400">Listed by</p>
-                    <p class="font-bold text-gray-900 dark:text-white">Elite Homes</p>
+                    <p class="font-bold text-gray-900 dark:text-white">{{ $property->agent_name ?? 'Elite Homes' }}</p>
                 </div>
             </div>
         </div>
