@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>{{ $property->name ?? 'Property Detail' }} - Elite Homes</title>
+<title>{{ $property->name ?? 'Property Detail' }} - <span x-text="settings.agency_name || 'Loading...'"</span></title>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com" rel="preconnect"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
@@ -39,7 +39,7 @@
         }
     </style>
 </head>
-<body class="bg-background-light dark:bg-background-dark text-[#121317] font-display min-h-screen flex flex-col">
+<body class="bg-background-light dark:bg-background-dark text-[#121317] font-display min-h-screen flex flex-col" x-data="propertyData()" x-init="init()">
 <main class="w-full bg-white min-h-screen flex flex-col relative pb-20 lg:pb-12 mx-auto">
 <x-site-header />
 
@@ -183,7 +183,7 @@
                     </div>
                     <div>
                         <p class="text-sm text-gray-500 dark:text-gray-400">Listing Agent</p>
-                        <p class="font-bold text-gray-900 dark:text-white">{{ $property->agent_name ?? 'Elite Homes' }}</p>
+                        <p class="font-bold text-gray-900 dark:text-white" x-text="settings.agency_name || 'Loading...'"></p>
                     </div>
                 </div>
                 <button class="w-full flex items-center justify-center gap-2 h-14 rounded-xl border-2 border-primary bg-white hover:bg-gray-50 text-primary font-bold text-lg transition-transform active:scale-[0.98] shadow-sm">
@@ -218,7 +218,7 @@
                 </div>
                 <div>
                     <p class="text-xs text-gray-500 dark:text-gray-400">Listed by</p>
-                    <p class="font-bold text-gray-900 dark:text-white">{{ $property->agent_name ?? 'Elite Homes' }}</p>
+                    <p class="font-bold text-gray-900 dark:text-white" x-text="settings.agency_name || 'Loading...'"></p>
                 </div>
             </div>
         </div>
@@ -238,5 +238,30 @@
 </div>
 
 </main>
+
+<script>
+function propertyData() {
+    return {
+        settings: {},
+        
+        async init() {
+            await this.loadSettings();
+        },
+        
+        async loadSettings() {
+            try {
+                const response = await fetch('/api/settings');
+                const data = await response.json();
+                if (data.success) {
+                    this.settings = data.data;
+                }
+            } catch (error) {
+                console.error('Failed to load settings:', error);
+            }
+        }
+    }
+}
+</script>
+
 </body>
 </html>
