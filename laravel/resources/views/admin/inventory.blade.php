@@ -161,13 +161,13 @@
     }
 }">
                 <!-- Page Header -->
-                <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-8">
                     <h1 class="text-slate-900 text-3xl font-black leading-tight tracking-tight">My Inventory</h1>
                     @include('components.AddPropertyModal')
                 </div>
 
                 <!-- Search and Filter Bar -->
-                <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-100 flex flex-col md:flex-row gap-4 items-center justify-between sticky top-0 z-10">
+                <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-100 flex flex-col md:flex-row gap-4 items-center justify-between sticky top-0 z-10 mb-8">
                     <!-- Search Input -->
                     <div class="relative w-full md:w-96 group">
                         <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400 group-focus-within:text-blue-600 transition-colors">
@@ -217,7 +217,7 @@
                 </div>
 
                 <!-- Property List -->
-                <div x-show="filteredProperties.length > 0" x-transition>
+                <div x-show="filteredProperties.length > 0" x-transition class="mt-8">
                     <!-- List View -->
                     <div x-show="viewMode === 'list'" class="flex flex-col gap-4">
                         <template x-for="property in paginatedProperties" :key="`list-${property.id}`">
@@ -353,7 +353,7 @@
                 </div>
 
                 <!-- No Results Message -->
-                <div class="text-center py-12" x-show="filteredProperties.length === 0" x-transition>
+                <div class="text-center py-12" x-show="filteredProperties.length === 0" x-transition class="mt-8">
                     <div class="flex flex-col items-center gap-4">
                         <span class="material-symbols-outlined text-6xl text-gray-300">search_off</span>
                         <div>
