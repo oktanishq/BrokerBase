@@ -45,6 +45,9 @@
 @endsection
 
 @section('content')
+<!-- Edit Property Modal -->
+@include('components.EditPropertyModal')
+
 <div x-data="{
     searchTerm: '',
     statusFilter: 'all',
@@ -67,7 +70,10 @@
             sqft: 1500,
             type: 'Villa',
             status: 'available',
-            added_ago: '2 days ago'
+            added_ago: '2 days ago',
+            isFeatured: true,
+            label: 'new',
+            customLabelColor: '#3B82F6'
         },
         {
             id: 2,
@@ -81,7 +87,10 @@
             sqft: 980,
             type: 'Apartment',
             status: 'sold',
-            sold_ago: '1 week ago'
+            sold_ago: '1 week ago',
+            isFeatured: false,
+            label: 'popular',
+            customLabelColor: '#F59E0B'
         },
         {
             id: 3,
@@ -95,7 +104,10 @@
             sqft: 3200,
             type: 'Office',
             status: 'draft',
-            edited_ago: 'today'
+            edited_ago: 'today',
+            isFeatured: false,
+            label: 'none',
+            customLabelColor: '#10B981'
         }
     ],
 
@@ -324,7 +336,7 @@
                                     </template>
 
                                     <!-- Edit Button -->
-                                    <button class="flex items-center justify-center size-9 rounded-full text-gray-400 hover:text-blue-600 hover:bg-blue-50 transition-colors" title="Edit Property">
+                                    <button @click="$dispatch('open-edit-modal', property)" class="flex items-center justify-center size-9 rounded-full text-gray-400 hover:text-blue-600 hover:bg-blue-50 transition-colors" title="Edit Property">
                                         <span class="material-symbols-outlined text-[20px]">edit</span>
                                     </button>
 
