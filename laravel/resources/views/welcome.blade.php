@@ -30,13 +30,13 @@
 <div class="flex flex-col gap-2 pt-2">
 <div class="flex flex-wrap items-center gap-3">
 <h2 class="text-3xl font-bold text-[#121317]" x-text="settings.agency_name || 'Loading...'"></h2>
-<span class="px-3 py-1 rounded-full bg-green-100 text-green-700 text-xs font-bold uppercase tracking-wide border border-green-200">RERA Registered</span>
+<span x-show="settings.rera_id && settings.rera_id.trim() !== ''" class="px-3 py-1 rounded-full bg-green-100 text-green-700 text-xs font-bold uppercase tracking-wide border border-green-200">RERA Registered</span>
 </div>
 <div class="flex items-center gap-2 text-[#666e85] text-base">
 <span class="material-symbols-outlined text-[20px] text-primary">location_on</span>
 <p x-text="settings.office_address || 'Loading location...'"></p>
 </div>
-<p class="text-[#666e85] text-sm font-medium">RERA ID: <span x-text="settings.rera_id || 'Loading...'"></span></p>
+<p x-show="settings.rera_id && settings.rera_id.trim() !== ''" class="text-[#666e85] text-sm font-medium">RERA ID: <span x-text="settings.rera_id || 'Loading...'"></span></p>
 </div>
 </div>
 <div class="flex gap-6 mt-4">
