@@ -25,7 +25,7 @@
 @endsection
 
 @section('content')
-<div x-data="settingsData()" class="flex flex-col gap-8">
+<div x-data="settingsData()" x-init="init()" class="flex flex-col gap-8">
     <div class="flex flex-col sm:flex-row items-start sm:items-end justify-between gap-4">
         <div>
             <h1 class="text-slate-900 text-3xl font-black leading-tight tracking-tight">Account Settings</h1>
@@ -65,7 +65,7 @@
                         <label class="block text-sm font-medium text-slate-700 mb-1.5">WhatsApp Number</label>
                         <div class="flex rounded-lg shadow-sm">
                             <span class="inline-flex items-center px-3 rounded-l-lg border border-r-0 border-gray-200 bg-gray-50 text-gray-500 text-sm">
-                                +971
+                                +91
                             </span>
                             <input x-model="whatsappNumber" class="flex-1 min-w-0 block w-full rounded-none rounded-r-lg border-gray-200 text-sm focus:border-amber-500 focus:ring-amber-500" placeholder="50 000 0000" type="text" value="50 123 4567"/>
                         </div>
@@ -247,6 +247,29 @@ function settingsData() {
         customColor: '1E3A8A',
         saving: false,
 
+        async init() {
+            await this.loadSettings();
+        },
+
+        async loadSettings() {
+            try {
+                const response = await fetch('/api/settings');
+                const data = await response.json();
+                if (data.success) {
+                    const settings = data.data;
+                    this.agencyName = settings.agency_name || 'Elite Homes Real Estate';
+                    this.reraId = settings.rera_id || 'ORN-882910';
+                    this.whatsappNumber = settings.w_no ? settings.w_no.replace('+91 ', '') : '50 123 4567';
+                    this.officeAddress = settings.office_address || 'Office 402, Business Bay Tower, Dubai, UAE';
+                    this.logoUrl = settings.logo_url || 'https://lh3.googleusercontent.com/aida-public/AB6AXuDjlFF_nSTOQN2xN5XEhoei2r1xmo6006_o8UoGMAFUfEAomAjyJR-_bXnIPonwd3cqDG7sOU8o_DGuG6ynBK32KcH-lRZpx1OAvvrV7EALzre8oOHD4wHQDNcs1u-RqUpqp6rABg-PLwMMJpYI1mwd0rmsHsf0SI7DMC0X71sycCni1WxVUk61lnXtb-Wzonan3tvT7xcDV3vnvIuNyz4n4mt6oBDAaqb4Ch5zP_c1FPKCfCmqMwaC598j6zQlRK21aawjBmED-Tjo';
+                    this.selectedColor = settings.theme_color || 'blue';
+                    this.customColor = settings.custom_color || '1E3A8A';
+                }
+            } catch (error) {
+                console.error('Error loading settings:', error);
+            }
+        },
+
         selectColor(color) {
             this.selectedColor = color;
             this.updatePreviewColor();
@@ -287,23 +310,52 @@ function settingsData() {
         async saveSettings() {
             this.saving = true;
             try {
-                // Simulate API call
-                await new Promise(resolve => setTimeout(resolve, 2000));
-                // Here you would make an actual API call to save the settings
-                console.log('Settings saved:', {
+                console.log('Starting to save settings...', {
                     agencyName: this.agencyName,
-                    reraId: this.renaId,
+                    reraId: this.reraId,
                     whatsappNumber: this.whatsappNumber,
                     officeAddress: this.officeAddress,
                     logoUrl: this.logoUrl,
                     selectedColor: this.selectedColor,
                     customColor: this.customColor
                 });
-                // Show success message
-                alert('Settings saved successfully!');
+
+                const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+                console.log('CSRF Token:', csrfToken);
+
+                const response = await fetch('/admin/settings/update', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': csrfToken
+                    },
+                    body: JSON.stringify({
+                        agency_name: this.agencyName,
+                        rera_id: this.reraId,
+                        w_no: '+91 ' + this.whatsappNumber,
+                        office_address: this.officeAddress,
+                        logo_url: this.logoUrl,
+                        theme_color: this.selectedColor,
+                        custom_color: this.customColor
+                    })
+                });
+
+                console.log('Response status:', response.status);
+                console.log('Response ok:', response.ok);
+
+                const data = await response.json();
+                console.log('Response data:', data);
+                
+                if (data.success) {
+                    // Show success message
+                    alert('Settings saved successfully!');
+                    console.log('Settings saved successfully:', data);
+                } else {
+                    throw new Error(data.message || 'Unknown error occurred');
+                }
             } catch (error) {
                 console.error('Error saving settings:', error);
-                alert('Error saving settings. Please try again.');
+                alert('Error saving settings: ' + error.message + '. Please try again.');
             } finally {
                 this.saving = false;
             }

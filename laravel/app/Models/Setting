@@ -1,0 +1,77 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
+
+class Setting extends Model
+{
+    protected $fillable = [
+        'agency_name',
+        'rera_id', 
+        'w_no',
+        'office_address',
+        'logo_url',
+        'theme_color',
+        'custom_color',
+        'timestamp'
+    ];
+
+    protected $casts = [
+        'timestamp' => 'datetime',
+    ];
+
+    // Singleton pattern - get or create the first settings record
+    public static function getSettings()
+    {
+        $setting = self::first();
+        
+        if (!$setting) {
+            $setting = new self([
+                'agency_name' => 'Elite Homes Real Estate',
+                'rera_id' => 'ORN-882910',
+                'w_no' => '+91 50 123 4567',
+                'office_address' => 'Office 402, Business Bay Tower, Dubai, UAE',
+                'logo_url' => 'https://lh3.googleusercontent.com/aida-public/AB6AXuDjlFF_nSTOQN2xN5XEhoei2r1xmo6006_o8UoGMAFUfEAomAjyJR-_bXnIPonwd3cqDG7sOU8o_DGuG6ynBK32KcH-lRZpx1OAvvrV7EALzre8oOHD4wHQDNcs1u-RqUpqp6rABg-PLwMMJpYI1mwd0rmsHsf0SI7DMC0X71sycCni1WxVUk61lnXtb-Wzonan3tvT7xcDV3vnvIuNyz4n4mt6oBDAaqb4Ch5zP_c1FPKCfCmqMwaC598j6zQlRK21aawjBmED-Tjo',
+                'theme_color' => 'blue',
+                'custom_color' => '1E3A8A',
+                'timestamp' => now()
+            ]);
+            $setting->save();
+        }
+        
+        return $setting;
+    }
+
+    // Update settings with timestamp
+    public function updateSettings($data)
+    {
+        $this->fill($data);
+        $this->timestamp = now();
+        $this->save();
+        
+        return $this;
+    }
+
+    // Helper method to get full WhatsApp number
+    public function getFullWhatsAppNumber()
+    {
+        return $this->w_no;
+    }
+
+    // Helper method to get theme color in hex format
+    public function getThemeColorHex()
+    {
+        $colors = [
+            'blue' => '#1e3a8a',
+            'emerald' => '#059669', 
+            'red' => '#dc2626',
+            'amber' => '#f59e0b',
+            'black' => '#000000',
+            'custom' => '#' . $this->custom_color
+        ];
+        
+        return $colors[$this->theme_color] ?? $colors['blue'];
+    }
+}

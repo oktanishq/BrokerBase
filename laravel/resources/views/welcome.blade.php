@@ -19,7 +19,7 @@
 }
 </style>
 </head>
-<body class="bg-background-light dark:bg-background-dark text-[#121317] font-display min-h-screen flex flex-col">
+<body class="bg-background-light dark:bg-background-dark text-[#121317] font-display min-h-screen flex flex-col" x-data="welcomeData()" x-init="init()">
 <main class="w-full bg-white min-h-screen flex flex-col relative pb-12 mx-auto">
 <x-site-header />
 <section class="bg-gradient-to-b from-white to-[#f6f6f8] px-6 lg:px-10 py-10">
@@ -29,14 +29,14 @@
 <div class="h-28 w-28 lg:h-32 lg:w-32 shrink-0 rounded-full bg-cover bg-center border-4 border-white shadow-lg ring-1 ring-gray-100" data-alt="Large profile picture of Elite Homes dealer" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDfVJGVzANp1NAi6tmqqdpbcRS7QYyqe9ksTG2UPH8r9snYAI-9ySrfL8rZ7r3j_LgPJCsthYOhRhez_8mxmm0Zpbr98BNZuX8jfQzYP_X1mBD_PivHUqoq3nmTjpVB-5VyRkBU0PhcfpICwJx1jdS-jXi7ty72wmF8lGrhcFL3wxEn8Fyx2WghziGtKozdELe8_-cTc56jAdTsG18w5vCDbQkRqSES-kjcsgocnYErJmwBbhyB5m9Llhb-yp9ISHJV_OKp9h5N3BtI');"></div>
 <div class="flex flex-col gap-2 pt-2">
 <div class="flex flex-wrap items-center gap-3">
-<h2 class="text-3xl font-bold text-[#121317]">Elite Homes</h2>
+<h2 class="text-3xl font-bold text-[#121317]" x-text="settings.agency_name || 'Loading...'"></h2>
 <span class="px-3 py-1 rounded-full bg-green-100 text-green-700 text-xs font-bold uppercase tracking-wide border border-green-200">RERA Registered</span>
 </div>
 <div class="flex items-center gap-2 text-[#666e85] text-base">
 <span class="material-symbols-outlined text-[20px] text-primary">location_on</span>
-<p>123 Market St, Downtown, Metropolis</p>
+<p x-text="settings.office_address || 'Loading location...'"></p>
 </div>
-<p class="text-[#666e85] text-sm font-medium">RERA ID: 12345678</p>
+<p class="text-[#666e85] text-sm font-medium">RERA ID: <span x-text="settings.rera_id || 'Loading...'"></span></p>
 </div>
 </div>
 <div class="flex gap-6 mt-4">
@@ -264,5 +264,30 @@ WhatsApp
 </div>
 </main>
 @stack('scripts')
+
+<script>
+function welcomeData() {
+    return {
+        settings: {},
+        
+        async init() {
+            await this.loadSettings();
+        },
+        
+        async loadSettings() {
+            try {
+                const response = await fetch('/api/settings');
+                const data = await response.json();
+                if (data.success) {
+                    this.settings = data.data;
+                }
+            } catch (error) {
+                console.error('Failed to load settings:', error);
+            }
+        }
+    }
+}
+</script>
+
 </body>
 </html>

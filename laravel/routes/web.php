@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\PropertyController;
+use App\Http\Controllers\Admin\SettingsController;
 
 /*
 |--------------------------------------------------------------------------
@@ -45,9 +46,8 @@ Route::middleware('auth')->group(function () {
         return view('admin.analytics');
     });
 
-    Route::get('/admin/settings', function () {
-        return view('admin.settings');
-    });
+    Route::get('/admin/settings', [SettingsController::class, 'edit']);
+    Route::post('/admin/settings/update', [SettingsController::class, 'update']);
 
     // Logout Route
     Route::post('/logout', [LoginController::class, 'logout']);
