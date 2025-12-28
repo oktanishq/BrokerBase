@@ -21,6 +21,7 @@ class Property extends Model
         'address',
         'latitude',
         'longitude',
+        'maps_embed_url',
         'bedrooms',
         'bathrooms',
         'status',

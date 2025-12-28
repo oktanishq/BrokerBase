@@ -138,7 +138,9 @@
                                    class="block w-full rounded-lg border-gray-300 pl-7 py-3 pr-12 focus:border-amber-500 focus:ring-amber-500 sm:text-sm" 
                                    placeholder="0.00" 
                                    type="number"
-                                   step="0.01">
+                                   step="0.01"
+                                   :class="validationErrors.price ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : ''">
+                            <p x-show="validationErrors.price" class="mt-1 text-sm text-red-600" x-text="validationErrors.price"></p>
                             <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
                                 <span class="text-gray-500 sm:text-sm">USD</span>
                             </div>
@@ -150,7 +152,9 @@
                             <input x-model="formData.area" 
                                    class="block w-full rounded-lg border-gray-300 py-3 px-4 pr-12 focus:border-amber-500 focus:ring-amber-500 sm:text-sm" 
                                    placeholder="Total area" 
-                                   type="number">
+                                   type="number"
+                                   :class="validationErrors.area ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : ''">
+                            <p x-show="validationErrors.area" class="mt-1 text-sm text-red-600" x-text="validationErrors.area"></p>
                             <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
                                 <span class="text-gray-500 sm:text-sm">sqft</span>
                             </div>
@@ -233,28 +237,20 @@
                 </div>
 
                 <div class="space-y-2">
-                    <label class="block text-sm font-bold text-gray-700">Address Search</label>
+                    <label class="block text-sm font-bold text-gray-700">Address <span class="text-xs text-gray-500">(Optional)</span></label>
                     <div class="relative">
                         <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                             <span class="material-symbols-outlined text-gray-400">search</span>
                         </div>
                         <input x-model="formData.address" 
                                class="w-full pl-10 rounded-lg border-gray-300 shadow-sm focus:border-amber-500 focus:ring-amber-500 py-3 px-4 text-sm" 
-                               placeholder="Search for building or street..." 
+                               placeholder="Enter property address..." 
                                type="text">
                     </div>
                 </div>
 
-                <div @click="addMapPin($event)" 
-                     class="relative h-64 bg-gray-200 rounded-lg border border-gray-300 flex flex-col items-center justify-center text-gray-500 group cursor-crosshair overflow-hidden">
-                    <div class="absolute inset-0 bg-[url('https://maps.googleapis.com/maps/api/staticmap?center=40.7128,-74.0060&zoom=13&size=600x300&sensor=false&key=YOUR_API_KEY_HERE')] bg-cover opacity-50 grayscale group-hover:grayscale-0 transition-all"></div>
-                    <div class="z-10 bg-white/90 backdrop-blur px-4 py-2 rounded-full shadow-sm flex items-center gap-2">
-                        <span class="material-symbols-outlined text-red-500">pin_drop</span>
-                        <span class="text-sm font-medium">Click on map to pin exact location</span>
-                    </div>
-                </div>
-
-                <div class="grid grid-cols-2 gap-6">
+                <!-- Lat/Lon fields + Reload button in same row -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div class="space-y-2">
                         <label class="block text-xs font-bold text-gray-500 uppercase">Latitude (Optional)</label>
                         <input x-model="formData.latitude" 
@@ -268,6 +264,36 @@
                                class="w-full rounded-lg border-gray-300 py-2 px-3 text-sm focus:border-amber-500 focus:ring-amber-500" 
                                placeholder="e.g. 55.2708" 
                                type="text">
+                    </div>
+                    <div class="space-y-2">
+                        <label class="block text-xs font-bold text-gray-500 uppercase invisible">Reload Map</label>
+                        <button @click="loadMap()" 
+                                type="button" 
+                                class="w-full px-3 py-2 bg-royal-blue text-white rounded-lg hover:bg-blue-800 transition-colors font-medium flex items-center justify-center gap-2 h-10">
+                            <span class="material-symbols-outlined text-sm">refresh</span>
+                            <span class="hidden sm:inline" x-text="formData.mapsEmbedUrl ? 'Reload' : 'Load'"></span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="flex flex-col gap-4">
+                    <!-- Google Maps Embed Area -->
+                    <div x-show="formData.mapsEmbedUrl" class="relative h-64 bg-gray-100 rounded-lg border border-gray-300 overflow-hidden">
+                        <iframe x-ref="mapFrame"
+                                :src="formData.mapsEmbedUrl"
+                                class="w-full h-full border-0"
+                                allowfullscreen
+                                loading="lazy"
+                                referrerpolicy="no-referrer-when-downgrade">
+                        </iframe>
+                    </div>
+                    
+                    <!-- Loading State -->
+                    <div x-show="isLoadingMap" class="flex items-center justify-center h-64 bg-gray-100 rounded-lg border border-gray-300">
+                        <div class="flex items-center gap-3">
+                            <span class="animate-spin rounded-full h-6 w-6 border-b-2 border-royal-blue"></span>
+                            <span class="text-gray-600 font-medium">Loading map...</span>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -381,29 +407,41 @@
 
         <!-- Sticky Bottom Navigation -->
         <div class="sticky bottom-0 bg-white border-t border-gray-200 px-6 py-4 flex items-center justify-between z-20">
-            <button @click="saveDraft()" 
-                    type="button" 
-                    class="text-sm font-medium text-gray-500 hover:text-gray-700 transition-colors">
-                Save as Draft
-            </button>
+                <button @click="saveDraft()" 
+                        :disabled="isSubmitting"
+                        type="button" 
+                        class="text-sm font-medium text-gray-500 hover:text-gray-700 transition-colors disabled:opacity-50">
+                    Save as Draft
+                </button>
             <div class="flex items-center gap-3">
                 <button @click="previousStep()" 
                         x-show="currentStep > 0" 
+                        :disabled="isSubmitting"
                         type="button" 
-                        class="px-5 py-2.5 rounded-lg border border-gray-300 text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-royal-blue transition-all">
+                        class="px-5 py-2.5 rounded-lg border border-gray-300 text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-royal-blue transition-all disabled:opacity-50">
                     Back
                 </button>
                 <button @click="nextStep()" 
                         x-show="currentStep < 3" 
+                        :disabled="isSubmitting"
                         type="button" 
-                        class="px-5 py-2.5 rounded-lg border border-transparent text-sm font-bold text-white bg-amber-500 hover:bg-amber-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amber-500 shadow-md shadow-amber-200 transition-all">
-                    Next
+                        class="px-5 py-2.5 rounded-lg border border-transparent text-sm font-bold text-white bg-amber-500 hover:bg-amber-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amber-500 shadow-md shadow-amber-200 transition-all disabled:opacity-50 disabled:cursor-not-allowed">
+                    <span x-show="!isSubmitting">Next</span>
+                    <span x-show="isSubmitting" class="flex items-center gap-2">
+                        <span class="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></span>
+                        Processing...
+                    </span>
                 </button>
                 <button @click="submitForm()" 
                         x-show="currentStep === 3" 
+                        :disabled="isSubmitting"
                         type="button" 
-                        class="px-5 py-2.5 rounded-lg border border-transparent text-sm font-bold text-white bg-amber-500 hover:bg-amber-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amber-500 shadow-md shadow-amber-200 transition-all">
-                    Publish Live
+                        class="px-5 py-2.5 rounded-lg border border-transparent text-sm font-bold text-white bg-amber-500 hover:bg-amber-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amber-500 shadow-md shadow-amber-200 transition-all disabled:opacity-50 disabled:cursor-not-allowed">
+                    <span x-show="!isSubmitting">Publish Live</span>
+                    <span x-show="isSubmitting" class="flex items-center gap-2">
+                        <span class="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></span>
+                        Saving...
+                    </span>
                 </button>
             </div>
         </div>
@@ -477,6 +515,7 @@ function propertyCreationForm() {
         currentStep: 0,
         showExitModal: false,
         isSubmitting: false,
+        validationErrors: {}, // Store validation errors
         
         steps: ['Basics', 'Location', 'Media', 'Vault'],
         stepTitles: ['Basics', 'Location', 'Media', 'Private Vault'],
@@ -502,6 +541,7 @@ function propertyCreationForm() {
             address: '',
             latitude: '',
             longitude: '',
+            mapsEmbedUrl: '', // Google Maps embed URL
             images: [],
             watermark: true,
             ownerName: '',
@@ -509,6 +549,8 @@ function propertyCreationForm() {
             netPrice: '',
             privateNotes: ''
         },
+
+        isLoadingMap: false,
 
         init() {
             // Load draft data from localStorage
@@ -518,10 +560,22 @@ function propertyCreationForm() {
             setInterval(() => {
                 this.autoSaveDraft();
             }, 30000);
+            
+            // Auto-load map if coordinates are pre-filled
+            this.$nextTick(() => {
+                if (this.formData.latitude && this.formData.longitude) {
+                    this.loadMap();
+                }
+            });
         },
 
-        // Navigation methods
+        // Navigation methods with validation
         nextStep() {
+            // Validate current step before proceeding
+            if (!this.validateCurrentStep()) {
+                return; // Don't proceed if validation fails
+            }
+            
             if (this.currentStep < 3) {
                 this.currentStep++;
                 this.saveDraft();
@@ -533,6 +587,47 @@ function propertyCreationForm() {
                 this.currentStep--;
                 this.saveDraft();
             }
+        },
+
+        // Validate current step
+        validateCurrentStep() {
+            this.validationErrors = {}; // Clear previous errors
+            
+            switch (this.currentStep) {
+                case 0: // Basics step
+                    if (!this.formData.title.trim()) {
+                        this.validationErrors.title = 'Property title is required';
+                        return false;
+                    }
+                    if (!this.formData.type) {
+                        this.validationErrors.type = 'Property type is required';
+                        return false;
+                    }
+                    break;
+                    
+                case 1: // Location step
+                    // Address is optional - no validation needed
+                    // Validate format if coordinates provided
+                    if (this.formData.latitude && isNaN(parseFloat(this.formData.latitude))) {
+                        this.validationErrors.latitude = 'Invalid latitude format';
+                        return false;
+                    }
+                    if (this.formData.longitude && isNaN(parseFloat(this.formData.longitude))) {
+                        this.validationErrors.longitude = 'Invalid longitude format';
+                        return false;
+                    }
+                    break;
+                    
+                case 2: // Media step
+                    // Images are optional for now
+                    break;
+                    
+                case 3: // Vault step
+                    // Private fields are optional
+                    break;
+            }
+            
+            return true;
         },
 
         // Counter methods
@@ -596,13 +691,51 @@ function propertyCreationForm() {
 
         // Map interaction
         addMapPin(event) {
-            const rect = event.currentTarget.getBoundingClientRect();
-            const x = event.clientX - rect.left;
-            const y = event.clientY - rect.top;
+            // This function is now replaced by loadMap()
+            console.log('Map interaction disabled - use Retry to load instead');
+        },
+
+        // Load Google Maps embed
+        loadMap() {
+            // Check if coordinates are provided
+            if (!this.formData.latitude || !this.formData.longitude) {
+                alert('Please enter latitude and longitude to load the map');
+                return;
+            }
             
-            // TODO: Implement actual map pin dropping logic
-            console.log('Map pin clicked at:', x, y);
-            this.saveDraft();
+            // Validate coordinates
+            const lat = parseFloat(this.formData.latitude);
+            const lng = parseFloat(this.formData.longitude);
+            
+            if (isNaN(lat) || isNaN(lng)) {
+                alert('Please enter valid latitude and longitude values');
+                return;
+            }
+            
+            // Validate coordinate ranges
+            if (lat < -90 || lat > 90) {
+                alert('Latitude must be between -90 and 90');
+                return;
+            }
+            
+            if (lng < -180 || lng > 180) {
+                alert('Longitude must be between -180 and 180');
+                return;
+            }
+            
+            // Set loading state
+            this.isLoadingMap = true;
+            
+            // Generate Google Maps embed URL with disabled controls
+            const mapsUrl = `https://maps.google.com/maps?q=${lat},${lng}&z=15&output=embed&t=&z=15&ie=UTF8&iwloc=&output=embed&maptype=satellite&source=embed&disableDefaultUI=true&zoomControl=false&mapTypeControl=false&streetViewControl=false&rotateControl=false&fullscreenControl=false&scrollwheel=false`;
+            
+            // Simulate loading time for better UX
+            setTimeout(() => {
+                this.formData.mapsEmbedUrl = mapsUrl;
+                this.isLoadingMap = false;
+                this.saveDraft(); // Save the map URL to draft
+                console.log('Map loaded successfully:', mapsUrl);
+            }, 1000);
         },
 
         // Draft saving
@@ -634,23 +767,80 @@ function propertyCreationForm() {
             this.isSubmitting = true;
             
             try {
-                // For now, just show success message
-                // TODO: Implement actual form submission
-                await new Promise(resolve => setTimeout(resolve, 1000));
-                
-                alert('Property published successfully!');
-                
-                // Clear draft and redirect
-                localStorage.removeItem('propertyDraft');
-                window.location.href = '{{ route('admin.inventory') }}';
+                // Prepare form data for API
+                const submitData = {
+                    title: this.formData.title,
+                    property_type: this.formData.type,
+                    price: this.formData.price ? parseFloat(this.formData.price) : null,
+                    area_sqft: this.formData.area ? parseInt(this.formData.area) : null,
+                    bedrooms: parseInt(this.formData.bedrooms),
+                    bathrooms: parseInt(this.formData.bathrooms),
+                    description: this.formData.description,
+                    amenities: this.formData.amenities,
+                    address: this.formData.address,
+                    latitude: this.formData.latitude ? parseFloat(this.formData.latitude) : null,
+                    longitude: this.formData.longitude ? parseFloat(this.formData.longitude) : null,
+                    maps_embed_url: this.formData.mapsEmbedUrl || null, // Include Google Maps embed URL
+                    owner_name: this.formData.ownerName,
+                    owner_phone: this.formData.ownerPhone,
+                    net_price: this.formData.netPrice ? parseFloat(this.formData.netPrice) : null,
+                    private_notes: this.formData.privateNotes,
+                    watermark_enabled: this.formData.watermark,
+                    status: 'draft' // Save as draft first
+                };
+
+                // Submit to API
+                const response = await fetch('/api/admin/properties', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                    },
+                    body: JSON.stringify(submitData)
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    // Success - clear draft and redirect
+                    localStorage.removeItem('propertyDraft');
+                    window.location.href = '/admin/inventory';
+                } else {
+                    // Handle validation errors
+                    this.handleApiErrors(result.errors || {});
+                    alert('Error: ' + (result.message || 'Failed to save property'));
+                }
                 
             } catch (error) {
                 console.error('Error submitting form:', error);
-                alert('Error submitting form. Please try again.');
+                alert('Network error. Please check your connection and try again.');
             } finally {
                 this.isSubmitting = false;
             }
-        }
+        },
+
+        // Handle API validation errors
+        handleApiErrors(errors) {
+            // Clear previous errors
+            this.validationErrors = {};
+            
+            // Map API errors to form fields
+            const fieldMapping = {
+                'title': 'title',
+                'property_type': 'type',
+                'price': 'price',
+                'area_sqft': 'area',
+                'address': 'address',
+                'latitude': 'latitude',
+                'longitude': 'longitude',
+                'maps_embed_url': 'mapsEmbedUrl'
+            };
+            
+            Object.keys(errors).forEach(field => {
+                const formField = fieldMapping[field] || field;
+                this.validationErrors[formField] = errors[field][0];
+            });
+        },
     }
 }
 </script>
