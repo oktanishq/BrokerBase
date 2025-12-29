@@ -52,9 +52,13 @@
         </div>
 
         <!-- Specs -->
-        <p class="text-gray-500 text-xs font-medium uppercase tracking-wide mt-2 pt-3 border-t border-gray-50" 
-           x-text="`${property.type === 'Office' || property.type === 'Commercial' ? property.type : (property.bedrooms || 3) + ' Bed')} • ${(property.bathrooms || 2) + ' Bath'} • ${Number(property.sqft || 1500).toLocaleString() + ' sqft'}`">
-        </p>
+        <div class="text-gray-500 text-xs font-medium uppercase tracking-wide mt-2 pt-3 border-t border-gray-50">
+            <span x-text="property.type === 'Office' || property.type === 'Commercial' ? property.type : (property.bedrooms || 3) + ' Bed'"></span>
+            <span> • </span>
+            <span x-text="(property.bathrooms || 2) + ' Bath'"></span>
+            <span> • </span>
+            <span x-text="Number(property.sqft || 1500).toLocaleString() + ' sqft'"></span>
+        </div>
     </div>
 
     <!-- Action Buttons -->
