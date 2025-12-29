@@ -665,23 +665,59 @@ function propertyCreationForm() {
         handleFileSelect(event) {
             const files = Array.from(event.target.files);
             this.processFiles(files);
+            
+            // Clear the file input to allow re-uploading the same file
+            event.target.value = '';
         },
 
         processFiles(files) {
-            files.forEach(file => {
+            // Limit maximum number of images (e.g., 10 images)
+            const maxImages = 10;
+            const availableSlots = maxImages - this.formData.images.length;
+            
+            if (availableSlots <= 0) {
+                alert(`Maximum ${maxImages} images allowed`);
+                return;
+            }
+            
+            const filesToProcess = files.slice(0, availableSlots);
+            
+            filesToProcess.forEach(file => {
                 if (file.type.startsWith('image/')) {
-                    const reader = new FileReader();
-                    reader.onload = (e) => {
-                        this.formData.images.push({
-                            file: file,
-                            url: e.target.result,
-                            name: file.name
-                        });
-                        this.saveDraft();
-                    };
-                    reader.readAsDataURL(file);
+                    // Check file size (max 10MB)
+                    const maxSize = 10 * 1024 * 1024; // 10MB
+                    if (file.size > maxSize) {
+                        alert(`File "${file.name}" is too large. Maximum size is 10MB.`);
+                        return;
+                    }
+                    
+                    // Check if file already exists in the current selection
+                    const fileExists = this.formData.images.some(img => 
+                        img.name === file.name && img.size === file.size
+                    );
+                    
+                    if (!fileExists) {
+                        const reader = new FileReader();
+                        reader.onload = (e) => {
+                            this.formData.images.push({
+                                file: file,
+                                url: e.target.result,
+                                name: file.name,
+                                size: file.size
+                            });
+                            this.saveDraft();
+                        };
+                        reader.readAsDataURL(file);
+                    } else {
+                        console.log('File already added:', file.name);
+                    }
                 }
             });
+            
+            // Show warning if files were truncated
+            if (files.length > filesToProcess.length) {
+                alert(`Only ${filesToProcess.length} files processed. Maximum ${maxImages} images allowed.`);
+            }
         },
 
         removeImage(index) {
@@ -767,36 +803,45 @@ function propertyCreationForm() {
             this.isSubmitting = true;
             
             try {
-                // Prepare form data for API
-                const submitData = {
-                    title: this.formData.title,
-                    property_type: this.formData.type,
-                    price: this.formData.price ? parseFloat(this.formData.price) : null,
-                    area_sqft: this.formData.area ? parseInt(this.formData.area) : null,
-                    bedrooms: parseInt(this.formData.bedrooms),
-                    bathrooms: parseInt(this.formData.bathrooms),
-                    description: this.formData.description,
-                    amenities: this.formData.amenities,
-                    address: this.formData.address,
-                    latitude: this.formData.latitude ? parseFloat(this.formData.latitude) : null,
-                    longitude: this.formData.longitude ? parseFloat(this.formData.longitude) : null,
-                    maps_embed_url: this.formData.mapsEmbedUrl || null, // Include Google Maps embed URL
-                    owner_name: this.formData.ownerName,
-                    owner_phone: this.formData.ownerPhone,
-                    net_price: this.formData.netPrice ? parseFloat(this.formData.netPrice) : null,
-                    private_notes: this.formData.privateNotes,
-                    watermark_enabled: this.formData.watermark,
-                    status: 'draft' // Save as draft first
-                };
+                // Prepare FormData for multipart file upload
+                const formData = new FormData();
+                
+                // Append text fields
+                formData.append('title', this.formData.title);
+                formData.append('property_type', this.formData.type);
+                formData.append('price', this.formData.price || '');
+                formData.append('area_sqft', this.formData.area || '');
+                formData.append('bedrooms', this.formData.bedrooms);
+                formData.append('bathrooms', this.formData.bathrooms);
+                formData.append('description', this.formData.description || '');
+                formData.append('amenities', JSON.stringify(this.formData.amenities));
+                formData.append('address', this.formData.address || '');
+                formData.append('latitude', this.formData.latitude || '');
+                formData.append('longitude', this.formData.longitude || '');
+                formData.append('maps_embed_url', this.formData.mapsEmbedUrl || '');
+                formData.append('owner_name', this.formData.ownerName || '');
+                formData.append('owner_phone', this.formData.ownerPhone || '');
+                formData.append('net_price', this.formData.netPrice || '');
+                formData.append('private_notes', this.formData.privateNotes || '');
+                formData.append('watermark_enabled', this.formData.watermark ? '1' : '0');
+                formData.append('status', 'draft'); // Save as draft first
+                
+                // Append image files
+                if (this.formData.images && this.formData.images.length > 0) {
+                    this.formData.images.forEach((image, index) => {
+                        if (image.file) {
+                            formData.append('images[]', image.file);
+                        }
+                    });
+                }
 
-                // Submit to API
+                // Submit to API with FormData
                 const response = await fetch('/api/admin/properties', {
                     method: 'POST',
                     headers: {
-                        'Content-Type': 'application/json',
                         'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
                     },
-                    body: JSON.stringify(submitData)
+                    body: formData
                 });
 
                 const result = await response.json();

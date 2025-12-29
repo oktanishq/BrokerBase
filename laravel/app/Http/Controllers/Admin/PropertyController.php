@@ -92,7 +92,14 @@ class PropertyController extends Controller
             'label_type' => 'nullable|in:none,new,popular,verified,custom',
             'custom_label_color' => 'nullable|string|regex:/^#[0-9A-F]{6}$/i',
             'watermark_enabled' => 'nullable|boolean',
+            // Handle amenities as JSON string from FormData
+            'amenities' => 'nullable|json',
         ]);
+
+        // Parse amenities JSON string if it exists
+        if (isset($validated['amenities']) && is_string($validated['amenities'])) {
+            $validated['amenities'] = json_decode($validated['amenities'], true) ?? [];
+        }
 
         try {
             $property = Property::create([
@@ -107,8 +114,13 @@ class PropertyController extends Controller
             ]);
 
             // Handle image uploads
-            if ($request->hasFile('images')) {
-                $this->handleImageUploads($property, $request->file('images'));
+            if ($request->hasFile('images') && !empty($request->file('images'))) {
+                $images = $request->file('images');
+                // Handle both single file and array of files
+                if (!is_array($images)) {
+                    $images = [$images];
+                }
+                $this->handleImageUploads($property, $images);
             }
 
             return response()->json([
@@ -194,8 +206,13 @@ class PropertyController extends Controller
             }
 
             // Handle new image uploads
-            if ($request->hasFile('images')) {
-                $this->handleImageUploads($property, $request->file('images'));
+            if ($request->hasFile('images') && !empty($request->file('images'))) {
+                $images = $request->file('images');
+                // Handle both single file and array of files
+                if (!is_array($images)) {
+                    $images = [$images];
+                }
+                $this->handleImageUploads($property, $images);
             }
 
             return response()->json([
@@ -305,64 +322,57 @@ class PropertyController extends Controller
 
         foreach ($images as $index => $image) {
             if (!$image->isValid()) {
+                Log::warning("Invalid image file at index {$index}");
                 continue;
             }
 
-            $originalName = $image->getClientOriginalName();
-            $extension = $image->getClientOriginalExtension();
-            $fileName = Str::uuid() . '.' . $extension;
-            
-            // Create directory structure
-            $directory = "properties/{$userId}/{$propertyId}/" . ($index === 0 ? 'primary' : 'gallery');
-            
-            // Store image
-            $path = $image->storeAs($directory, $fileName, 'public');
-            
-            // Add watermark if enabled
-            if ($property->watermark_enabled) {
-                $this->applyWatermark($path);
+            // Validate image using the service
+            $validation = $this->imageUploadService->validateImage($image);
+            if (!$validation['valid']) {
+                Log::warning("Image validation failed: " . implode(', ', $validation['errors']));
+                continue;
             }
-            
-            // Store metadata
-            $imageMetadata[] = [
-                'path' => $path,
-                'original_name' => $originalName,
-                'size' => $image->getSize(),
-                'mime_type' => $image->getMimeType(),
-                'order' => $index + 1,
-                'is_watermarked' => $property->watermark_enabled,
-            ];
-            
-            // Set first image as primary
-            if ($index === 0 && !$property->primary_image_path) {
-                $property->update(['primary_image_path' => $path]);
+
+            try {
+                // Use the ImageUploadService to handle the upload
+                $uploadResult = $this->imageUploadService->uploadPropertyImages($image, $userId, $propertyId, $index + 1);
+                
+                // Add watermark if enabled
+                if ($property->watermark_enabled) {
+                    $this->imageUploadService->applyWatermark($uploadResult['path']);
+                }
+                
+                // Store metadata
+                $imageMetadata[] = [
+                    'path' => $uploadResult['path'],
+                    'original_name' => $uploadResult['original_name'],
+                    'size' => $uploadResult['size'],
+                    'mime_type' => $uploadResult['mime_type'],
+                    'order' => $uploadResult['order'],
+                    'is_watermarked' => $property->watermark_enabled,
+                ];
+                
+                // Set first image as primary
+                if ($index === 0 && !$property->primary_image_path) {
+                    $property->update(['primary_image_path' => $uploadResult['path']]);
+                }
+                
+                Log::info("Image uploaded successfully: {$uploadResult['path']}");
+                
+            } catch (\Exception $e) {
+                Log::error("Image upload failed for index {$index}: " . $e->getMessage());
+                continue;
             }
         }
         
         // Update gallery images
         if (!empty($imageMetadata)) {
             $property->update(['images_metadata' => $imageMetadata]);
+            Log::info("Updated property {$propertyId} with " . count($imageMetadata) . " images");
         }
     }
 
-    /**
-     * Apply watermark to image (simplified version)
-     */
-    private function applyWatermark(string $imagePath): void
-    {
-        try {
-            $fullPath = Storage::disk('public')->path($imagePath);
-            
-            // Simple text watermark - you can enhance this with Intervention Image
-            $watermarkText = 'Elite Homes';
-            // For now, we'll just log the watermark attempt
-            // TODO: Implement actual watermark using Intervention Image
-            Log::info("Watermark applied to: {$imagePath}");
-            
-        } catch (\Exception $e) {
-            Log::warning('Watermark application failed: ' . $e->getMessage());
-        }
-    }
+
 
     /**
      * Delete all property images
@@ -370,16 +380,23 @@ class PropertyController extends Controller
     private function deletePropertyImages(Property $property): void
     {
         try {
-            // Delete primary image
+            $imagePaths = [];
+            
+            // Collect all image paths
             if ($property->primary_image_path) {
-                Storage::disk('public')->delete($property->primary_image_path);
+                $imagePaths[] = $property->primary_image_path;
             }
             
-            // Delete gallery images
             if ($property->images_metadata) {
                 foreach ($property->images_metadata as $image) {
-                    Storage::disk('public')->delete($image['path']);
+                    $imagePaths[] = $image['path'];
                 }
+            }
+            
+            // Use ImageUploadService to delete all images and their variants
+            if (!empty($imagePaths)) {
+                $this->imageUploadService->deletePropertyImages($imagePaths);
+                Log::info("Deleted " . count($imagePaths) . " images for property {$property->id}");
             }
             
             // Delete directory if empty
