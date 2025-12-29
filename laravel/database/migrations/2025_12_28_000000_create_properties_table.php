@@ -23,7 +23,7 @@ return new class extends Migration
             $table->decimal('net_price', 12, 2)->nullable();
             
             // Location
-            $table->text('address');
+            $table->text('address')->nullable(); // Made optional to match frontend
             $table->decimal('latitude', 10, 8)->nullable();
             $table->decimal('longitude', 11, 8)->nullable();
             

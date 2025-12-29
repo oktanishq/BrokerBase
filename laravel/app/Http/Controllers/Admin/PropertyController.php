@@ -73,11 +73,11 @@ class PropertyController extends Controller
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
-            'property_type' => 'required|in:apartment,villa,plot,commercial,office',
+            'property_type' => 'required|in:apartment,villa,plot,commercial',
             'price' => 'nullable|numeric|min:0',
             'area_sqft' => 'nullable|integer|min:0',
             'net_price' => 'nullable|numeric|min:0',
-            'address' => 'required|string',
+            'address' => 'nullable|string', // Made optional to match frontend
             'latitude' => 'nullable|numeric',
             'longitude' => 'nullable|numeric',
             'maps_embed_url' => 'nullable|url',
@@ -176,11 +176,11 @@ class PropertyController extends Controller
         $validated = $request->validate([
             'title' => 'sometimes|required|string|max:255',
             'description' => 'nullable|string',
-            'property_type' => 'sometimes|required|in:apartment,villa,plot,commercial,office',
+            'property_type' => 'sometimes|required|in:apartment,villa,plot,commercial',
             'price' => 'nullable|numeric|min:0',
             'area_sqft' => 'nullable|integer|min:0',
             'net_price' => 'nullable|numeric|min:0',
-            'address' => 'sometimes|required|string',
+            'address' => 'nullable|string',
             'latitude' => 'nullable|numeric',
             'longitude' => 'nullable|numeric',
             'maps_embed_url' => 'nullable|url',
@@ -272,7 +272,7 @@ class PropertyController extends Controller
         $validated = $request->validate([
             'title' => 'nullable|string|max:255',
             'description' => 'nullable|string',
-            'property_type' => 'nullable|in:apartment,villa,plot,commercial,office',
+            'property_type' => 'nullable|in:apartment,villa,plot,commercial',
             'price' => 'nullable|numeric|min:0',
             'area_sqft' => 'nullable|integer|min:0',
             'address' => 'nullable|string',

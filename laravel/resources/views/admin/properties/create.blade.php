@@ -839,21 +839,38 @@ function propertyCreationForm() {
                 const response = await fetch('/api/admin/properties', {
                     method: 'POST',
                     headers: {
-                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                        'Accept': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest'
                     },
                     body: formData
                 });
 
-                const result = await response.json();
+                const contentType = response.headers.get('content-type');
+                let result;
+                
+                if (contentType && contentType.includes('application/json')) {
+                    result = await response.json();
+                } else {
+                    // If response is not JSON, get text and try to parse
+                    const text = await response.text();
+                    console.error('Non-JSON response:', text);
+                    throw new Error('Server returned an error. Please check the console for details.');
+                }
 
                 if (result.success) {
                     // Success - clear draft and redirect
                     localStorage.removeItem('propertyDraft');
+                    alert('Property created successfully!');
                     window.location.href = '/admin/inventory';
                 } else {
                     // Handle validation errors
                     this.handleApiErrors(result.errors || {});
-                    alert('Error: ' + (result.message || 'Failed to save property'));
+                    
+                    // Show detailed error message
+                    const errorMessage = result.message || 'Failed to save property. Please check the form for errors.';
+                    alert('Error: ' + errorMessage);
+                    console.error('API Error:', result);
                 }
                 
             } catch (error) {
@@ -884,7 +901,18 @@ function propertyCreationForm() {
             Object.keys(errors).forEach(field => {
                 const formField = fieldMapping[field] || field;
                 this.validationErrors[formField] = errors[field][0];
+                console.log(`Validation error for ${field}: ${errors[field][0]}`);
             });
+            
+            // Scroll to first error field
+            const firstErrorField = Object.keys(this.validationErrors)[0];
+            if (firstErrorField) {
+                const element = document.querySelector(`[x-model*="${firstErrorField}"]`);
+                if (element) {
+                    element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    element.focus();
+                }
+            }
         },
     }
 }
