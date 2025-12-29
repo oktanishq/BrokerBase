@@ -300,4 +300,69 @@ class Property extends Model
         
         return $labels[$this->label_type] ?? null;
     }
+
+    /**
+     * Get property type label
+     */
+    public function getTypeLabelAttribute(): string
+    {
+        return self::PROPERTY_TYPES[$this->property_type] ?? ucfirst($this->property_type);
+    }
+
+    /**
+     * Get image URL for frontend
+     */
+    public function getImageAttribute(): ?string
+    {
+        return $this->primary_image_url;
+    }
+
+    /**
+     * Get location (alias for address)
+     */
+    public function getLocationAttribute(): ?string
+    {
+        return $this->address;
+    }
+
+    /**
+     * Get sqft (alias for area_sqft)
+     */
+    public function getSqftAttribute(): ?int
+    {
+        return $this->area_sqft;
+    }
+
+    /**
+     * Get views count
+     */
+    public function getViewsAttribute(): int
+    {
+        return $this->views_count ?? 0;
+    }
+
+    /**
+     * Get frontend-formatted property data
+     */
+    public function getFrontendDataAttribute(): array
+    {
+        return [
+            'id' => $this->id,
+            'title' => $this->title,
+            'price' => $this->formatted_price,
+            'location' => $this->location,
+            'image' => $this->image,
+            'views' => $this->views,
+            'bedrooms' => $this->bedrooms,
+            'bathrooms' => $this->bathrooms,
+            'sqft' => $this->sqft,
+            'type' => $this->type_label,
+            'status' => $this->status,
+            'is_featured' => $this->is_featured,
+            'label' => $this->label_type,
+            'custom_label_color' => $this->custom_label_color,
+            'created_at' => $this->created_at,
+            'updated_at' => $this->updated_at,
+        ];
+    }
 }

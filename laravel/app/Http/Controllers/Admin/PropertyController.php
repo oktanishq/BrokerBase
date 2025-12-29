@@ -45,9 +45,14 @@ class PropertyController extends Controller
         $properties = $query->orderBy('created_at', 'desc')
                            ->paginate($request->get('per_page', 10));
 
+        // Transform properties to match frontend expectations
+        $transformedProperties = $properties->map(function ($property) {
+            return $property->frontend_data;
+        });
+
         return response()->json([
             'success' => true,
-            'data' => $properties->items(),
+            'data' => $transformedProperties->toArray(),
             'pagination' => [
                 'current_page' => $properties->currentPage(),
                 'last_page' => $properties->lastPage(),
