@@ -110,7 +110,7 @@
         <div class="w-px h-6 bg-gray-200"></div>
 
         <!-- Edit Button -->
-        <button class="flex-1 flex flex-col gap-1 py-1 justify-center items-center text-gray-400 hover:text-blue-600 transition-colors group/btn" title="Edit Property">
+        <button @click="$dispatch('open-edit-modal', {{ json_encode($prop) }})" class="flex-1 flex flex-col gap-1 py-1 justify-center items-center text-gray-400 hover:text-blue-600 transition-colors group/btn" title="Edit Property">
             <span class="material-symbols-outlined group-hover/btn:scale-110 transition-transform">edit</span>
             <span class="text-[10px] font-medium">Edit</span>
         </button>
