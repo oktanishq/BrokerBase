@@ -29,7 +29,7 @@ Route::middleware(['auth', 'web'])->group(function () {
     Route::get('/admin/properties', [PropertyController::class, 'index']);
     Route::post('/admin/properties', [PropertyController::class, 'store']);
     Route::get('/admin/properties/{property}', [PropertyController::class, 'show']);
-    Route::put('/admin/properties/{property}', [PropertyController::class, 'update']);
+    Route::match(['put', 'patch'], '/admin/properties/{property}', [PropertyController::class, 'update']);
     Route::delete('/admin/properties/{property}', [PropertyController::class, 'destroy']);
     
     // Draft operations
@@ -45,6 +45,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/admin/properties-spa', [PropertyController::class, 'index']);
     Route::post('/admin/properties-spa', [PropertyController::class, 'store']);
     Route::get('/admin/properties-spa/{property}', [PropertyController::class, 'show']);
-    Route::put('/admin/properties-spa/{property}', [PropertyController::class, 'update']);
+    Route::match(['put', 'patch'], '/admin/properties-spa/{property}', [PropertyController::class, 'update']);
     Route::delete('/admin/properties-spa/{property}', [PropertyController::class, 'destroy']);
 });

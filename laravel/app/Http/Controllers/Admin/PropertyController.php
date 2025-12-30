@@ -223,7 +223,7 @@ class PropertyController extends Controller
             return response()->json([
                 'success' => true,
                 'message' => 'Property updated successfully',
-                'data' => $property->fresh()->load('user:id,name')
+                'data' => $property->fresh()->frontend_data
             ]);
 
         } catch (\Exception $e) {

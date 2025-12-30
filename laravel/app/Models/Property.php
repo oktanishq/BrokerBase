@@ -361,6 +361,10 @@ class Property extends Model
             'is_featured' => $this->is_featured,
             'label' => $this->label_type,
             'custom_label_color' => $this->custom_label_color,
+            'owner_name' => $this->owner_name,
+            'owner_phone' => $this->owner_phone,
+            'net_price' => $this->net_price,
+            'private_notes' => $this->private_notes,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ];
