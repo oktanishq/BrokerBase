@@ -103,7 +103,7 @@ class Property extends Model
     }
 
     /**
-     * Get all images with metadata
+     * Get all images with metadata and URLs
      */
     public function getAllImagesAttribute(): array
     {
@@ -113,6 +113,7 @@ class Property extends Model
         if ($this->primary_image_path) {
             $images[] = [
                 'path' => $this->primary_image_path,
+                'url' => asset('storage/' . $this->primary_image_path),
                 'type' => 'primary',
                 'is_primary' => true,
             ];
@@ -123,6 +124,7 @@ class Property extends Model
             foreach ($this->images_metadata as $image) {
                 $images[] = [
                     'path' => $image['path'],
+                    'url' => asset('storage/' . $image['path']),
                     'type' => 'gallery',
                     'is_primary' => false,
                     'original_name' => $image['original_name'] ?? null,
@@ -147,6 +149,87 @@ class Property extends Model
         }
         
         return asset('storage/' . $this->primary_image_path);
+    }
+
+    /**
+     * Get name (alias for title)
+     */
+    public function getNameAttribute(): ?string
+    {
+        return $this->title;
+    }
+
+    /**
+     * Get location (alias for address)
+     */
+    public function getLocationAttribute(): ?string
+    {
+        return $this->address;
+    }
+
+    /**
+     * Get beds (alias for bedrooms)
+     */
+    public function getBedsAttribute(): ?int
+    {
+        return $this->bedrooms;
+    }
+
+    /**
+     * Get baths (alias for bathrooms)
+     */
+    public function getBathsAttribute(): ?int
+    {
+        return $this->bathrooms;
+    }
+
+    /**
+     * Get sqft (alias for area_sqft)
+     */
+    public function getSqftAttribute(): ?int
+    {
+        return $this->area_sqft;
+    }
+
+    /**
+     * Get image_url (alias for primary_image_url)
+     */
+    public function getImageUrlAttribute(): ?string
+    {
+        return $this->primary_image_url;
+    }
+
+    /**
+     * Get views count
+     */
+    public function getViewsAttribute(): int
+    {
+        return $this->views_count ?? 0;
+    }
+
+    /**
+     * Get map image URL based on coordinates
+     */
+    public function getMapImageUrlAttribute(): string
+    {
+        if ($this->latitude && $this->longitude) {
+            // Generate a dynamic map image URL using Google Static Maps API
+            $apiKey = env('GOOGLE_MAPS_API_KEY', '');
+            if ($apiKey) {
+                $url = "https://maps.googleapis.com/maps/api/staticmap?";
+                $url .= "center={$this->latitude},{$this->longitude}&";
+                $url .= "zoom=15&";
+                $url .= "size=800x600&";
+                $url .= "maptype=roadmap&";
+                $url .= "markers=color:red%7Clabel:A%7C{$this->latitude},{$this->longitude}&";
+                $url .= "key={$apiKey}";
+                
+                return $url;
+            }
+        }
+        
+        // Fallback to a generic location-based map
+        return "https://maps.googleapis.com/maps/api/staticmap?center=" . urlencode($this->address ?? 'Dubai') . "&zoom=15&size=800x600&maptype=roadmap&key=" . (env('GOOGLE_MAPS_API_KEY', ''));
     }
 
     /**
@@ -315,30 +398,6 @@ class Property extends Model
     public function getImageAttribute(): ?string
     {
         return $this->primary_image_url;
-    }
-
-    /**
-     * Get location (alias for address)
-     */
-    public function getLocationAttribute(): ?string
-    {
-        return $this->address;
-    }
-
-    /**
-     * Get sqft (alias for area_sqft)
-     */
-    public function getSqftAttribute(): ?int
-    {
-        return $this->area_sqft;
-    }
-
-    /**
-     * Get views count
-     */
-    public function getViewsAttribute(): int
-    {
-        return $this->views_count ?? 0;
     }
 
     /**
