@@ -1,6 +1,16 @@
 {{-- This component expects Alpine.js property data, no @props needed --}}
 
-<div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-lg transition-all duration-300 group flex flex-col" x-data="{ property: property }" :class="property.status === 'sold' ? 'opacity-90 hover:opacity-100' : ''">
+<div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-lg transition-all duration-300 group flex flex-col" 
+     x-data="{ property: property }" 
+     x-init="
+         // Listen for property deleted events
+         $root.addEventListener('property-deleted', (event) => {
+             if (event.detail.propertyId === property.id) {
+                 $el.remove();
+             }
+         });
+     "
+     :class="property.status === 'sold' ? 'opacity-90 hover:opacity-100' : ''">
     <!-- Property Image -->
     <div class="relative aspect-video bg-gray-200 overflow-hidden">
         <div class="w-full h-full bg-cover bg-center group-hover:scale-105 transition-transform duration-500" :class="property.status === 'sold' ? 'grayscale contrast-125' : ''" 
@@ -87,18 +97,26 @@
 
         <div class="w-px h-6 bg-gray-200"></div>
 
-        <!-- More Options / Delete Button -->
-        <template x-if="property.status === 'draft'">
-            <button class="flex-1 flex flex-col gap-1 py-1 justify-center items-center text-gray-400 hover:text-red-600 transition-colors group/btn" title="Delete Draft">
-                <span class="material-symbols-outlined group-hover/btn:scale-110 transition-transform">delete</span>
-                <span class="text-[10px] font-medium">Delete</span>
-            </button>
-        </template>
-        <template x-if="property.status !== 'draft'">
-            <button class="flex-1 flex flex-col gap-1 py-1 justify-center items-center text-gray-400 hover:text-slate-700 transition-colors group/btn" title="More Options">
-                <span class="material-symbols-outlined group-hover/btn:scale-110 transition-transform">more_horiz</span>
-                <span class="text-[10px] font-medium">More</span>
-            </button>
-        </template>
+        <!-- Delete Button (for all properties) -->
+        <button 
+            @click="triggerDeleteModal()" 
+            x-data="{ triggerDeleteModal() { 
+                if (!window.deletePropertyModalState) {
+                    window.deletePropertyModalState = {
+                        showDeleteModal: false,
+                        propertyToDelete: null,
+                        isDeleting: false
+                    };
+                }
+                window.deletePropertyModalState.propertyToDelete = property;
+                window.deletePropertyModalState.showDeleteModal = true;
+                document.body.style.overflow = 'hidden';
+            }}"
+            class="flex-1 flex flex-col gap-1 py-1 justify-center items-center text-gray-400 hover:text-red-600 transition-colors group/btn" 
+            title="Delete Property"
+        >
+            <span class="material-symbols-outlined group-hover/btn:scale-110 transition-transform">delete</span>
+            <span class="text-[10px] font-medium">Delete</span>
+        </button>
     </div>
 </div>

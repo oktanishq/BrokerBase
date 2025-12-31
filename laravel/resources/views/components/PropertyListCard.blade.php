@@ -2,6 +2,14 @@
 
 <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-all duration-300 group flex flex-col md:flex-row w-full" 
      x-data="{ property: property }"
+     x-init="
+         // Listen for property deleted events
+         $root.addEventListener('property-deleted', (event) => {
+             if (event.detail.propertyId === property.id) {
+                 $el.remove();
+             }
+         });
+     "
      :class="property.status === 'sold' ? 'opacity-90 hover:opacity-100' : ''">
      
     <!-- Property Image -->
@@ -108,16 +116,25 @@
             <span class="material-symbols-outlined text-[20px]">edit</span>
         </button>
 
-        <!-- More Options / Delete Button -->
-        <template x-if="property.status === 'draft'">
-            <button class="flex items-center justify-center size-9 rounded-full text-gray-400 hover:text-red-600 hover:bg-red-50 transition-colors" title="Delete Draft">
-                <span class="material-symbols-outlined text-[20px]">delete</span>
-            </button>
-        </template>
-        <template x-if="property.status !== 'draft'">
-            <button class="flex items-center justify-center size-9 rounded-full text-gray-400 hover:text-slate-700 hover:bg-gray-100 transition-colors" title="More Options">
-                <span class="material-symbols-outlined text-[20px]">more_vert</span>
-            </button>
-        </template>
+        <!-- Delete Button (for all properties) -->
+        <button 
+            @click="triggerDeleteModal()" 
+            x-data="{ triggerDeleteModal() { 
+                if (!window.deletePropertyModalState) {
+                    window.deletePropertyModalState = {
+                        showDeleteModal: false,
+                        propertyToDelete: null,
+                        isDeleting: false
+                    };
+                }
+                window.deletePropertyModalState.propertyToDelete = property;
+                window.deletePropertyModalState.showDeleteModal = true;
+                document.body.style.overflow = 'hidden';
+            }}"
+            class="flex items-center justify-center size-9 rounded-full text-gray-400 hover:text-red-600 hover:bg-red-50 transition-colors" 
+            title="Delete Property"
+        >
+            <span class="material-symbols-outlined text-[20px]">delete</span>
+        </button>
     </div>
 </div>
