@@ -155,20 +155,40 @@
             <!-- Location Section -->
             <div>
                 <h3 class="text-gray-900 dark:text-white font-bold text-xl mb-4">Location</h3>
-                <div class="rounded-2xl overflow-hidden bg-gray-200 dark:bg-gray-800 mb-4 relative group h-[300px] border border-gray-200 dark:border-gray-700">
-                    <div class="w-full h-full bg-cover bg-center opacity-90 group-hover:opacity-100 transition-opacity" data-alt="Map view showing the location of the property" data-location="{{ $property->location ?? 'Property location' }}" style="background-image: url('{{ $property->map_image_url ?? asset('images/no-map.jpg') }}')"></div>
-                    <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
-                        <div class="bg-primary text-white rounded-full p-3 shadow-xl ring-4 ring-white/30 animate-bounce">
-                            <span class="material-symbols-outlined block text-2xl">location_on</span>
+                @if($property->maps_embed_url)
+                    <div class="rounded-2xl overflow-hidden bg-gray-200 dark:bg-gray-800 mb-4 relative group h-[300px] border border-gray-200 dark:border-gray-700">
+                        <iframe 
+                            src="{{ $property->maps_embed_url }}" 
+                            class="w-full h-full border-0"
+                            allowfullscreen="" 
+                            loading="lazy" 
+                            referrerpolicy="no-referrer-when-downgrade"
+                            data-alt="Map view showing the location of {{ $property->name }}">
+                        </iframe>
+                        <div class="absolute bottom-4 left-4 right-4 md:left-auto md:right-4 md:w-auto">
+                            <a href="https://www.google.com/maps/search/?api=1&query={{ urlencode($property->location) }}" target="_blank" class="w-full md:w-auto px-6 py-3 bg-white text-gray-900 rounded-xl font-bold shadow-lg hover:bg-gray-50 transition-colors flex items-center justify-center gap-2">
+                                <span class="material-symbols-outlined text-[20px]">directions</span>
+                                Get Directions
+                            </a>
                         </div>
                     </div>
-                    <div class="absolute bottom-4 left-4 right-4 md:left-auto md:right-4 md:w-auto">
-                        <button class="w-full md:w-auto px-6 py-3 bg-white text-gray-900 rounded-xl font-bold shadow-lg hover:bg-gray-50 transition-colors flex items-center justify-center gap-2">
-                            <span class="material-symbols-outlined text-[20px]">directions</span>
-                            Get Directions
-                        </button>
+                @else
+                    <div class="rounded-2xl overflow-hidden bg-gray-200 dark:bg-gray-800 mb-4 relative group h-[300px] border border-gray-200 dark:border-gray-700 flex items-center justify-center">
+                        <div class="text-center">
+                            <span class="material-symbols-outlined text-gray-400 text-6xl mb-2 block">location_on</span>
+                            <p class="text-gray-500 dark:text-gray-400 font-medium">{{ $property->location ?? 'Location not specified' }}</p>
+                            <p class="text-gray-400 dark:text-gray-500 text-sm mt-1">Map not available</p>
+                        </div>
+                        @if($property->location)
+                        <div class="absolute bottom-4 left-4 right-4 md:left-auto md:right-4 md:w-auto">
+                            <a href="https://www.google.com/maps/search/?api=1&query={{ urlencode($property->location) }}" target="_blank" class="w-full md:w-auto px-6 py-3 bg-white text-gray-900 rounded-xl font-bold shadow-lg hover:bg-gray-50 transition-colors flex items-center justify-center gap-2">
+                                <span class="material-symbols-outlined text-[20px]">directions</span>
+                                Get Directions
+                            </a>
+                        </div>
+                        @endif
                     </div>
-                </div>
+                @endif
             </div>
         </div>
     </div>
