@@ -43,6 +43,7 @@
 </div>
 </div>
 <x-logout-confirmation-modal />
+<x-delete-confirmation-modal />
 
 {{-- Alpine.js Admin Layout Data --}}
 <script>
@@ -50,6 +51,13 @@
 window.logoutModalState = {
     showLogoutModal: false,
     isLoggingOut: false
+};
+
+// Delete property modal state
+window.deletePropertyModalState = {
+    showDeleteModal: false,
+    propertyToDelete: null,
+    isDeleting: false
 };
 
 // Global functions

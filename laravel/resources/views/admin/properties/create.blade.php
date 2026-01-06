@@ -407,7 +407,7 @@
 
         <!-- Sticky Bottom Navigation -->
         <div class="sticky bottom-0 bg-white border-t border-gray-200 px-6 py-4 flex items-center justify-between z-20">
-                <button @click="saveDraft()" 
+                <button @click="saveAsDraft()" 
                         :disabled="isSubmitting"
                         type="button" 
                         class="text-sm font-medium text-gray-500 hover:text-gray-700 transition-colors disabled:opacity-50">
@@ -432,7 +432,7 @@
                         Processing...
                     </span>
                 </button>
-                <button @click="submitForm()" 
+                <button @click="publishLive()" 
                         x-show="currentStep === 3" 
                         :disabled="isSubmitting"
                         type="button" 
@@ -440,7 +440,7 @@
                     <span x-show="!isSubmitting">Publish Live</span>
                     <span x-show="isSubmitting" class="flex items-center gap-2">
                         <span class="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></span>
-                        Saving...
+                        Publishing...
                     </span>
                 </button>
             </div>
@@ -484,7 +484,7 @@
                     </div>
                     
                     <div class="mt-6 flex gap-3">
-                        <button @click="saveDraft(); showExitModal = false; window.location.href = '{{ route('admin.inventory') }}'" 
+                        <button @click="saveAsDraft(); showExitModal = false; window.location.href = '{{ route('admin.inventory') }}'" 
                                 type="button" 
                                 class="flex-1 px-4 py-2 bg-amber-500 text-white rounded-lg hover:bg-amber-600 font-medium transition-colors">
                             Save Draft & Exit
@@ -796,8 +796,14 @@ function propertyCreationForm() {
             }
         },
 
-        // Form submission
-        async submitForm() {
+        // Save as draft (localStorage only)
+        saveAsDraft() {
+            this.saveDraft();
+            alert('Draft saved locally. You can continue editing later.');
+        },
+
+        // Publish live (submit to server)
+        async publishLive() {
             if (this.isSubmitting) return;
             
             this.isSubmitting = true;
@@ -824,7 +830,7 @@ function propertyCreationForm() {
                 formData.append('net_price', this.formData.netPrice || '');
                 formData.append('private_notes', this.formData.privateNotes || '');
                 formData.append('watermark_enabled', this.formData.watermark ? '1' : '0');
-                formData.append('status', 'draft'); // Save as draft first
+                formData.append('status', 'available'); // Publish as live/available
                 
                 // Append image files
                 if (this.formData.images && this.formData.images.length > 0) {
@@ -861,24 +867,30 @@ function propertyCreationForm() {
                 if (result.success) {
                     // Success - clear draft and redirect
                     localStorage.removeItem('propertyDraft');
-                    alert('Property created successfully!');
+                    alert('Property published successfully!');
                     window.location.href = '/admin/inventory';
                 } else {
                     // Handle validation errors
                     this.handleApiErrors(result.errors || {});
                     
                     // Show detailed error message
-                    const errorMessage = result.message || 'Failed to save property. Please check the form for errors.';
+                    const errorMessage = result.message || 'Failed to publish property. Please check the form for errors.';
                     alert('Error: ' + errorMessage);
                     console.error('API Error:', result);
                 }
                 
-            } catch (error) {
-                console.error('Error submitting form:', error);
+                } catch (error) {
+                console.error('Error publishing property:', error);
                 alert('Network error. Please check your connection and try again.');
             } finally {
                 this.isSubmitting = false;
             }
+        },
+
+        // Legacy submitForm method (kept for compatibility)
+        async submitForm() {
+            // Default behavior - save as draft
+            await this.publishLive();
         },
 
         // Handle API validation errors

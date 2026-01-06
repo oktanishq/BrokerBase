@@ -55,61 +55,115 @@
     viewMode: 'list', // 'list' or 'grid'
     perPage: 10, // Items per page
     currentPage: 1, // Current page number
+    loading: false,
+    error: null,
 
-    // Sample properties data (will be replaced with real data later)
-    properties: [
-        {
-            id: 1,
-            title: 'Sunset Villa - Luxury Oceanfront Estate',
-            price: '$ 450,000',
-            location: 'Business Bay, Dubai',
-            image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCToc03ewI-R-MLH1VeaILvpzcsPrzcNl35tCllapTZwSgSR39FEB-O03otqjWOPaQcd-FItQ4ORhThF5Ph3HmSpDPRgp1FgiERkSyWa_HVyO0UAkX8ApEuSzr8Z15ELVzKGK2pqUeHYTW4Ar_ZjAVyN-hy7GRG9SX86kKSlbXaRaHpijSfGxAa_XmtxQxozG8aaQRu7OlewhaXfNoZLh9hcU0aPLn-Us23Btb3P7qcH_zGOl8RrHEakkzwn2n7KGBDwjm-oBB_f70f',
-            views: 124,
-            bedrooms: 3,
-            bathrooms: 2,
-            sqft: 1500,
-            type: 'Villa',
-            status: 'available',
-            added_ago: '2 days ago',
-            isFeatured: true,
-            label: 'new',
-            customLabelColor: '#3B82F6'
-        },
-        {
-            id: 2,
-            title: 'City Apartment - Modern Downtown Living',
-            price: '$ 850,000',
-            location: 'Downtown, Seattle',
-            image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDdhjV4Kk0pc9BPnmOBfpnmUfWfZXgnJiKxKd0fBo3FkvF2Dw1_m-VUSfwR9RXPR9Mh_K6UP3m5MdbMtnevhMoJrYW9VcXQ0KkJcc3q3jt0T-8ADSIPTYb-T_SxL4I8HInHQ0ngU4p9h80Do3Ac7mXpX37jGdGqg4KkyMS2oZunrbaz8rrealQBNZd2sfkiIoKIxqvnAwuxwKG3267dMdaaTT_4aAlFfUdds9vqolu76zP8xpGfu04YE81DWahgI_ejytJbVjAk6OzQ',
-            views: 892,
-            bedrooms: 2,
-            bathrooms: 2,
-            sqft: 980,
-            type: 'Apartment',
-            status: 'sold',
-            sold_ago: '1 week ago',
-            isFeatured: false,
-            label: 'popular',
-            customLabelColor: '#F59E0B'
-        },
-        {
-            id: 3,
-            title: 'Commercial Office Space',
-            price: 'Price TBD',
-            location: 'Financial District, NY',
-            image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDZQ1h5gajMn8U5gGwfOrWCKVWL7VHXHJMq0MaaOt3B4MeV4ipBbWSs9RTsUuAI1-ham_5nr2n1CCLr8y2VytmK2bnMk6UtMpwgnaKYudsto8BfD0Rw-lthz_UV9QwKDGCl-XQvQdaG7SRB1m0buhSHP-2QwyGiNpYEPuM4DQT1n2Bl38LpdnTnI93zhCbHG3wdijJZHS5w6wGDhSFixvqA-BUADXJAXbuAgzh5Zh9TEcNynTBErL21Wg0ZtPi4yxDvhU2UhSbeOUWo',
-            views: 0,
-            bedrooms: null,
-            bathrooms: 4,
-            sqft: 3200,
-            type: 'Office',
-            status: 'draft',
-            edited_ago: 'today',
-            isFeatured: false,
-            label: 'none',
-            customLabelColor: '#10B981'
+    // Real properties data from API
+    properties: [],
+    
+    // API base URL
+    apiUrl: '/api/admin/properties',
+
+    // Initialize data
+    async init() {
+        await this.fetchProperties();
+        
+        // Listen for property updates from edit modal
+        this.$root.addEventListener('property-updated', (event) => {
+            this.handlePropertyUpdate(event.detail);
+        });
+    },
+    
+    // Handle property update from modal
+    handlePropertyUpdate(detail) {
+        const { propertyId, data } = detail;
+        
+        // Update the property in the current list
+        const propertyIndex = this.properties.findIndex(p => p.id === propertyId);
+        if (propertyIndex !== -1) {
+            this.properties[propertyIndex] = { ...this.properties[propertyIndex], ...data };
         }
-    ],
+        
+        // Show success message
+        this.showNotification('Property updated successfully!', 'success');
+    },
+    
+    // Show notification
+    showNotification(message, type = 'info') {
+        const notification = document.createElement('div');
+        notification.className = `fixed top-4 right-4 z-50 px-6 py-3 rounded-lg text-white font-medium transition-all ${
+            type === 'success' ? 'bg-green-500' : 
+            type === 'error' ? 'bg-red-500' : 'bg-blue-500'
+        }`;
+        notification.textContent = message;
+        
+        document.body.appendChild(notification);
+        
+        // Auto remove after 3 seconds
+        setTimeout(() => {
+            notification.style.opacity = '0';
+            setTimeout(() => {
+                if (document.body.contains(notification)) {
+                    document.body.removeChild(notification);
+                }
+            }, 300);
+        }, 3000);
+    },
+
+    // Fetch properties from API
+    async fetchProperties() {
+        this.loading = true;
+        this.error = null;
+        
+        try {
+            const params = new URLSearchParams({
+                per_page: this.perPage,
+                page: this.currentPage,
+                ...(this.searchTerm && { search: this.searchTerm }),
+                ...(this.statusFilter !== 'all' && { status: this.statusFilter }),
+                ...(this.typeFilter !== 'all' && { type: this.typeFilter })
+            });
+            
+            const response = await fetch(`${this.apiUrl}?${params}`);
+            const data = await response.json();
+            
+            if (data.success) {
+                this.properties = data.data;
+            } else {
+                this.error = 'Failed to load properties';
+                this.properties = [];
+            }
+        } catch (error) {
+            console.error('Error fetching properties:', error);
+            this.error = 'Network error occurred';
+            this.properties = [];
+        } finally {
+            this.loading = false;
+        }
+    },
+
+    // Watch for filter changes
+    watch: {
+        searchTerm() {
+            this.currentPage = 1;
+            this.fetchProperties();
+        },
+        statusFilter() {
+            this.currentPage = 1;
+            this.fetchProperties();
+        },
+        typeFilter() {
+            this.currentPage = 1;
+            this.fetchProperties();
+        },
+        perPage() {
+            this.currentPage = 1;
+            this.fetchProperties();
+        },
+        currentPage() {
+            this.fetchProperties();
+        }
+    },
 
     // Computed filtered properties
     get filteredProperties() {
@@ -203,10 +257,10 @@
                             <!-- Type Filter -->
                             <select x-model="typeFilter" class="w-full sm:w-auto py-2.5 px-4 pr-8 text-sm text-gray-700 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer">
                                 <option value="all">Type: All</option>
-                                <option value="Apartment">Apartment</option>
-                                <option value="Villa">Villa</option>
-                                <option value="Office">Office</option>
-                                <option value="Commercial">Commercial</option>
+                                <option value="apartment">Apartment</option>
+                                <option value="villa">Villa</option>
+                                <option value="office">Office</option>
+                                <option value="commercial">Commercial</option>
                             </select>
                         </div>
 
@@ -228,144 +282,47 @@
                     </div>
                 </div>
 
+                <!-- Loading State -->
+                <div x-show="loading" x-transition class="mt-8">
+                    <div class="flex flex-col items-center justify-center py-12">
+                        <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-royal-blue"></div>
+                        <p class="mt-4 text-gray-500">Loading properties...</p>
+                    </div>
+                </div>
+
+                <!-- Error State -->
+                <div x-show="error && !loading" x-transition class="mt-8">
+                    <div class="flex flex-col items-center justify-center py-12">
+                        <span class="material-symbols-outlined text-6xl text-red-300">error</span>
+                        <div class="mt-4 text-center">
+                            <h3 class="text-lg font-medium text-gray-900">Error loading properties</h3>
+                            <p class="text-gray-500" x-text="error"></p>
+                            <button @click="fetchProperties" class="mt-4 px-4 py-2 bg-royal-blue text-white rounded-lg hover:bg-blue-800 transition-colors">
+                                Try Again
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Property List -->
-                <div x-show="filteredProperties.length > 0" x-transition class="mt-8">
+                <div x-show="!loading && !error && properties.length > 0" x-transition class="mt-8">
                     <!-- List View -->
                     <div x-show="viewMode === 'list'" class="flex flex-col gap-4">
-                        <template x-for="property in paginatedProperties" :key="`list-${property.id}`">
-                            <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-all duration-300 group flex flex-col md:flex-row w-full" 
-                                 :class="property.status === 'sold' ? 'opacity-90 hover:opacity-100' : ''">
-                                
-                                <!-- Property Image -->
-                                <div class="relative w-full md:w-64 lg:w-72 h-48 md:h-auto shrink-0 overflow-hidden">
-                                    <div class="w-full h-full bg-cover bg-center" 
-                                         :class="property.status === 'sold' ? 'grayscale contrast-125' : ''" 
-                                         x-bind:style="`background-image: url('${property.image}')`"
-                                         class="group-hover:scale-105 transition-transform duration-500">
-                                    </div>
-                                    <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent md:hidden"></div>
-                                    
-                                    <!-- View Count -->
-                                    <div class="absolute bottom-3 left-3 md:left-auto md:right-3 bg-black/60 backdrop-blur-sm text-white px-2.5 py-1 rounded-md flex items-center gap-1.5 text-xs font-medium">
-                                        <span class="material-symbols-outlined text-[16px]" x-text="property.views > 0 ? 'visibility' : 'visibility_off'"></span>
-                                        <span x-text="property.views"></span>
-                                    </div>
-                                </div>
-
-                                <!-- Property Details -->
-                                <div class="p-5 flex flex-col flex-1 justify-between gap-3">
-                                    <div class="flex flex-col gap-1">
-                                        <!-- Status and Date -->
-                                        <div class="flex items-center justify-between">
-                                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold" 
-                                                  :class="{
-                                                      'bg-green-100 text-green-700 border-green-200': property.status === 'available',
-                                                      'bg-red-100 text-red-700 border-red-200': property.status === 'sold',
-                                                      'bg-gray-200 text-gray-600 border-gray-300': property.status === 'draft'
-                                                  }"
-                                                  x-text="property.status.charAt(0).toUpperCase() + property.status.slice(1)">
-                                            </span>
-                                            <span class="text-sm text-gray-400 hidden md:block" 
-                                                  x-text="property.status === 'sold' ? 
-                                                          `Sold ${property.sold_ago || '1 week ago'}` : 
-                                                          property.status === 'draft' ? 
-                                                          `Last edited ${property.edited_ago || 'today'}` : 
-                                                          `Added ${property.added_ago || '2 days ago'}`">
-                                            </span>
-                                        </div>
-
-                                        <!-- Title and Price -->
-                                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mt-1">
-                                            <h3 class="text-xl font-bold text-slate-900 leading-tight truncate" 
-                                                x-bind:title="property.title"
-                                                x-text="property.title">
-                                            </h3>
-                                            <h3 class="text-xl font-bold" 
-                                                :class="{
-                                                    'text-amber-600': property.status === 'available',
-                                                    'text-gray-400 line-through decoration-red-500 decoration-2': property.status === 'sold',
-                                                    'text-gray-400 italic': property.status === 'draft'
-                                                }"
-                                                x-text="property.price">
-                                            </h3>
-                                        </div>
-
-                                        <!-- Location -->
-                                        <div class="flex items-center gap-1 text-gray-500 text-sm">
-                                            <span class="material-symbols-outlined text-[18px] text-red-500">location_on</span>
-                                            <span x-text="property.location"></span>
-                                        </div>
-                                    </div>
-
-                                    <!-- Property Specs -->
-                                    <div class="flex items-center flex-wrap gap-4 mt-2 pt-3 border-t border-gray-50">
-                                        <div class="flex items-center gap-2 text-gray-500 text-sm font-medium">
-                                            <span class="material-symbols-outlined text-[18px]" 
-                                                  x-text="property.type === 'Office' || property.type === 'Commercial' ? 'desk' : 'bed'">
-                                            </span>
-                                            <span x-text="property.type === 'Office' || property.type === 'Commercial' ? 
-                                                           property.type : 
-                                                           `${property.bedrooms || 3} Beds`">
-                                            </span>
-                                        </div>
-                                        <div class="w-px h-4 bg-gray-300"></div>
-                                        <div class="flex items-center gap-2 text-gray-500 text-sm font-medium">
-                                            <span class="material-symbols-outlined text-[18px]">bathtub</span>
-                                            <span x-text="`${property.bathrooms || 2} Baths`"></span>
-                                        </div>
-                                        <div class="w-px h-4 bg-gray-300"></div>
-                                        <div class="flex items-center gap-2 text-gray-500 text-sm font-medium">
-                                            <span class="material-symbols-outlined text-[18px]">square_foot</span>
-                                            <span x-text="`${Number(property.sqft || 1500).toLocaleString()} sqft`"></span>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <!-- Action Buttons -->
-                                <div class="px-4 py-3 md:py-0 md:px-6 bg-gray-50 md:bg-transparent md:border-l border-t md:border-t-0 border-gray-100 flex md:flex-col items-center justify-end md:justify-center gap-2 md:w-32 shrink-0">
-                                    <!-- Share Button -->
-                                    <template x-if="property.status !== 'draft'">
-                                        <button class="flex items-center justify-center size-9 rounded-full text-gray-400 hover:text-green-600 hover:bg-green-50 transition-colors" title="Share via WhatsApp">
-                                            <span class="material-symbols-outlined text-[20px]">chat</span>
-                                        </button>
-                                    </template>
-                                    <template x-if="property.status === 'draft'">
-                                        <button class="flex items-center justify-center size-9 rounded-full text-gray-300 cursor-not-allowed" title="Share disabled">
-                                            <span class="material-symbols-outlined text-[20px]">chat</span>
-                                        </button>
-                                    </template>
-
-                                    <!-- Edit Button -->
-                                    <button @click="$dispatch('open-edit-modal', property)" class="flex items-center justify-center size-9 rounded-full text-gray-400 hover:text-blue-600 hover:bg-blue-50 transition-colors" title="Edit Property">
-                                        <span class="material-symbols-outlined text-[20px]">edit</span>
-                                    </button>
-
-                                    <!-- More Options / Delete Button -->
-                                    <template x-if="property.status === 'draft'">
-                                        <button class="flex items-center justify-center size-9 rounded-full text-gray-400 hover:text-red-600 hover:bg-red-50 transition-colors" title="Delete Draft">
-                                            <span class="material-symbols-outlined text-[20px]">delete</span>
-                                        </button>
-                                    </template>
-                                    <template x-if="property.status !== 'draft'">
-                                        <button class="flex items-center justify-center size-9 rounded-full text-gray-400 hover:text-slate-700 hover:bg-gray-100 transition-colors" title="More Options">
-                                            <span class="material-symbols-outlined text-[20px]">more_vert</span>
-                                        </button>
-                                    </template>
-                                </div>
-                            </div>
+                        <template x-for="property in properties" :key="`list-${property.id}`">
+                            @include('components.PropertyListCard')
                         </template>
                     </div>
 
                     <!-- Grid View -->
                     <div x-show="viewMode === 'grid'" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                        <template x-for="property in paginatedProperties" :key="`grid-${property.id}`">
+                        <template x-for="property in properties" :key="`grid-${property.id}`">
                             @include('components.PropertyGridCard')
                         </template>
                     </div>
                 </div>
 
                 <!-- No Results Message -->
-                <div class="text-center py-12" x-show="filteredProperties.length === 0" x-transition class="mt-8">
+                <div class="text-center py-12" x-show="!loading && !error && properties.length === 0" x-transition class="mt-8">
                     <div class="flex flex-col items-center gap-4">
                         <span class="material-symbols-outlined text-6xl text-gray-300">search_off</span>
                         <div>
@@ -376,7 +333,7 @@
                 </div>
 
                 <!-- Pagination -->
-                <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-t border-gray-200 pt-6 mt-4" x-show="filteredProperties.length > 0" x-transition>
+                <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-t border-gray-200 pt-6 mt-4" x-show="!loading && !error && properties.length > 0" x-transition>
                     <div class="flex items-center gap-4">
                         <!-- Items per page dropdown -->
                         <div class="flex items-center gap-2">
@@ -391,7 +348,7 @@
                         </div>
                         
                         <!-- Results info -->
-                        <span class="text-sm text-gray-500" x-text="`Showing ${showingFrom}-${showingTo} of ${showingCount} properties`"></span>
+                        <span class="text-sm text-gray-500" x-text="`${properties.length} properties found`"></span>
                     </div>
                     
                     <!-- Pagination controls -->
