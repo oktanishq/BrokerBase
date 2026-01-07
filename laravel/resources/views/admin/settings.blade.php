@@ -243,6 +243,7 @@ function settingsData() {
         whatsappNumber: '50 123 4567',
         officeAddress: 'Office 402, Business Bay Tower, Dubai, UAE',
         logoUrl: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDjlFF_nSTOQN2xN5XEhoei2r1xmo6006_o8UoGMAFUfEAomAjyJR-_bXnIPonwd3cqDG7sOU8o_DGuG6ynBK32KcH-lRZpx1OAvvrV7EALzre8oOHD4wHQDNcs1u-RqUpqp6rABg-PLwMMJpYI1mwd0rmsHsf0SI7DMC0X71sycCni1WxVUk61lnXtb-Wzonan3tvT7xcDV3vnvIuNyz4n4mt6oBDAaqb4Ch5zP_c1FPKCfCmqMwaC598j6zQlRK21aawjBmED-Tjo',
+        logoFile: null,
         selectedColor: 'blue',
         customColor: '1E3A8A',
         saving: false,
@@ -299,6 +300,10 @@ function settingsData() {
         handleLogoUpload(event) {
             const file = event.target.files[0];
             if (file) {
+                // Store file for upload
+                this.logoFile = file;
+                
+                // Show preview immediately
                 const reader = new FileReader();
                 reader.onload = (e) => {
                     this.logoUrl = e.target.result;
@@ -310,46 +315,39 @@ function settingsData() {
         async saveSettings() {
             this.saving = true;
             try {
-                console.log('Starting to save settings...', {
-                    agencyName: this.agencyName,
-                    reraId: this.reraId,
-                    whatsappNumber: this.whatsappNumber,
-                    officeAddress: this.officeAddress,
-                    logoUrl: this.logoUrl,
-                    selectedColor: this.selectedColor,
-                    customColor: this.customColor
-                });
-
                 const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-                console.log('CSRF Token:', csrfToken);
+
+                // Use FormData for file upload
+                const formData = new FormData();
+                formData.append('agency_name', this.agencyName);
+                formData.append('rera_id', this.reraId);
+                formData.append('w_no', '+91 ' + this.whatsappNumber);
+                formData.append('office_address', this.officeAddress);
+                formData.append('theme_color', this.selectedColor);
+                formData.append('custom_color', this.customColor);
+                
+                if (this.logoFile) {
+                    formData.append('logo', this.logoFile);
+                }
 
                 const response = await fetch('/admin/settings/update', {
                     method: 'POST',
                     headers: {
-                        'Content-Type': 'application/json',
                         'X-CSRF-TOKEN': csrfToken
+                        // Don't set Content-Type for FormData - browser sets it with boundary
                     },
-                    body: JSON.stringify({
-                        agency_name: this.agencyName,
-                        rera_id: this.reraId,
-                        w_no: '+91 ' + this.whatsappNumber,
-                        office_address: this.officeAddress,
-                        logo_url: this.logoUrl,
-                        theme_color: this.selectedColor,
-                        custom_color: this.customColor
-                    })
+                    body: formData
                 });
 
-                console.log('Response status:', response.status);
-                console.log('Response ok:', response.ok);
-
                 const data = await response.json();
-                console.log('Response data:', data);
                 
                 if (data.success) {
-                    // Show success message
+                    // Update logo preview with actual uploaded URL
+                    if (data.settings.logo_url) {
+                        this.logoUrl = data.settings.logo_url;
+                    }
+                    this.logoFile = null;
                     alert('Settings saved successfully!');
-                    console.log('Settings saved successfully:', data);
                 } else {
                     throw new Error(data.message || 'Unknown error occurred');
                 }
