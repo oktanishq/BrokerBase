@@ -112,26 +112,16 @@
                             </div>
                         </div>
                     </div>
-                    <div>
-                        <label class="block text-sm font-medium text-slate-700 mb-3">Primary Theme Color</label>
-                        <div class="flex flex-col md:flex-row items-start md:items-center gap-6">
-                            <div class="flex items-center gap-3">
-                                <button aria-label="Select Royal Blue" class="size-8 rounded-full bg-blue-900 ring-2 ring-offset-2 ring-blue-900 focus:outline-none shadow-sm hover:scale-110 transition-transform"></button>
-                                <button aria-label="Select Emerald Green" class="size-8 rounded-full bg-emerald-600 focus:outline-none hover:ring-2 hover:ring-offset-2 hover:ring-emerald-600 shadow-sm hover:scale-110 transition-all"></button>
-                                <button aria-label="Select Red" class="size-8 rounded-full bg-red-600 focus:outline-none hover:ring-2 hover:ring-offset-2 hover:ring-red-600 shadow-sm hover:scale-110 transition-all"></button>
-                                <button aria-label="Select Gold" class="size-8 rounded-full bg-amber-500 focus:outline-none hover:ring-2 hover:ring-offset-2 hover:ring-amber-500 shadow-sm hover:scale-110 transition-all"></button>
-                                <button aria-label="Select Black" class="size-8 rounded-full bg-black focus:outline-none hover:ring-2 hover:ring-offset-2 hover:ring-gray-900 shadow-sm hover:scale-110 transition-all"></button>
-                            </div>
-                            <div class="h-8 w-px bg-gray-200 hidden md:block"></div>
-                            <div class="flex items-center gap-2 w-full md:w-auto">
-                                <span class="text-sm text-gray-500 whitespace-nowrap">Custom Hex:</span>
-                                <div class="relative rounded-md shadow-sm">
-                                    <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-                                        <span class="text-gray-500 sm:text-sm">#</span>
-                                    </div>
-                                    <input x-model="customColor" @input="updateCustomColor" class="block w-28 rounded-lg border-gray-200 pl-7 pr-2 text-sm focus:border-amber-500 focus:ring-amber-500 font-mono" id="color" name="color" placeholder="1E3A8A" type="text" value="1E3A8A"/>
-                                </div>
-                            </div>
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-2">
+                            <label class="block text-sm font-medium text-slate-700">Color Changer</label>
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-amber-100 text-amber-700">
+                                Coming Soon
+                            </span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span class="text-xs text-gray-400">More Feature under development</span>
+                            <span class="material-symbols-outlined text-gray-400 text-[18px]">construction</span>
                         </div>
                     </div>
                 </div>
