@@ -104,15 +104,15 @@
                                                 <span>Upload a file</span>
                                                 <input @change="handleLogoUpload" class="sr-only" id="file-upload" name="file-upload" type="file" accept="image/*"/>
                                             </label>
-                                            <p class="pl-1">or drag and drop</p>
+                                            <p class="pl-1 hidden md:inline">or drag and drop</p>
                                         </div>
-                                        <p class="text-xs text-gray-500 mt-1">PNG, JPG, GIF up to 2MB</p>
+                                        <p class="text-xs text-gray-500 mt-1 hidden md:block">PNG, JPG, GIF up to 2MB</p>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="flex items-center justify-between">
+                    <div class="hidden md:flex items-center justify-between">
                         <div class="flex items-center gap-2">
                             <label class="block text-sm font-medium text-slate-700">Color Changer</label>
                             <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-amber-100 text-amber-700">
