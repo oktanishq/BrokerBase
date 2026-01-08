@@ -1,5 +1,7 @@
 @props(['title' => 'Featured Properties'])
 
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+
 <section class="px-4 sm:px-6 lg:px-10 py-6 sm:py-8 bg-gray-50/50 flex-1" x-data="propertyListing()" x-init="loadProperties()">
     <div class="max-w-[1280px] mx-auto">
         <h3 class="text-lg sm:text-xl font-bold text-[#121317] mb-4 sm:mb-6">{{ $title }}</h3>
@@ -99,7 +101,7 @@
                                 View Details
                             </a>
                             <button class="flex-1 h-10 rounded-full bg-whatsapp text-white font-bold text-sm flex items-center justify-center gap-2 hover:brightness-105 transition-all">
-                                <img alt="Whatsapp logo icon" class="w-4 h-4 invert brightness-0 grayscale-0" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAgPEGUEKjZPSkEHYkFnZ9Gx1JHOB4A1agO_DBYEWBuFwMC36Rd8RmQNnZI_gHOSxcW5jm5j7er5TGrbgjT0sz7NoQN3hgJN7vM_63MQhWoNuxGvHhkJhVwUgUA60YXth8XRgsFWRJCOj--W6_Q7ArnfLQpB8r7x-pvzyq0-DuRKBPv130bg0xhlun76EKVNL9J8LIuP-EyPP6RH-5JiA_PIrkeawFrQ2OCm_azTjM6_kaNnj0ET0fIB7wr692Oty0lpjIh_qdYfCpc"/>
+                                <i class="fa-brands fa-whatsapp text-[16px]"></i>
                                 WhatsApp
                             </button>
                         </div>
