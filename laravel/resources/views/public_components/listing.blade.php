@@ -100,7 +100,7 @@
                             <a :href="`/property/${property.id}`" class="flex-1 h-10 rounded-full border border-primary text-primary font-bold text-sm hover:bg-primary/5 transition-colors inline-flex items-center justify-center">
                                 View Details
                             </a>
-                            <a :href="whatsappLink" target="_blank" rel="noopener noreferrer" class="flex-1 h-10 rounded-full bg-whatsapp text-white font-bold text-sm flex items-center justify-center gap-2 hover:brightness-105 transition-all">
+                            <a :href="getWhatsAppMessage(property)" target="_blank" rel="noopener noreferrer" class="flex-1 h-10 rounded-full bg-whatsapp text-white font-bold text-sm flex items-center justify-center gap-2 hover:brightness-105 transition-all">
                                 <i class="fa-brands fa-whatsapp text-[16px]"></i>
                                 WhatsApp
                             </a>
@@ -171,6 +171,13 @@ function propertyListing() {
             const phone = this.settings.w_no || '';
             const digits = phone.replace(/\D/g, '');
             this.whatsappLink = 'https://wa.me/' + digits;
+        },
+        
+        getWhatsAppMessage(property) {
+            const domain = window.location.origin.replace(/^https?:\/\//, '');
+            const message = `Hii i'm interested in\n*${property.title}*\nat ${property.location}\nUID: ${property.id}\nLink: ${domain}/property/${property.id}`;
+            const encodedMessage = encodeURIComponent(message);
+            return `${this.whatsappLink}?text=${encodedMessage}`;
         }
     }
 }

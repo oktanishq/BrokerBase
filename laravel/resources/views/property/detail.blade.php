@@ -218,7 +218,7 @@
                     <span class="material-symbols-outlined text-[24px]">call</span>
                     Call Now
                 </button>
-                <a :href="whatsappLink" target="_blank" rel="noopener noreferrer" class="w-full flex items-center justify-center gap-2 h-14 rounded-xl bg-green-500 hover:bg-green-600 text-white font-bold text-lg transition-transform active:scale-[0.98] shadow-md shadow-green-500/20">
+                <a :href="getWhatsAppMessage()" target="_blank" rel="noopener noreferrer" class="w-full flex items-center justify-center gap-2 h-14 rounded-xl bg-green-500 hover:bg-green-600 text-white font-bold text-lg transition-transform active:scale-[0.98] shadow-md shadow-green-500/20">
                     <i class="fa-brands fa-whatsapp text-[24px]"></i>
                     WhatsApp
                 </a>
@@ -259,7 +259,7 @@
         <span class="material-symbols-outlined text-[20px]">call</span>
         Call Now
     </button>
-    <a :href="whatsappLink" target="_blank" rel="noopener noreferrer" class="flex-1 flex items-center justify-center gap-2 h-11 rounded-full bg-green-500 hover:bg-green-600 text-white font-bold text-base transition-transform active:scale-95 shadow-md shadow-green-500/20">
+    <a :href="getWhatsAppMessage()" target="_blank" rel="noopener noreferrer" class="flex-1 flex items-center justify-center gap-2 h-11 rounded-full bg-green-500 hover:bg-green-600 text-white font-bold text-base transition-transform active:scale-95 shadow-md shadow-green-500/20">
         <i class="fa-brands fa-whatsapp text-[20px]"></i>
         WhatsApp
     </a>
@@ -294,6 +294,25 @@ function propertyData() {
             const phone = this.settings.w_no || '';
             const digits = phone.replace(/\D/g, '');
             this.whatsappLink = 'https://wa.me/' + digits;
+        },
+        
+        getWhatsAppMessage() {
+            const domain = window.location.origin.replace(/^https?:\/\//, '');
+            const message = `Hii i'm interested in\n*${this.getPropertyName()}*\nat ${this.getPropertyLocation()}\nUID: ${this.getPropertyId()}\nLink: ${domain}/property/${this.getPropertyId()}`;
+            const encodedMessage = encodeURIComponent(message);
+            return `${this.whatsappLink}?text=${encodedMessage}`;
+        },
+        
+        getPropertyName() {
+            return document.querySelector('h1')?.textContent?.trim() || 'Property';
+        },
+        
+        getPropertyLocation() {
+            return document.querySelector('[data-alt="Property image"]')?.getAttribute('data-alt') || 'Location not specified';
+        },
+        
+        getPropertyId() {
+            return window.location.pathname.split('/').pop() || '1';
         }
     }
 }

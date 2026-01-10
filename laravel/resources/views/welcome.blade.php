@@ -64,7 +64,7 @@
 <span class="material-symbols-outlined text-[20px] group-hover:scale-110 transition-transform">call</span>
                         Call Dealer
                     </button>
-<a :href="whatsappLink" target="_blank" rel="noopener noreferrer" class="flex-1 h-12 bg-whatsapp hover:brightness-105 text-white font-bold rounded-xl shadow-md shadow-green-900/10 hover:shadow-lg transition-all flex items-center justify-center gap-2 group">
+<a :href="getWhatsAppMessage()" target="_blank" rel="noopener noreferrer" class="flex-1 h-12 bg-whatsapp hover:brightness-105 text-white font-bold rounded-xl shadow-md shadow-green-900/10 hover:shadow-lg transition-all flex items-center justify-center gap-2 group">
 <i class="fa-brands fa-whatsapp text-[20px] group-hover:scale-110 transition-transform"></i>
                         WhatsApp
                     </a>
@@ -147,6 +147,13 @@ function welcomeData() {
             // Remove all non-digit characters
             const digits = phone.replace(/\D/g, '');
             this.whatsappLink = 'https://wa.me/' + digits;
+        },
+        
+        getWhatsAppMessage() {
+            const domain = window.location.origin.replace(/^https?:\/\//, '');
+            const message = `Hii i'm interested in\n*${this.settings.agency_name || 'Elite Homes'}*\nat ${this.settings.office_address || 'Location not specified'}\nUID: N/A\nLink: ${domain}`;
+            const encodedMessage = encodeURIComponent(message);
+            return `${this.whatsappLink}?text=${encodedMessage}`;
         }
     }
 }
