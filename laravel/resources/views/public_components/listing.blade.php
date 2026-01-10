@@ -1,6 +1,8 @@
 @props(['title' => 'Featured Properties'])
 
-<section class="px-4 sm:px-6 lg:px-10 py-6 sm:py-8 bg-gray-50/50 flex-1" x-data="propertyListing()" x-init="loadProperties()">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+
+<section class="px-4 sm:px-6 lg:px-10 py-6 sm:py-8 bg-gray-50/50 flex-1" x-data="propertyListing()" x-init="init()">
     <div class="max-w-[1280px] mx-auto">
         <h3 class="text-lg sm:text-xl font-bold text-[#121317] mb-4 sm:mb-6">{{ $title }}</h3>
         
@@ -98,10 +100,10 @@
                             <a :href="`/property/${property.id}`" class="flex-1 h-10 rounded-full border border-primary text-primary font-bold text-sm hover:bg-primary/5 transition-colors inline-flex items-center justify-center">
                                 View Details
                             </a>
-                            <button class="flex-1 h-10 rounded-full bg-whatsapp text-white font-bold text-sm flex items-center justify-center gap-2 hover:brightness-105 transition-all">
-                                <img alt="Whatsapp logo icon" class="w-4 h-4 invert brightness-0 grayscale-0" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAgPEGUEKjZPSkEHYkFnZ9Gx1JHOB4A1agO_DBYEWBuFwMC36Rd8RmQNnZI_gHOSxcW5jm5j7er5TGrbgjT0sz7NoQN3hgJN7vM_63MQhWoNuxGvHhkJhVwUgUA60YXth8XRgsFWRJCOj--W6_Q7ArnfLQpB8r7x-pvzyq0-DuRKBPv130bg0xhlun76EKVNL9J8LIuP-EyPP6RH-5JiA_PIrkeawFrQ2OCm_azTjM6_kaNnj0ET0fIB7wr692Oty0lpjIh_qdYfCpc"/>
+                            <a :href="getWhatsAppMessage(property)" target="_blank" rel="noopener noreferrer" class="flex-1 h-10 rounded-full bg-whatsapp text-white font-bold text-sm flex items-center justify-center gap-2 hover:brightness-105 transition-all">
+                                <i class="fa-brands fa-whatsapp text-[16px]"></i>
                                 WhatsApp
-                            </button>
+                            </a>
                         </div>
                     </div>
                 </article>
@@ -123,6 +125,8 @@ function propertyListing() {
         properties: [],
         loading: true,
         error: null,
+        settings: {},
+        whatsappLink: '',
         
         async loadProperties() {
             try {
@@ -143,6 +147,37 @@ function propertyListing() {
             } finally {
                 this.loading = false;
             }
+        },
+        
+        async init() {
+            await this.loadSettings();
+            await this.loadProperties();
+        },
+        
+        async loadSettings() {
+            try {
+                const response = await fetch('/api/settings');
+                const data = await response.json();
+                if (data.success) {
+                    this.settings = data.data;
+                    this.generateWhatsAppLink();
+                }
+            } catch (error) {
+                console.error('Failed to load settings:', error);
+            }
+        },
+        
+        generateWhatsAppLink() {
+            const phone = this.settings.w_no || '';
+            const digits = phone.replace(/\D/g, '');
+            this.whatsappLink = 'https://wa.me/' + digits;
+        },
+        
+        getWhatsAppMessage(property) {
+            const domain = window.location.origin.replace(/^https?:\/\//, '');
+            const message = `Hii i'm interested in\n*${property.title}*\nat ${property.location}\nUID: ${property.id}\nLink: ${domain}/property/${property.id}`;
+            const encodedMessage = encodeURIComponent(message);
+            return `${this.whatsappLink}?text=${encodedMessage}`;
         }
     }
 }

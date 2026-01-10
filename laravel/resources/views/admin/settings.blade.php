@@ -104,34 +104,24 @@
                                                 <span>Upload a file</span>
                                                 <input @change="handleLogoUpload" class="sr-only" id="file-upload" name="file-upload" type="file" accept="image/*"/>
                                             </label>
-                                            <p class="pl-1">or drag and drop</p>
+                                            <p class="pl-1 hidden md:inline">or drag and drop</p>
                                         </div>
-                                        <p class="text-xs text-gray-500 mt-1">PNG, JPG, GIF up to 2MB</p>
+                                        <p class="text-xs text-gray-500 mt-1 hidden md:block">PNG, JPG, GIF up to 2MB</p>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div>
-                        <label class="block text-sm font-medium text-slate-700 mb-3">Primary Theme Color</label>
-                        <div class="flex flex-col md:flex-row items-start md:items-center gap-6">
-                            <div class="flex items-center gap-3">
-                                <button aria-label="Select Royal Blue" class="size-8 rounded-full bg-blue-900 ring-2 ring-offset-2 ring-blue-900 focus:outline-none shadow-sm hover:scale-110 transition-transform"></button>
-                                <button aria-label="Select Emerald Green" class="size-8 rounded-full bg-emerald-600 focus:outline-none hover:ring-2 hover:ring-offset-2 hover:ring-emerald-600 shadow-sm hover:scale-110 transition-all"></button>
-                                <button aria-label="Select Red" class="size-8 rounded-full bg-red-600 focus:outline-none hover:ring-2 hover:ring-offset-2 hover:ring-red-600 shadow-sm hover:scale-110 transition-all"></button>
-                                <button aria-label="Select Gold" class="size-8 rounded-full bg-amber-500 focus:outline-none hover:ring-2 hover:ring-offset-2 hover:ring-amber-500 shadow-sm hover:scale-110 transition-all"></button>
-                                <button aria-label="Select Black" class="size-8 rounded-full bg-black focus:outline-none hover:ring-2 hover:ring-offset-2 hover:ring-gray-900 shadow-sm hover:scale-110 transition-all"></button>
-                            </div>
-                            <div class="h-8 w-px bg-gray-200 hidden md:block"></div>
-                            <div class="flex items-center gap-2 w-full md:w-auto">
-                                <span class="text-sm text-gray-500 whitespace-nowrap">Custom Hex:</span>
-                                <div class="relative rounded-md shadow-sm">
-                                    <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-                                        <span class="text-gray-500 sm:text-sm">#</span>
-                                    </div>
-                                    <input x-model="customColor" @input="updateCustomColor" class="block w-28 rounded-lg border-gray-200 pl-7 pr-2 text-sm focus:border-amber-500 focus:ring-amber-500 font-mono" id="color" name="color" placeholder="1E3A8A" type="text" value="1E3A8A"/>
-                                </div>
-                            </div>
+                    <div class="hidden md:flex items-center justify-between">
+                        <div class="flex items-center gap-2">
+                            <label class="block text-sm font-medium text-slate-700">Color Changer</label>
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-amber-100 text-amber-700">
+                                Coming Soon
+                            </span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span class="text-xs text-gray-400">More Feature under development</span>
+                            <span class="material-symbols-outlined text-gray-400 text-[18px]">construction</span>
                         </div>
                     </div>
                 </div>
@@ -170,11 +160,11 @@
                             <div class="relative h-48 bg-gray-200">
                                 <img alt="Property" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCToc03ewI-R-MLH1VeaILvpzcsPrzcNl35tCllapTZwSgSR39FEB-O03otqjWOPaQcd-FItQ4ORhThF5Ph3HmSpDPRgp1FgiERkSyWa_HVyO0UAkX8ApEuSzr8Z15ELVzKGK2pqUeHYTW4Ar_ZjAVyN-hy7GRG9SX86kKSlbXaRaHpijSfGxAa_XmtxQxozG8aaQRu7OlewhaXfNoZLh9hcU0aPLn-Us23Btb3P7qcH_zGOl8RrHEakkzwn2n7KGBDwjm-oBB_f70f"/>
                                 <div class="absolute top-3 left-3 bg-white/90 backdrop-blur-sm px-2 py-1 rounded text-[10px] font-bold uppercase tracking-wide text-gray-800">
-                                                     Featured
-                                                 </div>
+                                    Featured
+                                </div>
                                 <div class="absolute bottom-3 right-3 bg-gray-900/80 backdrop-blur-sm px-2 py-1 rounded text-white text-xs flex items-center gap-1">
                                     <span class="material-symbols-outlined text-[12px]">photo_camera</span> 1/12
-                                                 </div>
+                                </div>
                             </div>
                             <div class="p-4 bg-white">
                                 <div class="flex justify-between items-start mb-2">
@@ -183,29 +173,36 @@
                                 </div>
                                 <p class="text-xs text-gray-500 mb-3 flex items-center gap-1">
                                     <span class="material-symbols-outlined text-[14px]">location_on</span>
-                                                     Palm Jumeirah, Dubai
-                                                 </p>
+                                    Palm Jumeirah, Dubai
+                                </p>
                                 <div class="flex items-end gap-1 mb-4">
-                                    <span class="text-lg font-bold text-blue-900">AED 15,000,000</span>
+                                    <span class="text-lg font-bold text-gold">₹ 15,000,000</span>
                                 </div>
-                                <div class="flex gap-4 border-t border-b border-gray-100 py-3 mb-4">
-                                    <div class="text-center flex-1 border-r border-gray-100">
-                                        <span class="block text-sm font-bold text-gray-800">5</span>
-                                        <span class="text-[10px] text-gray-400 uppercase">Beds</span>
-                                    </div>
-                                    <div class="text-center flex-1 border-r border-gray-100">
-                                        <span class="block text-sm font-bold text-gray-800">6</span>
-                                        <span class="text-[10px] text-gray-400 uppercase">Baths</span>
-                                    </div>
-                                    <div class="text-center flex-1">
-                                        <span class="block text-sm font-bold text-gray-800">7,200</span>
-                                        <span class="text-[10px] text-gray-400 uppercase">SqFt</span>
+                                <div class="mt-6">
+                                    <!-- Mobile: 4-col centered grid -->
+                                    <div class="grid grid-cols-4 gap-1 lg:flex lg:flex-wrap lg:gap-2">
+                                        <div class="flex items-center justify-center p-2 rounded-xl bg-background-light dark:bg-gray-800/50 lg:flex-row lg:px-3 lg:py-2">
+                                            <span class="material-symbols-outlined text-gray-700 dark:text-gray-300 text-[14px] lg:mr-2">bed</span>
+                                            <span class="text-[10px] font-bold text-gray-900 dark:text-white lg:text-xs">5 Beds</span>
+                                        </div>
+                                        <div class="flex items-center justify-center p-2 rounded-xl bg-background-light dark:bg-gray-800/50 lg:flex-row lg:px-3 lg:py-2">
+                                            <span class="material-symbols-outlined text-gray-700 dark:text-gray-300 text-[14px] lg:mr-2">bathtub</span>
+                                            <span class="text-[10px] font-bold text-gray-900 dark:text-white lg:text-xs">6 Baths</span>
+                                        </div>
+                                        <div class="flex items-center justify-center p-2 rounded-xl bg-background-light dark:bg-gray-800/50 lg:flex-row lg:px-3 lg:py-2">
+                                            <span class="material-symbols-outlined text-gray-700 dark:text-gray-300 text-[14px] lg:mr-2">square_foot</span>
+                                            <span class="text-[10px] font-bold text-gray-900 dark:text-white lg:text-xs">7,200 Sqft</span>
+                                        </div>
+                                        <div class="flex items-center justify-center p-2 rounded-xl bg-background-light dark:bg-gray-800/50 lg:flex-row lg:px-3 lg:py-2">
+                                            <span class="material-symbols-outlined text-gray-700 dark:text-gray-300 text-[14px] lg:mr-2">apartment</span>
+                                            <span class="text-[10px] font-bold text-gray-900 dark:text-white lg:text-xs">3 Flr</span>
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="space-y-2">
                                     <p class="text-xs text-gray-600 line-clamp-3 leading-relaxed">
-                                                         Experience luxury living at its finest in this stunning villa located in the heart of Palm Jumeirah. Featuring private beach access, infinity pool, and state-of-the-art amenities...
-                                                     </p>
+                                        Experience luxury living at its finest in this stunning villa located in the heart of Palm Jumeirah. Featuring private beach access, infinity pool, and state-of-the-art amenities...
+                                    </p>
                                     <span class="text-blue-900 text-xs font-semibold cursor-pointer">Read more</span>
                                 </div>
                             </div>
@@ -213,12 +210,12 @@
                         <div class="bg-white p-4 border-t border-gray-100 grid grid-cols-2 gap-3 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]">
                             <button class="flex items-center justify-center gap-2 bg-blue-900 text-white rounded-lg py-2.5 text-xs font-bold shadow-sm active:scale-95 transition-transform" :style="`background-color: ${getPreviewColor()}`">
                                 <span class="material-symbols-outlined text-[16px]">call</span>
-                                                 Call Now
-                                             </button>
+                                Call Now
+                            </button>
                             <button class="flex items-center justify-center gap-2 bg-green-600 text-white rounded-lg py-2.5 text-xs font-bold shadow-sm active:scale-95 transition-transform">
-                                <span class="material-symbols-outlined text-[16px]">chat</span>
-                                                 WhatsApp
-                                             </button>
+                                <i class="fa-brands fa-whatsapp text-[16px]"></i>
+                                WhatsApp
+                            </button>
                         </div>
                         <div class="h-4 bg-white flex justify-center items-end pb-1">
                             <div class="w-1/3 h-1 bg-gray-300 rounded-full"></div>
@@ -226,8 +223,8 @@
                     </div>
                 </div>
                 <div class="text-center mt-4 text-xs text-gray-400">
-                                     Preview updates as you type
-                                 </div>
+                    Preview updates as you type
+                </div>
             </div>
         </div>
     </div>
@@ -235,6 +232,7 @@
 @endsection
 
 @section('scripts')
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
 <script>
 function settingsData() {
     return {
@@ -243,6 +241,7 @@ function settingsData() {
         whatsappNumber: '50 123 4567',
         officeAddress: 'Office 402, Business Bay Tower, Dubai, UAE',
         logoUrl: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDjlFF_nSTOQN2xN5XEhoei2r1xmo6006_o8UoGMAFUfEAomAjyJR-_bXnIPonwd3cqDG7sOU8o_DGuG6ynBK32KcH-lRZpx1OAvvrV7EALzre8oOHD4wHQDNcs1u-RqUpqp6rABg-PLwMMJpYI1mwd0rmsHsf0SI7DMC0X71sycCni1WxVUk61lnXtb-Wzonan3tvT7xcDV3vnvIuNyz4n4mt6oBDAaqb4Ch5zP_c1FPKCfCmqMwaC598j6zQlRK21aawjBmED-Tjo',
+        logoFile: null,
         selectedColor: 'blue',
         customColor: '1E3A8A',
         saving: false,
@@ -299,6 +298,10 @@ function settingsData() {
         handleLogoUpload(event) {
             const file = event.target.files[0];
             if (file) {
+                // Store file for upload
+                this.logoFile = file;
+                
+                // Show preview immediately
                 const reader = new FileReader();
                 reader.onload = (e) => {
                     this.logoUrl = e.target.result;
@@ -310,46 +313,39 @@ function settingsData() {
         async saveSettings() {
             this.saving = true;
             try {
-                console.log('Starting to save settings...', {
-                    agencyName: this.agencyName,
-                    reraId: this.reraId,
-                    whatsappNumber: this.whatsappNumber,
-                    officeAddress: this.officeAddress,
-                    logoUrl: this.logoUrl,
-                    selectedColor: this.selectedColor,
-                    customColor: this.customColor
-                });
-
                 const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-                console.log('CSRF Token:', csrfToken);
+
+                // Use FormData for file upload
+                const formData = new FormData();
+                formData.append('agency_name', this.agencyName);
+                formData.append('rera_id', this.reraId);
+                formData.append('w_no', '+91 ' + this.whatsappNumber);
+                formData.append('office_address', this.officeAddress);
+                formData.append('theme_color', this.selectedColor);
+                formData.append('custom_color', this.customColor);
+                
+                if (this.logoFile) {
+                    formData.append('logo', this.logoFile);
+                }
 
                 const response = await fetch('/admin/settings/update', {
                     method: 'POST',
                     headers: {
-                        'Content-Type': 'application/json',
                         'X-CSRF-TOKEN': csrfToken
+                        // Don't set Content-Type for FormData - browser sets it with boundary
                     },
-                    body: JSON.stringify({
-                        agency_name: this.agencyName,
-                        rera_id: this.reraId,
-                        w_no: '+91 ' + this.whatsappNumber,
-                        office_address: this.officeAddress,
-                        logo_url: this.logoUrl,
-                        theme_color: this.selectedColor,
-                        custom_color: this.customColor
-                    })
+                    body: formData
                 });
 
-                console.log('Response status:', response.status);
-                console.log('Response ok:', response.ok);
-
                 const data = await response.json();
-                console.log('Response data:', data);
                 
                 if (data.success) {
-                    // Show success message
+                    // Update logo preview with actual uploaded URL
+                    if (data.settings.logo_url) {
+                        this.logoUrl = data.settings.logo_url;
+                    }
+                    this.logoFile = null;
                     alert('Settings saved successfully!');
-                    console.log('Settings saved successfully:', data);
                 } else {
                     throw new Error(data.message || 'Unknown error occurred');
                 }

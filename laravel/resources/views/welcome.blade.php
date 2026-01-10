@@ -6,6 +6,7 @@
 <title>Elite Homes - Dealer Homepage</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
 @vite('resources/css/app.css')
 <script src="{{ asset('js/alpine-components.js') }}"></script>
 <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
@@ -26,7 +27,7 @@
 <div class="max-w-[1280px] mx-auto grid grid-cols-1 lg:grid-cols-[2fr_1fr] gap-10 items-start">
 <div class="flex flex-col gap-8">
 <div class="flex items-start gap-6">
-<div class="h-28 w-28 lg:h-32 lg:w-32 shrink-0 rounded-full bg-cover bg-center border-4 border-white shadow-lg ring-1 ring-gray-100" data-alt="Large profile picture of Elite Homes dealer" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDfVJGVzANp1NAi6tmqqdpbcRS7QYyqe9ksTG2UPH8r9snYAI-9ySrfL8rZ7r3j_LgPJCsthYOhRhez_8mxmm0Zpbr98BNZuX8jfQzYP_X1mBD_PivHUqoq3nmTjpVB-5VyRkBU0PhcfpICwJx1jdS-jXi7ty72wmF8lGrhcFL3wxEn8Fyx2WghziGtKozdELe8_-cTc56jAdTsG18w5vCDbQkRqSES-kjcsgocnYErJmwBbhyB5m9Llhb-yp9ISHJV_OKp9h5N3BtI');"></div>
+<div class="h-28 w-28 lg:h-32 lg:w-32 shrink-0 rounded-full bg-cover bg-center border-4 border-white shadow-lg ring-1 ring-gray-100" :data-alt="settings.agency_name + ' company logo avatar'" :style="settings.logo_url ? 'background-image: url(' + settings.logo_url + ')' : 'background-image: url(\'https://lh3.googleusercontent.com/aida-public/AB6AXuCZGvkDKAF1w7WbeFeUNmOM3NRSjHgmhSeryZM7vDVZ1m4ipcSRXPbXSEd2id5wazq_oIOrOECQqI9YWyoWlbbH2hXEX33P14Q3zghNi1ql4tBZGpuTE5NvyUY4ZTQJBmwaOlHrNFtmKJZ5hlyLxVkDdbsRnUKh523LtkEq96u8kK6SNVuz5caz2ymq71nBnay5rA4-tCzvVqaPnmBNsnRYGgYVWooVyVl0TRj85yqteKd7hSy3zjvwglp6ZBELj2yif6o7tUd4K-Hz\');'"></div>
 <div class="flex flex-col gap-2 pt-2">
 <div class="flex flex-wrap items-center gap-3">
 <h2 class="text-3xl font-bold text-[#121317]" x-text="settings.agency_name || 'Loading...'"></h2>
@@ -59,14 +60,14 @@
                     </div>
 </div>
 <div class="flex gap-3">
-<button class="flex-1 h-12 bg-primary hover:bg-blue-800 text-white font-bold rounded-xl shadow-md shadow-blue-900/10 hover:shadow-lg transition-all flex items-center justify-center gap-2 group">
+<a :href="'tel:' + getCleanedPhoneNumber()" class="flex-1 h-12 bg-primary hover:bg-blue-800 text-white font-bold rounded-xl shadow-md shadow-blue-900/10 hover:shadow-lg transition-all flex items-center justify-center gap-2 group">
 <span class="material-symbols-outlined text-[20px] group-hover:scale-110 transition-transform">call</span>
                         Call Dealer
-                    </button>
-<button class="flex-1 h-12 bg-whatsapp hover:brightness-105 text-white font-bold rounded-xl shadow-md shadow-green-900/10 hover:shadow-lg transition-all flex items-center justify-center gap-2 group">
-<img alt="Whatsapp logo icon" class="w-5 h-5 invert brightness-0 grayscale-0 group-hover:scale-110 transition-transform" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAgPEGUEKjZPSkEHYkFnZ9Gx1JHOB4A1agO_DBYEWBuFwMC36Rd8RmQNnZI_gHOSxcW5jm5j7er5TGrbgjT0sz7NoQN3hgJN7vM_63MQhWoNuxGvHhkJhVwUgUA60YXth8XRgsFWRJCOj--W6_Q7ArnfLQpB8r7x-pvzyq0-DuRKBPv130bg0xhlun76EKVNL9J8LIuP-EyPP6RH-5JiA_PIrkeawFrQ2OCm_azTjM6_kaNnj0ET0fIB7wr692Oty0lpjIh_qdYfCpc"/>
+                    </a>
+<a :href="getWhatsAppMessage()" target="_blank" rel="noopener noreferrer" class="flex-1 h-12 bg-whatsapp hover:brightness-105 text-white font-bold rounded-xl shadow-md shadow-green-900/10 hover:shadow-lg transition-all flex items-center justify-center gap-2 group">
+<i class="fa-brands fa-whatsapp text-[20px] group-hover:scale-110 transition-transform"></i>
                         WhatsApp
-                    </button>
+                    </a>
 </div>
 </div>
 </div>
@@ -110,10 +111,10 @@
 </section>
 @include('public_components.listing')
 <div class="fixed bottom-6 right-6 z-10 lg:hidden">
-<button class="group flex items-center gap-2 bg-primary text-white h-14 pl-5 pr-6 rounded-full shadow-xl shadow-blue-900/30 hover:scale-105 hover:bg-blue-800 transition-all duration-300">
+<a :href="'tel:' + getCleanedPhoneNumber()" class="group flex items-center gap-2 bg-primary text-white h-14 pl-5 pr-6 rounded-full shadow-xl shadow-blue-900/30 hover:scale-105 hover:bg-blue-800 transition-all duration-300">
 <span class="material-symbols-outlined text-[24px]">call</span>
 <span class="font-bold text-base">Contact Dealer</span>
-</button>
+</a>
 </div>
 </main>
 @stack('scripts')
@@ -122,6 +123,7 @@
 function welcomeData() {
     return {
         settings: {},
+        whatsappLink: '',
         
         async init() {
             await this.loadSettings();
@@ -133,10 +135,31 @@ function welcomeData() {
                 const data = await response.json();
                 if (data.success) {
                     this.settings = data.data;
+                    this.generateWhatsAppLink();
                 }
             } catch (error) {
                 console.error('Failed to load settings:', error);
             }
+        },
+        
+        generateWhatsAppLink() {
+            const phone = this.settings.w_no || '';
+            // Remove all non-digit characters
+            const digits = phone.replace(/\D/g, '');
+            this.whatsappLink = 'https://wa.me/' + digits;
+        },
+        
+        getWhatsAppMessage() {
+            const domain = window.location.origin.replace(/^https?:\/\//, '');
+            const message = `Hii i'm interested in\n*${this.settings.agency_name || 'Elite Homes'}*\nat ${this.settings.office_address || 'Location not specified'}\nUID: N/A\nLink: ${domain}`;
+            const encodedMessage = encodeURIComponent(message);
+            return `${this.whatsappLink}?text=${encodedMessage}`;
+        },
+        
+        getCleanedPhoneNumber() {
+            const phone = this.settings.w_no || '';
+            // Keep only digits and + sign
+            return phone.replace(/[^\d+]/g, '');
         }
     }
 }

@@ -3,12 +3,20 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Models\Setting;
+use App\Services\LogoUploadService;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
 
 class SettingsController extends Controller
 {
+    protected $logoUploadService;
+
+    public function __construct(LogoUploadService $logoUploadService)
+    {
+        $this->logoUploadService = $logoUploadService;
+    }
+
     /**
      * Show the settings edit form.
      */
@@ -24,13 +32,12 @@ class SettingsController extends Controller
     public function update(Request $request)
     {
         try {
-            // Validate the incoming request data
+            // Validate text fields (exclude logo_url - handled separately)
             $validator = Validator::make($request->all(), [
                 'agency_name' => 'required|string|max:255',
                 'rera_id' => 'nullable|string|max:255',
                 'w_no' => 'nullable|string|max:50',
                 'office_address' => 'nullable|string',
-                'logo_url' => 'nullable|url',
                 'theme_color' => 'required|in:blue,emerald,red,amber,black,custom',
                 'custom_color' => 'nullable|string|regex:/^[0-9A-Fa-f]{6}$/',
             ]);
@@ -43,12 +50,24 @@ class SettingsController extends Controller
                 ], 422);
             }
 
-            // Get the validated data
             $validated = $validator->validated();
 
-            // If theme_color is not 'custom', set custom_color to null
-            if ($validated['theme_color'] !== 'custom') {
-                $validated['custom_color'] = null;
+            // Handle logo upload
+            if ($request->hasFile('logo')) {
+                try {
+                    $logoData = $this->logoUploadService->uploadLogo($request->file('logo'));
+                    $validated['logo_url'] = $logoData['url'];
+                } catch (\InvalidArgumentException $e) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Logo validation failed: ' . $e->getMessage()
+                    ], 422);
+                }
+            }
+
+            // If theme_color is not 'custom', remove custom_color from update (preserve existing value)
+            if ($validated['theme_color'] !== 'custom' && isset($validated['custom_color'])) {
+                unset($validated['custom_color']);
             }
 
             // Update or create settings
