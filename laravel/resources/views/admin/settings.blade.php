@@ -160,11 +160,11 @@
                             <div class="relative h-48 bg-gray-200">
                                 <img alt="Property" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCToc03ewI-R-MLH1VeaILvpzcsPrzcNl35tCllapTZwSgSR39FEB-O03otqjWOPaQcd-FItQ4ORhThF5Ph3HmSpDPRgp1FgiERkSyWa_HVyO0UAkX8ApEuSzr8Z15ELVzKGK2pqUeHYTW4Ar_ZjAVyN-hy7GRG9SX86kKSlbXaRaHpijSfGxAa_XmtxQxozG8aaQRu7OlewhaXfNoZLh9hcU0aPLn-Us23Btb3P7qcH_zGOl8RrHEakkzwn2n7KGBDwjm-oBB_f70f"/>
                                 <div class="absolute top-3 left-3 bg-white/90 backdrop-blur-sm px-2 py-1 rounded text-[10px] font-bold uppercase tracking-wide text-gray-800">
-                                                     Featured
-                                                 </div>
+                                    Featured
+                                </div>
                                 <div class="absolute bottom-3 right-3 bg-gray-900/80 backdrop-blur-sm px-2 py-1 rounded text-white text-xs flex items-center gap-1">
                                     <span class="material-symbols-outlined text-[12px]">photo_camera</span> 1/12
-                                                 </div>
+                                </div>
                             </div>
                             <div class="p-4 bg-white">
                                 <div class="flex justify-between items-start mb-2">
@@ -173,29 +173,36 @@
                                 </div>
                                 <p class="text-xs text-gray-500 mb-3 flex items-center gap-1">
                                     <span class="material-symbols-outlined text-[14px]">location_on</span>
-                                                     Palm Jumeirah, Dubai
-                                                 </p>
+                                    Palm Jumeirah, Dubai
+                                </p>
                                 <div class="flex items-end gap-1 mb-4">
-                                    <span class="text-lg font-bold text-blue-900">AED 15,000,000</span>
+                                    <span class="text-lg font-bold text-gold">₹ 15,000,000</span>
                                 </div>
-                                <div class="flex gap-4 border-t border-b border-gray-100 py-3 mb-4">
-                                    <div class="text-center flex-1 border-r border-gray-100">
-                                        <span class="block text-sm font-bold text-gray-800">5</span>
-                                        <span class="text-[10px] text-gray-400 uppercase">Beds</span>
-                                    </div>
-                                    <div class="text-center flex-1 border-r border-gray-100">
-                                        <span class="block text-sm font-bold text-gray-800">6</span>
-                                        <span class="text-[10px] text-gray-400 uppercase">Baths</span>
-                                    </div>
-                                    <div class="text-center flex-1">
-                                        <span class="block text-sm font-bold text-gray-800">7,200</span>
-                                        <span class="text-[10px] text-gray-400 uppercase">SqFt</span>
+                                <div class="mt-6">
+                                    <!-- Mobile: 4-col centered grid -->
+                                    <div class="grid grid-cols-4 gap-1 lg:flex lg:flex-wrap lg:gap-2">
+                                        <div class="flex items-center justify-center p-2 rounded-xl bg-background-light dark:bg-gray-800/50 lg:flex-row lg:px-3 lg:py-2">
+                                            <span class="material-symbols-outlined text-gray-700 dark:text-gray-300 text-[14px] lg:mr-2">bed</span>
+                                            <span class="text-[10px] font-bold text-gray-900 dark:text-white lg:text-xs">5 Beds</span>
+                                        </div>
+                                        <div class="flex items-center justify-center p-2 rounded-xl bg-background-light dark:bg-gray-800/50 lg:flex-row lg:px-3 lg:py-2">
+                                            <span class="material-symbols-outlined text-gray-700 dark:text-gray-300 text-[14px] lg:mr-2">bathtub</span>
+                                            <span class="text-[10px] font-bold text-gray-900 dark:text-white lg:text-xs">6 Baths</span>
+                                        </div>
+                                        <div class="flex items-center justify-center p-2 rounded-xl bg-background-light dark:bg-gray-800/50 lg:flex-row lg:px-3 lg:py-2">
+                                            <span class="material-symbols-outlined text-gray-700 dark:text-gray-300 text-[14px] lg:mr-2">square_foot</span>
+                                            <span class="text-[10px] font-bold text-gray-900 dark:text-white lg:text-xs">7,200 Sqft</span>
+                                        </div>
+                                        <div class="flex items-center justify-center p-2 rounded-xl bg-background-light dark:bg-gray-800/50 lg:flex-row lg:px-3 lg:py-2">
+                                            <span class="material-symbols-outlined text-gray-700 dark:text-gray-300 text-[14px] lg:mr-2">apartment</span>
+                                            <span class="text-[10px] font-bold text-gray-900 dark:text-white lg:text-xs">3 Flr</span>
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="space-y-2">
                                     <p class="text-xs text-gray-600 line-clamp-3 leading-relaxed">
-                                                         Experience luxury living at its finest in this stunning villa located in the heart of Palm Jumeirah. Featuring private beach access, infinity pool, and state-of-the-art amenities...
-                                                     </p>
+                                        Experience luxury living at its finest in this stunning villa located in the heart of Palm Jumeirah. Featuring private beach access, infinity pool, and state-of-the-art amenities...
+                                    </p>
                                     <span class="text-blue-900 text-xs font-semibold cursor-pointer">Read more</span>
                                 </div>
                             </div>
@@ -203,12 +210,12 @@
                         <div class="bg-white p-4 border-t border-gray-100 grid grid-cols-2 gap-3 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]">
                             <button class="flex items-center justify-center gap-2 bg-blue-900 text-white rounded-lg py-2.5 text-xs font-bold shadow-sm active:scale-95 transition-transform" :style="`background-color: ${getPreviewColor()}`">
                                 <span class="material-symbols-outlined text-[16px]">call</span>
-                                                 Call Now
-                                             </button>
+                                Call Now
+                            </button>
                             <button class="flex items-center justify-center gap-2 bg-green-600 text-white rounded-lg py-2.5 text-xs font-bold shadow-sm active:scale-95 transition-transform">
-                                <span class="material-symbols-outlined text-[16px]">chat</span>
-                                                 WhatsApp
-                                             </button>
+                                <i class="fa-brands fa-whatsapp text-[16px]"></i>
+                                WhatsApp
+                            </button>
                         </div>
                         <div class="h-4 bg-white flex justify-center items-end pb-1">
                             <div class="w-1/3 h-1 bg-gray-300 rounded-full"></div>
@@ -216,8 +223,8 @@
                     </div>
                 </div>
                 <div class="text-center mt-4 text-xs text-gray-400">
-                                     Preview updates as you type
-                                 </div>
+                    Preview updates as you type
+                </div>
             </div>
         </div>
     </div>
@@ -225,6 +232,7 @@
 @endsection
 
 @section('scripts')
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
 <script>
 function settingsData() {
     return {
