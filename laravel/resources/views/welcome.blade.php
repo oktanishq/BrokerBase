@@ -64,10 +64,10 @@
 <span class="material-symbols-outlined text-[20px] group-hover:scale-110 transition-transform">call</span>
                         Call Dealer
                     </button>
-<button class="flex-1 h-12 bg-whatsapp hover:brightness-105 text-white font-bold rounded-xl shadow-md shadow-green-900/10 hover:shadow-lg transition-all flex items-center justify-center gap-2 group">
+<a :href="whatsappLink" target="_blank" rel="noopener noreferrer" class="flex-1 h-12 bg-whatsapp hover:brightness-105 text-white font-bold rounded-xl shadow-md shadow-green-900/10 hover:shadow-lg transition-all flex items-center justify-center gap-2 group">
 <i class="fa-brands fa-whatsapp text-[20px] group-hover:scale-110 transition-transform"></i>
                         WhatsApp
-                    </button>
+                    </a>
 </div>
 </div>
 </div>
@@ -123,6 +123,7 @@
 function welcomeData() {
     return {
         settings: {},
+        whatsappLink: '',
         
         async init() {
             await this.loadSettings();
@@ -134,10 +135,18 @@ function welcomeData() {
                 const data = await response.json();
                 if (data.success) {
                     this.settings = data.data;
+                    this.generateWhatsAppLink();
                 }
             } catch (error) {
                 console.error('Failed to load settings:', error);
             }
+        },
+        
+        generateWhatsAppLink() {
+            const phone = this.settings.w_no || '';
+            // Remove all non-digit characters
+            const digits = phone.replace(/\D/g, '');
+            this.whatsappLink = 'https://wa.me/' + digits;
         }
     }
 }

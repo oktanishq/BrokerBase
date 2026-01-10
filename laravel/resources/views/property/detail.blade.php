@@ -218,10 +218,10 @@
                     <span class="material-symbols-outlined text-[24px]">call</span>
                     Call Now
                 </button>
-                <button class="w-full flex items-center justify-center gap-2 h-14 rounded-xl bg-green-500 hover:bg-green-600 text-white font-bold text-lg transition-transform active:scale-[0.98] shadow-md shadow-green-500/20">
+                <a :href="whatsappLink" target="_blank" rel="noopener noreferrer" class="w-full flex items-center justify-center gap-2 h-14 rounded-xl bg-green-500 hover:bg-green-600 text-white font-bold text-lg transition-transform active:scale-[0.98] shadow-md shadow-green-500/20">
                     <i class="fa-brands fa-whatsapp text-[24px]"></i>
                     WhatsApp
-                </button>
+                </a>
                 <p class="text-center text-xs text-gray-400 pt-2">By contacting, you agree to our Terms of Service.</p>
             </div>
         </div>
@@ -259,10 +259,10 @@
         <span class="material-symbols-outlined text-[20px]">call</span>
         Call Now
     </button>
-    <button class="flex-1 flex items-center justify-center gap-2 h-11 rounded-full bg-green-500 hover:bg-green-600 text-white font-bold text-base transition-transform active:scale-95 shadow-md shadow-green-500/20">
+    <a :href="whatsappLink" target="_blank" rel="noopener noreferrer" class="flex-1 flex items-center justify-center gap-2 h-11 rounded-full bg-green-500 hover:bg-green-600 text-white font-bold text-base transition-transform active:scale-95 shadow-md shadow-green-500/20">
         <i class="fa-brands fa-whatsapp text-[20px]"></i>
         WhatsApp
-    </button>
+    </a>
 </div>
 
 </main>
@@ -271,6 +271,7 @@
 function propertyData() {
     return {
         settings: {},
+        whatsappLink: '',
         
         async init() {
             await this.loadSettings();
@@ -282,10 +283,17 @@ function propertyData() {
                 const data = await response.json();
                 if (data.success) {
                     this.settings = data.data;
+                    this.generateWhatsAppLink();
                 }
             } catch (error) {
                 console.error('Failed to load settings:', error);
             }
+        },
+        
+        generateWhatsAppLink() {
+            const phone = this.settings.w_no || '';
+            const digits = phone.replace(/\D/g, '');
+            this.whatsappLink = 'https://wa.me/' + digits;
         }
     }
 }
