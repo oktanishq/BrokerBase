@@ -214,10 +214,10 @@
                         <p class="font-bold text-gray-900 dark:text-white" x-text="settings.agency_name || 'Loading...'"></p>
                     </div>
                 </div>
-                <button class="w-full flex items-center justify-center gap-2 h-14 rounded-xl border-2 border-primary bg-white hover:bg-gray-50 text-primary font-bold text-lg transition-transform active:scale-[0.98] shadow-sm">
+                <a :href="'tel:' + getCleanedPhoneNumber()" class="w-full flex items-center justify-center gap-2 h-14 rounded-xl border-2 border-primary bg-white hover:bg-gray-50 text-primary font-bold text-lg transition-transform active:scale-[0.98] shadow-sm">
                     <span class="material-symbols-outlined text-[24px]">call</span>
                     Call Now
-                </button>
+                </a>
                 <a :href="getWhatsAppMessage()" target="_blank" rel="noopener noreferrer" class="w-full flex items-center justify-center gap-2 h-14 rounded-xl bg-green-500 hover:bg-green-600 text-white font-bold text-lg transition-transform active:scale-[0.98] shadow-md shadow-green-500/20">
                     <i class="fa-brands fa-whatsapp text-[24px]"></i>
                     WhatsApp
@@ -255,10 +255,10 @@
 
 <!-- Mobile: Sticky Bottom Action Bar -->
 <div class="fixed bottom-0 left-0 right-0 z-50 lg:hidden bg-white dark:bg-background-dark border-t border-gray-100 dark:border-gray-800 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.1)] flex items-center px-4 gap-3 h-16">
-    <button class="flex-1 flex items-center justify-center gap-2 h-11 rounded-full border border-primary bg-white hover:bg-gray-50 text-primary font-bold text-base transition-transform active:scale-95 shadow-sm">
+    <a :href="'tel:' + getCleanedPhoneNumber()" class="flex-1 flex items-center justify-center gap-2 h-11 rounded-full border border-primary bg-white hover:bg-gray-50 text-primary font-bold text-base transition-transform active:scale-95 shadow-sm">
         <span class="material-symbols-outlined text-[20px]">call</span>
         Call Now
-    </button>
+    </a>
     <a :href="getWhatsAppMessage()" target="_blank" rel="noopener noreferrer" class="flex-1 flex items-center justify-center gap-2 h-11 rounded-full bg-green-500 hover:bg-green-600 text-white font-bold text-base transition-transform active:scale-95 shadow-md shadow-green-500/20">
         <i class="fa-brands fa-whatsapp text-[20px]"></i>
         WhatsApp
@@ -301,6 +301,12 @@ function propertyData() {
             const message = `Hii i'm interested in\n*${this.getPropertyName()}*\nat ${this.getPropertyLocation()}\nUID: ${this.getPropertyId()}\nLink: ${domain}/property/${this.getPropertyId()}`;
             const encodedMessage = encodeURIComponent(message);
             return `${this.whatsappLink}?text=${encodedMessage}`;
+        },
+        
+        getCleanedPhoneNumber() {
+            const phone = this.settings.w_no || '';
+            // Keep only digits and + sign
+            return phone.replace(/[^\d+]/g, '');
         },
         
         getPropertyName() {

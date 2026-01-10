@@ -60,10 +60,10 @@
                     </div>
 </div>
 <div class="flex gap-3">
-<button class="flex-1 h-12 bg-primary hover:bg-blue-800 text-white font-bold rounded-xl shadow-md shadow-blue-900/10 hover:shadow-lg transition-all flex items-center justify-center gap-2 group">
+<a :href="'tel:' + getCleanedPhoneNumber()" class="flex-1 h-12 bg-primary hover:bg-blue-800 text-white font-bold rounded-xl shadow-md shadow-blue-900/10 hover:shadow-lg transition-all flex items-center justify-center gap-2 group">
 <span class="material-symbols-outlined text-[20px] group-hover:scale-110 transition-transform">call</span>
                         Call Dealer
-                    </button>
+                    </a>
 <a :href="getWhatsAppMessage()" target="_blank" rel="noopener noreferrer" class="flex-1 h-12 bg-whatsapp hover:brightness-105 text-white font-bold rounded-xl shadow-md shadow-green-900/10 hover:shadow-lg transition-all flex items-center justify-center gap-2 group">
 <i class="fa-brands fa-whatsapp text-[20px] group-hover:scale-110 transition-transform"></i>
                         WhatsApp
@@ -111,10 +111,10 @@
 </section>
 @include('public_components.listing')
 <div class="fixed bottom-6 right-6 z-10 lg:hidden">
-<button class="group flex items-center gap-2 bg-primary text-white h-14 pl-5 pr-6 rounded-full shadow-xl shadow-blue-900/30 hover:scale-105 hover:bg-blue-800 transition-all duration-300">
+<a :href="'tel:' + getCleanedPhoneNumber()" class="group flex items-center gap-2 bg-primary text-white h-14 pl-5 pr-6 rounded-full shadow-xl shadow-blue-900/30 hover:scale-105 hover:bg-blue-800 transition-all duration-300">
 <span class="material-symbols-outlined text-[24px]">call</span>
 <span class="font-bold text-base">Contact Dealer</span>
-</button>
+</a>
 </div>
 </main>
 @stack('scripts')
@@ -154,6 +154,12 @@ function welcomeData() {
             const message = `Hii i'm interested in\n*${this.settings.agency_name || 'Elite Homes'}*\nat ${this.settings.office_address || 'Location not specified'}\nUID: N/A\nLink: ${domain}`;
             const encodedMessage = encodeURIComponent(message);
             return `${this.whatsappLink}?text=${encodedMessage}`;
+        },
+        
+        getCleanedPhoneNumber() {
+            const phone = this.settings.w_no || '';
+            // Keep only digits and + sign
+            return phone.replace(/[^\d+]/g, '');
         }
     }
 }
