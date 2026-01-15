@@ -16,12 +16,13 @@
     <script>window.location.href = '/admin/login';</script>
 @endif
 <div class="flex h-screen w-full bg-background-light" x-data="adminLayoutData()">
+<div x-show="sidebarOpen" @click="sidebarOpen = false" class="fixed inset-0 bg-black bg-opacity-50 z-20 lg:hidden"></div>
 <x-sidebar />
 <div class="flex flex-col flex-1 h-full lg:ml-64 relative overflow-hidden bg-gray-50">
 <header class="flex items-center justify-between bg-white border-b border-gray-100 px-6 py-4 shadow-sm sticky top-0 z-20">
 <div class="flex items-center gap-4">
-<button class="lg:hidden p-2 text-gray-600 hover:bg-gray-100 rounded-full">
-<span class="material-symbols-outlined">menu</span>
+<button class="lg:hidden p-2 text-gray-600 hover:bg-gray-100 rounded-full" @click="sidebarOpen = !sidebarOpen">
+<span class="material-symbols-outlined" x-text="sidebarOpen ? 'close' : 'menu'"></span>
 </button>
 <div class="flex flex-col">
 @yield('header-content')
@@ -97,6 +98,7 @@ function checkAuthentication() {
 function adminLayoutData() {
     return {
         // Simple Alpine.js data
+        sidebarOpen: false,
         showLogoutModal: false,
         isLoggingOut: false,
 

@@ -1,4 +1,4 @@
-<aside class="hidden lg:flex flex-col w-64 bg-royal-blue text-white h-full fixed left-0 top-0 bottom-0 z-30 shadow-xl transition-all duration-300">
+<aside class="flex flex-col w-64 bg-royal-blue text-white h-full fixed lg:static left-0 top-0 bottom-0 z-30 shadow-xl transition-transform duration-300 -translate-x-full lg:translate-x-0" x-bind:class="sidebarOpen ? 'translate-x-0' : '-translate-x-full'">
 <div class="p-6 flex items-center gap-3">
 <div class="flex items-center justify-center size-10 rounded-full bg-amber-500/20 text-amber-500">
 <span class="material-symbols-outlined text-amber-500">apartment</span>
