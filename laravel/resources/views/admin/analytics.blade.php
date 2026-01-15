@@ -310,4 +310,7 @@
                         </table>
                     </div>
                 </div>
+
+                <!-- Coming Soon Modal -->
+                <x-coming-soon-modal />
 @endsection
