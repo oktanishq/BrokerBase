@@ -63,10 +63,9 @@
 </div>
 </div>
 </div>
-</div>
 
 <!-- Recent Listings Table -->
-<div class="flex flex-col bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+<div class="flex flex-col bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden -mt-4">
 <div class="p-6 border-b border-gray-100 flex justify-between items-center">
 <h3 class="text-lg font-bold text-slate-900">Recent Listings</h3>
 <a class="text-sm text-royal-blue font-medium hover:underline" href="#">View All</a>
