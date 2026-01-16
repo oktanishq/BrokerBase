@@ -28,6 +28,7 @@
 @yield('header-content')
 </div>
 </div>
+<!--
 <div class="flex items-center gap-4">
 <button class="flex items-center justify-center size-10 rounded-full bg-gray-50 hover:bg-gray-200 text-slate-700 transition-colors relative">
 <span class="material-symbols-outlined text-[20px]">notifications</span>
@@ -35,6 +36,7 @@
 </button>
 <div class="bg-center bg-no-repeat bg-cover rounded-full size-10 ring-2 ring-gray-100 cursor-pointer" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDjlFF_nSTOQN2xN5XEhoei2r1xmo6006_o8UoGMAFUfEAomAjyJR-_bXnIPonwd3cqDG7sOU8o_DGuG6ynBK32KcH-lRZpx1OAvvrV7EALzre8oOHD4wHQDNcs1u-RqUpqp6rABg-PLwMMJpYI1mwd0rmsHsf0SI7DMC0X71sycCni1WxVUk61lnXtb-Wzonan3tvT7xcDV3vnvIuNyz4n4mt6oBDAaqb4Ch5zP_c1FPKCfCmqMwaC598j6zQlRK21aawjBmED-Tjo');"></div>
 </div>
+-->
 </header>
 <main class="flex-1 overflow-y-auto p-4 md:p-8">
 <div class="max-w-[1400px] mx-auto flex flex-col gap-6">
