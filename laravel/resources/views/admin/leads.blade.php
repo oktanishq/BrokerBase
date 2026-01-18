@@ -255,5 +255,5 @@
                 </div>
 
                 <!-- Coming Soon Modal -->
-                <x-coming-soon-modal />
+                <x-admin.coming-soon-modal />
 @endsection

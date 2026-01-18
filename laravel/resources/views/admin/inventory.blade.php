@@ -46,7 +46,7 @@
 
 @section('content')
 <!-- Edit Property Modal -->
-@include('components.EditPropertyModal')
+<x-admin.inventory.EditPropertyModal />
 
 <div x-data="{
     searchTerm: '',
@@ -229,7 +229,7 @@
                 <!-- Page Header -->
                 <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-8">
                     <h1 class="text-slate-900 text-3xl font-black leading-tight tracking-tight">My Inventory</h1>
-                    @include('components.AddPropertyModal')
+                    <x-admin.AddPropertyModal />
                 </div>
 
                 <!-- Search and Filter Bar -->
@@ -309,14 +309,14 @@
                     <!-- List View -->
                     <div x-show="viewMode === 'list'" class="flex flex-col gap-4">
                         <template x-for="property in properties" :key="`list-${property.id}`">
-                            @include('components.PropertyListCard')
+                            <x-admin.inventory.PropertyListCard />
                         </template>
                     </div>
 
                     <!-- Grid View -->
                     <div x-show="viewMode === 'grid'" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         <template x-for="property in properties" :key="`grid-${property.id}`">
-                            @include('components.PropertyGridCard')
+                            <x-admin.inventory.PropertyGridCard />
                         </template>
                     </div>
                 </div>

@@ -10,7 +10,7 @@
 @section('content')
 <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
 <h1 class="text-slate-900 text-3xl font-black leading-tight tracking-tight">Dashboard</h1>
-@include('components.AddPropertyModal')
+<x-admin.AddPropertyModal />
 </div>
 
 <!-- Stats Cards -->

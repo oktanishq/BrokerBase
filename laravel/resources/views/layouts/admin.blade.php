@@ -17,7 +17,7 @@
 @endif
 <div class="flex h-screen w-full bg-background-light" x-data="adminLayoutData()">
 <div x-show="sidebarOpen" @click="sidebarOpen = false" class="fixed inset-0 bg-black bg-opacity-50 z-20 lg:hidden"></div>
-<x-sidebar />
+<x-admin.sidebar />
 <div class="flex flex-col flex-1 h-full relative overflow-hidden bg-gray-50">
 <header class="flex items-center justify-between bg-white border-b border-gray-100 px-6 py-4 shadow-sm sticky top-0 z-20">
 <div class="flex items-center gap-4">
@@ -45,8 +45,8 @@
 </main>
 </div>
 </div>
-<x-logout-confirmation-modal />
-<x-delete-confirmation-modal />
+<x-admin.logout-confirmation-modal />
+<x-admin.delete-confirmation-modal />
 
 {{-- Alpine.js Admin Layout Data --}}
 <script>
