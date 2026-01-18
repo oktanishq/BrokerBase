@@ -42,7 +42,7 @@
 </head>
 <body class="bg-background-light dark:bg-background-dark text-[#121317] font-display min-h-screen flex flex-col" x-data="propertyData()" x-init="init()">
 <main class="w-full bg-white min-h-screen flex flex-col relative pb-20 lg:pb-12 mx-auto">
-<x-site-header />
+<x-public.site-header />
 
 <!-- Main Content Grid -->
 <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 px-4 sm:px-6 lg:px-10 mt-6 items-start">

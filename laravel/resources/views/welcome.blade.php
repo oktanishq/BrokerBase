@@ -22,7 +22,7 @@
 </head>
 <body class="bg-background-light dark:bg-background-dark text-[#121317] font-display min-h-screen flex flex-col" x-data="welcomeData()" x-init="init()">
 <main class="w-full bg-white min-h-screen flex flex-col relative pb-12 mx-auto">
-<x-site-header />
+<x-public.site-header />
 <section class="bg-gradient-to-b from-white to-[#f6f6f8] px-6 lg:px-10 py-10">
 <div class="max-w-[1280px] mx-auto grid grid-cols-1 lg:grid-cols-[2fr_1fr] gap-10 items-start">
 <div class="flex flex-col gap-8">
@@ -75,10 +75,13 @@
 <section class="px-6 lg:px-10 py-10 pb-2 sticky top-[71px] z-40 bg-white shadow-sm border-b border-gray-100 pt-3">
 <div class="mb-3">
 <div class="flex gap-3">
-@include('public_components.advanced-filters', [
-    'onApply' => 'function(filters) { console.log("Applying filters:", filters); }',
-    'onReset' => 'function() { console.log("Resetting filters"); }'
-])
+
+<x-public.advanced-filters
+    data-on-apply="function(filters) {console.log('Applying  filters:', filters); }"
+    data-on-reset="function() {console.log('Resetting filters'); }"
+>
+</x-public.advanced-filters>
+ 
 <label class="relative flex-1 items-center">
 <span class="absolute left-4 text-[#666e85] material-symbols-outlined top-1/2 -translate-y-1/2">search</span>
 <input class="w-full bg-[#f1f1f4] text-[#121317] placeholder:text-[#666e85] h-12 rounded-full pl-20 pr-4 focus:outline-none focus:ring-2 focus:ring-primary/20 border-none text-base transition-all" placeholder="Search location or building..." type="text"/>
@@ -109,7 +112,9 @@
 </div>
 
 </section>
-@include('public_components.listing')
+
+<x-public.listing />
+
 <div class="fixed bottom-6 right-6 z-10 lg:hidden">
 <a :href="'tel:' + getCleanedPhoneNumber()" class="group flex items-center gap-2 bg-primary text-white h-14 pl-5 pr-6 rounded-full shadow-xl shadow-blue-900/30 hover:scale-105 hover:bg-blue-800 transition-all duration-300">
 <span class="material-symbols-outlined text-[24px]">call</span>

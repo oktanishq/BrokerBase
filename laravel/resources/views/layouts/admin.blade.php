@@ -16,17 +16,19 @@
     <script>window.location.href = '/admin/login';</script>
 @endif
 <div class="flex h-screen w-full bg-background-light" x-data="adminLayoutData()">
-<x-sidebar />
-<div class="flex flex-col flex-1 h-full lg:ml-64 relative overflow-hidden bg-gray-50">
+<div x-show="sidebarOpen" @click="sidebarOpen = false" class="fixed inset-0 bg-black bg-opacity-50 z-20 lg:hidden"></div>
+<x-admin.sidebar />
+<div class="flex flex-col flex-1 h-full relative overflow-hidden bg-gray-50">
 <header class="flex items-center justify-between bg-white border-b border-gray-100 px-6 py-4 shadow-sm sticky top-0 z-20">
 <div class="flex items-center gap-4">
-<button class="lg:hidden p-2 text-gray-600 hover:bg-gray-100 rounded-full">
-<span class="material-symbols-outlined">menu</span>
+<button class="lg:hidden p-2 text-gray-600 hover:bg-gray-100 rounded-full" @click="sidebarOpen = !sidebarOpen">
+<span class="material-symbols-outlined" x-text="sidebarOpen ? 'close' : 'menu'"></span>
 </button>
 <div class="flex flex-col">
 @yield('header-content')
 </div>
 </div>
+<!--
 <div class="flex items-center gap-4">
 <button class="flex items-center justify-center size-10 rounded-full bg-gray-50 hover:bg-gray-200 text-slate-700 transition-colors relative">
 <span class="material-symbols-outlined text-[20px]">notifications</span>
@@ -34,6 +36,7 @@
 </button>
 <div class="bg-center bg-no-repeat bg-cover rounded-full size-10 ring-2 ring-gray-100 cursor-pointer" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDjlFF_nSTOQN2xN5XEhoei2r1xmo6006_o8UoGMAFUfEAomAjyJR-_bXnIPonwd3cqDG7sOU8o_DGuG6ynBK32KcH-lRZpx1OAvvrV7EALzre8oOHD4wHQDNcs1u-RqUpqp6rABg-PLwMMJpYI1mwd0rmsHsf0SI7DMC0X71sycCni1WxVUk61lnXtb-Wzonan3tvT7xcDV3vnvIuNyz4n4mt6oBDAaqb4Ch5zP_c1FPKCfCmqMwaC598j6zQlRK21aawjBmED-Tjo');"></div>
 </div>
+-->
 </header>
 <main class="flex-1 overflow-y-auto p-4 md:p-8">
 <div class="max-w-[1400px] mx-auto flex flex-col gap-6">
@@ -42,8 +45,8 @@
 </main>
 </div>
 </div>
-<x-logout-confirmation-modal />
-<x-delete-confirmation-modal />
+<x-admin.logout-confirmation-modal />
+<x-admin.delete-confirmation-modal />
 
 {{-- Alpine.js Admin Layout Data --}}
 <script>
@@ -97,6 +100,7 @@ function checkAuthentication() {
 function adminLayoutData() {
     return {
         // Simple Alpine.js data
+        sidebarOpen: false,
         showLogoutModal: false,
         isLoggingOut: false,
 
