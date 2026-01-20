@@ -26,7 +26,7 @@
 <livewire:public.hero />
 <livewire:public.filters />
 
-<x-public.listing />
+<livewire:public.listings />
 </main>
 @stack('scripts')
 
