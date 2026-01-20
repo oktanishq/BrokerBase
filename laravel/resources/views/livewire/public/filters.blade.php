@@ -76,8 +76,15 @@
     <!-- Prevent body scroll when modal is open -->
     @if($showFilters)
         <style>
-            body { overflow: hidden; }
-            html { overflow: hidden; }
+            body {
+                overflow: hidden;
+                touch-action: none;
+                -webkit-overflow-scrolling: touch;
+            }
+            html {
+                overflow: hidden;
+                touch-action: none;
+            }
         </style>
     @endif
 
