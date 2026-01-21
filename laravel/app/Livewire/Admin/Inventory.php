@@ -102,7 +102,7 @@ class Inventory extends Component
         if ($this->searchTerm) {
             $query->where(function ($q) {
                 $q->where('title', 'like', '%' . $this->searchTerm . '%')
-                  ->orWhere('location', 'like', '%' . $this->searchTerm . '%');
+                  ->orWhere('address', 'like', '%' . $this->searchTerm . '%');
             });
         }
 
@@ -113,7 +113,7 @@ class Inventory extends Component
 
         // Apply type filter
         if ($this->typeFilter !== 'all') {
-            $query->where('type', $this->typeFilter);
+            $query->where('property_type', $this->typeFilter);
         }
 
         return $query->paginate($this->perPage);
