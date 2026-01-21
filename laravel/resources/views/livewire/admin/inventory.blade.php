@@ -59,33 +59,9 @@
         </div>
     </div>
 
-    <!-- Loading State -->
-    <div wire:loading class="mt-8">
-        <div class="flex flex-col items-center justify-center py-12">
-            <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-royal-blue"></div>
-            <p class="mt-4 text-gray-500">Loading properties...</p>
-        </div>
-    </div>
-
-    <!-- Error State -->
-    @if($error)
-        <div wire:loading.remove class="mt-8">
-            <div class="flex flex-col items-center justify-center py-12">
-                <span class="material-symbols-outlined text-6xl text-red-300">error</span>
-                <div class="mt-4 text-center">
-                    <h3 class="text-lg font-medium text-gray-900">Error loading properties</h3>
-                    <p class="text-gray-500">{{ $error }}</p>
-                    <button wire:click="$refresh" class="mt-4 px-4 py-2 bg-royal-blue text-white rounded-lg hover:bg-blue-800 transition-colors">
-                        Try Again
-                    </button>
-                </div>
-            </div>
-        </div>
-    @endif
-
     <!-- Property List -->
     @if($this->properties->count() > 0)
-        <div wire:loading.remove class="mt-8">
+        <div class="mt-8">
             <!-- List View -->
             @if($viewMode === 'list')
                 <div class="flex flex-col gap-4">
@@ -108,7 +84,7 @@
 
     <!-- No Results Message -->
     @if($this->properties->count() === 0)
-        <div wire:loading.remove class="text-center py-12 mt-8">
+        <div class="text-center py-12 mt-8">
             <div class="flex flex-col items-center gap-4">
                 <span class="material-symbols-outlined text-6xl text-gray-300">search_off</span>
                 <div>
@@ -121,7 +97,7 @@
 
     <!-- Pagination -->
     @if($this->properties->count() > 0)
-        <div wire:loading.remove class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-t border-gray-200 pt-6 mt-4">
+        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-t border-gray-200 pt-6 mt-4">
         <div class="flex items-center gap-4">
             <!-- Items per page dropdown -->
             <div class="flex items-center gap-2">

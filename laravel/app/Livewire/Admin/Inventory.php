@@ -5,6 +5,8 @@ namespace App\Livewire\Admin;
 use App\Models\Property;
 use Livewire\Component;
 use Livewire\WithPagination;
+use App\Livewire\Admin\Inventory\EditPropertyModal;
+use App\Livewire\Admin\Inventory\DeleteConfirmationModal;
 
 class Inventory extends Component
 {
@@ -15,12 +17,12 @@ class Inventory extends Component
     public $typeFilter = 'all';
     public $viewMode = 'list'; // 'list' or 'grid'
     public $perPage = 10;
-    public $loading = false;
-    public $error = null;
 
     protected $listeners = [
         'property-updated' => 'handlePropertyUpdate',
         'property-deleted' => 'handlePropertyDeleted',
+        'open-edit-modal' => 'forwardToEditModal',
+        'open-delete-modal' => 'forwardToDeleteModal',
     ];
 
     public function mount()
@@ -65,6 +67,16 @@ class Inventory extends Component
         // Refresh the properties list
         $this->resetPage();
         session()->flash('success', 'Property deleted successfully!');
+    }
+
+    public function forwardToEditModal($propertyData)
+    {
+        $this->dispatch('open-edit-modal', $propertyData)->to(EditPropertyModal::class);
+    }
+
+    public function forwardToDeleteModal($propertyData)
+    {
+        $this->dispatch('open-delete-modal', $propertyData)->to(DeleteConfirmationModal::class);
     }
 
     public function nextPage()

@@ -20,7 +20,12 @@
         <div class="flex flex-col gap-1">
             <!-- Status and Date -->
             <div class="flex items-center justify-between">
-                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold @if($property->status === 'available') bg-green-100 text-green-700 border-green-200 @elseif($property->status === 'sold') bg-red-100 text-red-700 border-red-200 @else bg-gray-200 text-gray-600 border-gray-300 @endif">
+                <span @class([
+                    'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold',
+                    'bg-green-100 text-green-700 border-green-200' => $property->status === 'available',
+                    'bg-red-100 text-red-700 border-red-200' => $property->status === 'sold',
+                    'bg-gray-200 text-gray-600 border-gray-300' => !in_array($property->status, ['available', 'sold']),
+                ])>
                     {{ ucfirst($property->status) }}
                 </span>
                 <span class="text-sm text-gray-400 hidden md:block">
@@ -40,7 +45,12 @@
                     title="{{ $property->title }}">
                     {{ $property->title }}
                 </h3>
-                <h3 class="text-xl font-bold @if($property->status === 'available') text-amber-600 @elseif($property->status === 'sold') text-gray-400 line-through decoration-red-500 decoration-2 @else text-gray-400 italic @endif">
+                <h3 @class([
+                    'text-xl font-bold',
+                    'text-amber-600' => $property->status === 'available',
+                    'text-gray-400 line-through decoration-red-500 decoration-2' => $property->status === 'sold',
+                    'text-gray-400 italic' => !in_array($property->status, ['available', 'sold']),
+                ])>
                     {{ $property->price }}
                 </h3>
             </div>
