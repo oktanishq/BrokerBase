@@ -1,0 +1,140 @@
+<?php
+
+namespace App\Livewire\Admin;
+
+use App\Models\Property;
+use Livewire\Component;
+use Livewire\WithPagination;
+
+class Inventory extends Component
+{
+    use WithPagination;
+
+    public $searchTerm = '';
+    public $statusFilter = 'all';
+    public $typeFilter = 'all';
+    public $viewMode = 'list'; // 'list' or 'grid'
+    public $perPage = 10;
+    public $loading = false;
+    public $error = null;
+
+    protected $listeners = [
+        'property-updated' => 'handlePropertyUpdate',
+        'property-deleted' => 'handlePropertyDeleted',
+    ];
+
+    public function mount()
+    {
+        // Initialize if needed
+    }
+
+    public function updatingSearchTerm()
+    {
+        $this->resetPage();
+    }
+
+    public function updatingStatusFilter()
+    {
+        $this->resetPage();
+    }
+
+    public function updatingTypeFilter()
+    {
+        $this->resetPage();
+    }
+
+    public function updatingPerPage()
+    {
+        $this->resetPage();
+    }
+
+    public function updatedViewMode()
+    {
+        // Handle view mode change if needed
+    }
+
+    public function handlePropertyUpdate($data)
+    {
+        // Refresh the properties list
+        $this->resetPage();
+        session()->flash('success', 'Property updated successfully!');
+    }
+
+    public function handlePropertyDeleted($propertyId)
+    {
+        // Refresh the properties list
+        $this->resetPage();
+        session()->flash('success', 'Property deleted successfully!');
+    }
+
+    public function nextPage()
+    {
+        $this->setPage($this->page + 1);
+    }
+
+    public function prevPage()
+    {
+        $this->setPage($this->page - 1);
+    }
+
+    public function goToPage($page)
+    {
+        $this->setPage($page);
+    }
+
+    public function getPropertiesProperty()
+    {
+        $query = Property::query();
+
+        // Apply search
+        if ($this->searchTerm) {
+            $query->where(function ($q) {
+                $q->where('title', 'like', '%' . $this->searchTerm . '%')
+                  ->orWhere('location', 'like', '%' . $this->searchTerm . '%');
+            });
+        }
+
+        // Apply status filter
+        if ($this->statusFilter !== 'all') {
+            $query->where('status', $this->statusFilter);
+        }
+
+        // Apply type filter
+        if ($this->typeFilter !== 'all') {
+            $query->where('type', $this->typeFilter);
+        }
+
+        return $query->paginate($this->perPage);
+    }
+
+    public function getTotalCountProperty()
+    {
+        return Property::count();
+    }
+
+    public function getShowingFromProperty()
+    {
+        if ($this->properties->total() === 0) return 0;
+        return ($this->properties->currentPage() - 1) * $this->properties->perPage() + 1;
+    }
+
+    public function getShowingToProperty()
+    {
+        return min($this->properties->currentPage() * $this->properties->perPage(), $this->properties->total());
+    }
+
+    public function getShowingCountProperty()
+    {
+        return $this->properties->total();
+    }
+
+    public function getTotalPagesProperty()
+    {
+        return $this->properties->lastPage();
+    }
+
+    public function render()
+    {
+        return view('livewire.admin.inventory');
+    }
+}
