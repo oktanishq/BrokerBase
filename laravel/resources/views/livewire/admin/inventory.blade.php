@@ -46,14 +46,12 @@
             <!-- View Toggle -->
             <div class="flex items-center bg-gray-50 rounded-lg p-1 border border-gray-200 ml-auto sm:ml-0">
                 <button wire:click="$set('viewMode', 'grid')"
-                        :class="$viewMode === 'grid' ? 'bg-white shadow-sm text-royal-blue' : 'text-gray-400 hover:text-gray-600'"
-                        class="p-1.5 rounded transition-all"
+                        class="p-1.5 rounded transition-all {{ $viewMode === 'grid' ? 'bg-white shadow-sm text-royal-blue' : 'text-gray-400 hover:text-gray-600' }}"
                         title="Grid View">
                     <span class="material-symbols-outlined text-[22px]">grid_view</span>
                 </button>
                 <button wire:click="$set('viewMode', 'list')"
-                        :class="$viewMode === 'list' ? 'bg-white shadow-sm text-royal-blue' : 'text-gray-400 hover:text-gray-600'"
-                        class="p-1.5 rounded transition-all"
+                        class="p-1.5 rounded transition-all {{ $viewMode === 'list' ? 'bg-white shadow-sm text-royal-blue' : 'text-gray-400 hover:text-gray-600' }}"
                         title="List View">
                     <span class="material-symbols-outlined text-[22px]">view_list</span>
                 </button>
@@ -70,49 +68,60 @@
     </div>
 
     <!-- Error State -->
-    <div wire:loading.remove x-show="$error" class="mt-8">
-        <div class="flex flex-col items-center justify-center py-12">
-            <span class="material-symbols-outlined text-6xl text-red-300">error</span>
-            <div class="mt-4 text-center">
-                <h3 class="text-lg font-medium text-gray-900">Error loading properties</h3>
-                <p class="text-gray-500">{{ $error }}</p>
-                <button wire:click="$refresh" class="mt-4 px-4 py-2 bg-royal-blue text-white rounded-lg hover:bg-blue-800 transition-colors">
-                    Try Again
-                </button>
+    @if($error)
+        <div wire:loading.remove class="mt-8">
+            <div class="flex flex-col items-center justify-center py-12">
+                <span class="material-symbols-outlined text-6xl text-red-300">error</span>
+                <div class="mt-4 text-center">
+                    <h3 class="text-lg font-medium text-gray-900">Error loading properties</h3>
+                    <p class="text-gray-500">{{ $error }}</p>
+                    <button wire:click="$refresh" class="mt-4 px-4 py-2 bg-royal-blue text-white rounded-lg hover:bg-blue-800 transition-colors">
+                        Try Again
+                    </button>
+                </div>
             </div>
         </div>
-    </div>
+    @endif
 
     <!-- Property List -->
-    <div wire:loading.remove x-show="$properties->count() > 0" class="mt-8">
-        <!-- List View -->
-        <div x-show="$viewMode === 'list'" class="flex flex-col gap-4">
-            @foreach($properties as $property)
-                @livewire('admin.inventory.property-list-card', ['property' => $property], key('list-' . $property->id))
-            @endforeach
-        </div>
+    @if($this->properties->count() > 0)
+        <div wire:loading.remove class="mt-8">
+            <!-- List View -->
+            @if($viewMode === 'list')
+                <div class="flex flex-col gap-4">
+                    @foreach($this->properties as $property)
+                        @livewire('admin.inventory.property-list-card', ['property' => $property], key('list-' . $property->id))
+                    @endforeach
+                </div>
+            @endif
 
-        <!-- Grid View -->
-        <div x-show="$viewMode === 'grid'" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            @foreach($properties as $property)
-                @livewire('admin.inventory.property-grid-card', ['property' => $property], key('grid-' . $property->id))
-            @endforeach
+            <!-- Grid View -->
+            @if($viewMode === 'grid')
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    @foreach($this->properties as $property)
+                        @livewire('admin.inventory.property-grid-card', ['property' => $property], key('grid-' . $property->id))
+                    @endforeach
+                </div>
+            @endif
         </div>
-    </div>
+    @endif
 
     <!-- No Results Message -->
-    <div wire:loading.remove x-show="$properties->count() === 0" class="text-center py-12 mt-8">
-        <div class="flex flex-col items-center gap-4">
-            <span class="material-symbols-outlined text-6xl text-gray-300">search_off</span>
-            <div>
-                <h3 class="text-lg font-medium text-gray-900">No properties found</h3>
-                <p class="text-gray-500">Try adjusting your search or filter criteria</p>
+    @if($this->properties->count() === 0)
+        <div wire:loading.remove class="text-center py-12 mt-8">
+            <div class="flex flex-col items-center gap-4">
+                <span class="material-symbols-outlined text-6xl text-gray-300">search_off</span>
+                <div>
+                    <h3 class="text-lg font-medium text-gray-900">No properties found</h3>
+                    <p class="text-gray-500">Try adjusting your search or filter criteria</p>
+                </div>
             </div>
         </div>
-    </div>
+    @endif
 
     <!-- Pagination -->
-    <div wire:loading.remove x-show="$properties->count() > 0" class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-t border-gray-200 pt-6 mt-4">
+    @if($this->properties->count() > 0)
+        <div wire:loading.remove class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-t border-gray-200 pt-6 mt-4">
         <div class="flex items-center gap-4">
             <!-- Items per page dropdown -->
             <div class="flex items-center gap-2">
@@ -127,37 +136,35 @@
             </div>
 
             <!-- Results info -->
-            <span class="text-sm text-gray-500">{{ $showingCount }} properties found</span>
+            <span class="text-sm text-gray-500">{{ $this->showingCount }} properties found</span>
         </div>
 
         <!-- Pagination controls -->
         <div class="flex items-center gap-2">
             <button wire:click="prevPage"
-                    :disabled="$properties->onFirstPage()"
-                    :class="$properties->onFirstPage() ? 'text-gray-400 cursor-not-allowed' : 'text-gray-500 hover:bg-gray-50'"
-                    class="px-4 py-2 text-sm font-medium bg-white border border-gray-300 rounded-lg transition-colors">
+                    @disabled($this->properties->onFirstPage())
+                    class="px-4 py-2 text-sm font-medium bg-white border border-gray-300 rounded-lg transition-colors {{ $this->properties->onFirstPage() ? 'text-gray-400 cursor-not-allowed' : 'text-gray-500 hover:bg-gray-50' }}">
                 Previous
             </button>
 
             <!-- Page numbers -->
             <div class="flex items-center gap-1">
-                @for ($page = 1; $page <= $totalPages; $page++)
+                @for ($page = 1; $page <= $this->totalPages; $page++)
                     <button wire:click="goToPage({{ $page }})"
-                            :class="$properties->currentPage() === {{ $page }} ? 'bg-royal-blue text-white' : 'text-gray-500 hover:bg-gray-50'"
-                            class="px-3 py-2 text-sm font-medium border border-gray-300 rounded-lg transition-colors">
+                            class="px-3 py-2 text-sm font-medium border border-gray-300 rounded-lg transition-colors {{ $this->properties->currentPage() === $page ? 'bg-royal-blue text-white' : 'text-gray-500 hover:bg-gray-50' }}">
                         {{ $page }}
                     </button>
                 @endfor
             </div>
 
             <button wire:click="nextPage"
-                    :disabled="$properties->hasMorePages()"
-                    :class="!$properties->hasMorePages() ? 'text-gray-400 cursor-not-allowed' : 'text-white bg-royal-blue hover:bg-blue-800'"
-                    class="px-4 py-2 text-sm font-medium border border-gray-300 rounded-lg transition-colors">
+                    @disabled(!$this->properties->hasMorePages())
+                    class="px-4 py-2 text-sm font-medium border border-gray-300 rounded-lg transition-colors {{ !$this->properties->hasMorePages() ? 'text-gray-400 cursor-not-allowed' : 'text-white bg-royal-blue hover:bg-blue-800' }}">
                 Next
             </button>
         </div>
     </div>
+    @endif
 
     <!-- Flash Messages -->
     @if (session()->has('success'))

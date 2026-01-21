@@ -1,10 +1,8 @@
-<div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-all duration-300 group flex flex-col md:flex-row w-full"
-     :class="$property->status === 'sold' ? 'opacity-90 hover:opacity-100' : ''">
+<div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-all duration-300 group flex flex-col md:flex-row w-full {{ $property->status === 'sold' ? 'opacity-90 hover:opacity-100' : '' }}">
 
     <!-- Property Image -->
     <div class="relative w-full md:w-64 lg:w-72 h-48 md:h-auto shrink-0 overflow-hidden">
-        <div class="w-full h-full bg-cover bg-center"
-             :class="$property->status === 'sold' ? 'grayscale contrast-125' : ''"
+        <div class="w-full h-full bg-cover bg-center {{ $property->status === 'sold' ? 'grayscale contrast-125' : '' }}"
              style="background-image: url('{{ $property->image ?? '/images/placeholder-property.jpg' }}')"
              class="group-hover:scale-105 transition-transform duration-500">
         </div>
@@ -12,7 +10,7 @@
 
         <!-- View Count -->
         <div class="absolute bottom-3 left-3 md:left-auto md:right-3 bg-black/60 backdrop-blur-sm text-white px-2.5 py-1 rounded-md flex items-center gap-1.5 text-xs font-medium">
-            <span class="material-symbols-outlined text-[16px]" x-text="$property->views > 0 ? 'visibility' : 'visibility_off'"></span>
+            <span class="material-symbols-outlined text-[16px]">{{ $property->views > 0 ? 'visibility' : 'visibility_off' }}</span>
             <span>{{ $property->views }}</span>
         </div>
     </div>
@@ -22,12 +20,7 @@
         <div class="flex flex-col gap-1">
             <!-- Status and Date -->
             <div class="flex items-center justify-between">
-                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold"
-                      :class="{
-                          'bg-green-100 text-green-700 border-green-200': $property->status === 'available',
-                          'bg-red-100 text-red-700 border-red-200': $property->status === 'sold',
-                          'bg-gray-200 text-gray-600 border-gray-300': $property->status === 'draft'
-                      }">
+                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold @if($property->status === 'available') bg-green-100 text-green-700 border-green-200 @elseif($property->status === 'sold') bg-red-100 text-red-700 border-red-200 @else bg-gray-200 text-gray-600 border-gray-300 @endif">
                     {{ ucfirst($property->status) }}
                 </span>
                 <span class="text-sm text-gray-400 hidden md:block">
@@ -47,12 +40,7 @@
                     title="{{ $property->title }}">
                     {{ $property->title }}
                 </h3>
-                <h3 class="text-xl font-bold"
-                    :class="{
-                        'text-amber-600': $property->status === 'available',
-                        'text-gray-400 line-through decoration-red-500 decoration-2': $property->status === 'sold',
-                        'text-gray-400 italic': $property->status === 'draft'
-                    }">
+                <h3 class="text-xl font-bold @if($property->status === 'available') text-amber-600 @elseif($property->status === 'sold') text-gray-400 line-through decoration-red-500 decoration-2 @else text-gray-400 italic @endif">
                     {{ $property->price }}
                 </h3>
             </div>
@@ -67,8 +55,12 @@
         <!-- Property Specs -->
         <div class="flex items-center flex-wrap gap-4 mt-2 pt-3 border-t border-gray-50">
             <div class="flex items-center gap-2 text-gray-500 text-sm font-medium">
-                <span class="material-symbols-outlined text-[18px]"
-                      x-text="$property->type === 'Office' || $property->type === 'Commercial' ? 'desk' : 'bed'">
+                <span class="material-symbols-outlined text-[18px]">
+                    @if($property->type === 'Office' || $property->type === 'Commercial')
+                        desk
+                    @else
+                        bed
+                    @endif
                 </span>
                 <span>
                     @if($property->type === 'Office' || $property->type === 'Commercial')

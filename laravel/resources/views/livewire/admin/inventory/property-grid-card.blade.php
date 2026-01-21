@@ -1,26 +1,20 @@
-<div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-lg transition-all duration-300 group flex flex-col"
-     :class="$property->status === 'sold' ? 'opacity-90 hover:opacity-100' : ''">
+<div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-lg transition-all duration-300 group flex flex-col {{ $property->status === 'sold' ? 'opacity-90 hover:opacity-100' : '' }}">
     <!-- Property Image -->
     <div class="relative aspect-video bg-gray-200 overflow-hidden">
-        <div class="w-full h-full bg-cover bg-center group-hover:scale-105 transition-transform duration-500" :class="$property->status === 'sold' ? 'grayscale contrast-125' : ''"
+        <div class="w-full h-full bg-cover bg-center group-hover:scale-105 transition-transform duration-500 {{ $property->status === 'sold' ? 'grayscale contrast-125' : '' }}"
              style="background-image: url('{{ $property->image ?? '/images/placeholder-property.jpg' }}')">
         </div>
 
         <!-- Status Badge -->
         <div class="absolute top-3 left-3">
-            <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold shadow-sm border"
-                  :class="{
-                      'bg-green-100 text-green-700 border-green-200': $property->status === 'available',
-                      'bg-red-100 text-red-700 border-red-200': $property->status === 'sold',
-                      'bg-gray-200 text-gray-600 border-gray-300': $property->status === 'draft'
-                  }">
+            <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold shadow-sm border @if($property->status === 'available') bg-green-100 text-green-700 border-green-200 @elseif($property->status === 'sold') bg-red-100 text-red-700 border-red-200 @else bg-gray-200 text-gray-600 border-gray-300 @endif">
                 {{ ucfirst($property->status) }}
             </span>
         </div>
 
         <!-- View Count -->
         <div class="absolute bottom-3 right-3 bg-black/60 backdrop-blur-sm text-white px-2.5 py-1 rounded-md flex items-center gap-1.5 text-xs font-medium">
-            <span class="material-symbols-outlined text-[16px]" x-text="$property->views > 0 ? 'visibility' : 'visibility_off'"></span>
+            <span class="material-symbols-outlined text-[16px]">{{ $property->views > 0 ? 'visibility' : 'visibility_off' }}</span>
             <span>{{ $property->views }} Views</span>
         </div>
     </div>
@@ -29,12 +23,7 @@
     <div class="p-5 flex flex-col gap-2 flex-1">
         <!-- Price -->
         <div class="flex justify-between items-start">
-            <h3 class="text-2xl font-bold"
-                :class="{
-                    'text-amber-600': $property->status === 'available',
-                    'text-gray-400 line-through decoration-red-500 decoration-2': $property->status === 'sold',
-                    'text-gray-400 italic': $property->status === 'draft'
-                }">
+            <h3 class="text-2xl font-bold @if($property->status === 'available') text-amber-600 @elseif($property->status === 'sold') text-gray-400 line-through decoration-red-500 decoration-2 @else text-gray-400 italic @endif">
                 {{ $property->price }}
             </h3>
         </div>
