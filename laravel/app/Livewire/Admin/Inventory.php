@@ -101,7 +101,8 @@ class Inventory extends Component
         // Apply search
         if ($this->searchTerm) {
             $query->where(function ($q) {
-                $q->where('title', 'like', '%' . $this->searchTerm . '%')
+                $q->where('id', $this->searchTerm)
+                  ->orWhere('title', 'like', '%' . $this->searchTerm . '%')
                   ->orWhere('address', 'like', '%' . $this->searchTerm . '%');
             });
         }
