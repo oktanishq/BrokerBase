@@ -58,6 +58,6 @@ class DeleteConfirmationModal extends Component
 
     public function render()
     {
-        return view('livewire.admin.delete-confirmation-modal');
+        return view('livewire.admin.inventory.delete-confirmation-modal');
     }
 }
