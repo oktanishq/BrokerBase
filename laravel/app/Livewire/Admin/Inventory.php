@@ -101,9 +101,12 @@ class Inventory extends Component
         // Apply search
         if ($this->searchTerm) {
             $query->where(function ($q) {
-                $q->where('id', $this->searchTerm)
-                  ->orWhere('title', 'like', '%' . $this->searchTerm . '%')
-                  ->orWhere('address', 'like', '%' . $this->searchTerm . '%');
+                // Only search by ID if search term is numeric
+                if (is_numeric($this->searchTerm)) {
+                    $q->where('id', $this->searchTerm);
+                }
+                $q->orWhere('title', 'ILIKE', '%' . $this->searchTerm . '%')
+                  ->orWhere('address', 'ILIKE', '%' . $this->searchTerm . '%');
             });
         }
 
