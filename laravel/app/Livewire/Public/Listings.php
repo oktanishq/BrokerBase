@@ -46,7 +46,10 @@ class Listings extends Component
 
             $query = Property::query();
 
-            // Apply current filters
+            // Base filter: Only show available properties on homepage
+            $query->where('status', 'available');
+
+            // Apply additional filters
             $this->applyFiltersToQuery($query);
 
             $this->properties = $query->get()->toArray();
