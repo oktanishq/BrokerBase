@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\PropertyController;
@@ -29,6 +30,13 @@ Route::get('/admin/login', function () {
 });
 
 Route::post('/admin/login', [LoginController::class, 'login']);
+
+Route::get('/admin', function () {
+    if (Auth::check()) {
+        return redirect('/admin/dashboard');
+    }
+    return redirect('/admin/login');
+})->name('admin.index');
 
 Route::middleware('auth')->group(function () {
     Route::get('/admin/dashboard', function () {
