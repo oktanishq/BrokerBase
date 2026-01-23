@@ -52,6 +52,8 @@ class DeleteConfirmationModal extends Component
         } catch (\Exception $error) {
             // Show error message
             session()->flash('error', 'Failed to delete property. Please try again.');
+        } finally {
+            // Always reset loading state
             $this->isDeleting = false;
         }
     }
