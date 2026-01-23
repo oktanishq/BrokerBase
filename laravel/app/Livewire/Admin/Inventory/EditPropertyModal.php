@@ -102,7 +102,7 @@ class EditPropertyModal extends Component
             $property->update([
                 'status' => $this->status,
                 'is_featured' => $this->is_featured,
-                'label' => $this->label_type,
+                'label_type' => $this->label_type,
                 'custom_label_color' => $this->custom_label_color,
                 'owner_name' => $this->owner_name,
                 'owner_phone' => $this->owner_phone,
