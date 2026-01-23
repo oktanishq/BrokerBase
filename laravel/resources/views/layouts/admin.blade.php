@@ -46,7 +46,7 @@
 </div>
 </div>
 <x-admin.logout-confirmation-modal />
-<x-admin.delete-confirmation-modal />
+
 
 {{-- Alpine.js Admin Layout Data --}}
 <script>
