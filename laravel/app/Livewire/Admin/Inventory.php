@@ -55,10 +55,17 @@ class Inventory extends Component
         // Handle view mode change if needed
     }
 
-    public function handlePropertyUpdate($data)
+    public function handlePropertyUpdate($propertyId, $data)
     {
-        // Refresh the properties list
-        $this->resetPage();
+        // Update the specific property in the current page's collection
+        $this->properties->getCollection()->transform(function ($property) use ($propertyId, $data) {
+            if ($property->id == $propertyId) {
+                // Update property with new data
+                $property->fill($data);
+            }
+            return $property;
+        });
+
         session()->flash('success', 'Property updated successfully!');
     }
 

@@ -8,9 +8,20 @@ class PropertyListCard extends Component
 {
     public $property;
 
+    protected $listeners = [
+        'property-updated' => 'handlePropertyUpdate',
+    ];
+
     public function mount($property)
     {
         $this->property = $property;
+    }
+
+    public function handlePropertyUpdate($propertyId, $data)
+    {
+        if ($this->property->id == $propertyId) {
+            $this->property->fill($data);
+        }
     }
 
     public function openEditModal()

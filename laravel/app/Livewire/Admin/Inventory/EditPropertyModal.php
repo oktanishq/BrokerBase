@@ -110,7 +110,7 @@ class EditPropertyModal extends Component
                 'private_notes' => $this->private_notes,
             ]);
 
-            // Emit event to refresh inventory
+            // Emit event to refresh inventory with updated data
             $this->dispatch('property-updated', propertyId: $this->property['id'], data: $property->toArray());
 
             // Close modal
