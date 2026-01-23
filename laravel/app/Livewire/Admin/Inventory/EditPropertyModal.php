@@ -73,6 +73,16 @@ class EditPropertyModal extends Component
         $this->ownerSectionExpanded = !$this->ownerSectionExpanded;
     }
 
+    public function setStatus($status)
+    {
+        $this->status = $status;
+    }
+
+    public function setLabelType($type)
+    {
+        $this->label_type = $type;
+    }
+
     public function editAllDetails()
     {
         if ($this->property && isset($this->property['id'])) {
@@ -111,6 +121,7 @@ class EditPropertyModal extends Component
         } catch (\Exception $error) {
             // Show error message
             session()->flash('error', 'Failed to update property. Please try again.');
+        } finally {
             $this->saving = false;
         }
     }

@@ -47,19 +47,16 @@
                     <div>
                         <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Listing Status</label>
                         <div class="flex bg-gray-100 p-1 rounded-lg">
-                            <button wire:click="$set('status', 'available')"
-                                    :class="$status === 'available' ? 'bg-royal-blue text-white shadow-sm' : 'text-gray-500 hover:text-gray-700'"
-                                    class="flex-1 py-1.5 px-3 rounded-md text-sm font-medium transition-all">
+                            <button wire:click="setStatus('available')"
+                                    class="{{ $status === 'available' ? 'bg-royal-blue text-white shadow-sm' : 'text-gray-500 hover:text-gray-700' }} flex-1 py-1.5 px-3 rounded-md text-sm font-medium transition-all">
                                 Available
                             </button>
-                            <button wire:click="$set('status', 'sold')"
-                                    :class="$status === 'sold' ? 'bg-royal-blue text-white shadow-sm' : 'text-gray-500 hover:text-gray-700'"
-                                    class="flex-1 py-1.5 px-3 rounded-md text-sm font-medium transition-all">
+                            <button wire:click="setStatus('sold')"
+                                    class="{{ $status === 'sold' ? 'bg-royal-blue text-white shadow-sm' : 'text-gray-500 hover:text-gray-700' }} flex-1 py-1.5 px-3 rounded-md text-sm font-medium transition-all">
                                 Sold
                             </button>
-                            <button wire:click="$set('status', 'draft')"
-                                    :class="$status === 'draft' ? 'bg-royal-blue text-white shadow-sm' : 'text-gray-500 hover:text-gray-700'"
-                                    class="flex-1 py-1.5 px-3 rounded-md text-sm font-medium transition-all">
+                            <button wire:click="setStatus('draft')"
+                                    class="{{ $status === 'draft' ? 'bg-royal-blue text-white shadow-sm' : 'text-gray-500 hover:text-gray-700' }} flex-1 py-1.5 px-3 rounded-md text-sm font-medium transition-all">
                                 Draft
                             </button>
                         </div>
@@ -70,24 +67,20 @@
                         <div class="flex-1">
                             <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Public Badge</label>
                             <div class="flex flex-wrap gap-2">
-                                <button wire:click="$set('label_type', 'none')"
-                                        :class="$label_type === 'none' ? 'border-amber-500 bg-amber-50 text-amber-700' : 'border-gray-200 bg-white text-gray-600 hover:border-gray-300'"
-                                        class="px-3 py-1.5 rounded-full text-xs font-semibold border transition-colors">
+                                <button wire:click="setLabelType('none')"
+                                        class="{{ $label_type === 'none' ? 'border-amber-500 bg-amber-50 text-amber-700' : 'border-gray-200 bg-white text-gray-600 hover:border-gray-300' }} px-3 py-1.5 rounded-full text-xs font-semibold border transition-colors">
                                     None
                                 </button>
-                                <button wire:click="$set('label_type', 'new')"
-                                        :class="$label_type === 'new' ? 'border-amber-500 bg-amber-50 text-amber-700' : 'border-gray-200 bg-white text-gray-600 hover:border-gray-300'"
-                                        class="px-3 py-1.5 rounded-full text-xs font-semibold border transition-colors">
+                                <button wire:click="setLabelType('new')"
+                                        class="{{ $label_type === 'new' ? 'border-amber-500 bg-amber-50 text-amber-700' : 'border-gray-200 bg-white text-gray-600 hover:border-gray-300' }} px-3 py-1.5 rounded-full text-xs font-semibold border transition-colors">
                                     New Arrival
                                 </button>
-                                <button wire:click="$set('label_type', 'popular')"
-                                        :class="$label_type === 'popular' ? 'border-amber-500 bg-amber-50 text-amber-700' : 'border-gray-200 bg-white text-gray-600 hover:border-gray-300'"
-                                        class="px-3 py-1.5 rounded-full text-xs font-semibold border transition-colors">
+                                <button wire:click="setLabelType('popular')"
+                                        class="{{ $label_type === 'popular' ? 'border-amber-500 bg-amber-50 text-amber-700' : 'border-gray-200 bg-white text-gray-600 hover:border-gray-300' }} px-3 py-1.5 rounded-full text-xs font-semibold border transition-colors">
                                     Popular
                                 </button>
-                                <button wire:click="$set('label_type', 'verified')"
-                                        :class="$label_type === 'verified' ? 'border-amber-500 bg-amber-50 text-amber-700' : 'border-gray-200 bg-white text-gray-600 hover:border-gray-300'"
-                                        class="px-3 py-1.5 rounded-full text-xs font-semibold border transition-colors">
+                                <button wire:click="setLabelType('verified')"
+                                        class="{{ $label_type === 'verified' ? 'border-amber-500 bg-amber-50 text-amber-700' : 'border-gray-200 bg-white text-gray-600 hover:border-gray-300' }} px-3 py-1.5 rounded-full text-xs font-semibold border transition-colors">
                                     Verified
                                 </button>
                             </div>
@@ -172,10 +165,10 @@
                     Discard Changes
                 </button>
                 <button wire:click="saveChanges"
-                        wire:loading.attr="disabled"
+                        x-bind:disabled="$wire.saving"
                         class="px-5 py-2.5 rounded-lg text-sm font-bold text-white bg-royal-blue hover:bg-blue-800 shadow-lg shadow-blue-900/20 transition-all disabled:opacity-50 disabled:cursor-not-allowed">
-                    <span wire:loading.remove>Update Listing</span>
-                    <span wire:loading class="flex items-center gap-2">
+                    <span x-show="!$wire.saving">Update Listing</span>
+                    <span x-show="$wire.saving" class="flex items-center gap-2">
                         <div class="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
                         Saving...
                     </span>

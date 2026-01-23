@@ -15,12 +15,12 @@ class PropertyGridCard extends Component
 
     public function openEditModal()
     {
-        $this->dispatch('open-edit-modal', $this->property->toArray());
+        $this->dispatch('open-edit-modal', $this->property->frontend_data);
     }
 
     public function openDeleteModal()
     {
-        $this->dispatch('open-delete-modal', $this->property->toArray());
+        $this->dispatch('open-delete-modal', $this->property->frontend_data);
     }
 
     public function render()
