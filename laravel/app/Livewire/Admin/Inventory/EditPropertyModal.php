@@ -133,13 +133,6 @@ class EditPropertyModal extends Component
         $this->label_type = $type;
     }
 
-    public function editAllDetails()
-    {
-        if ($this->property && isset($this->property['id'])) {
-            return redirect()->route('properties.edit', $this->property['id']);
-        }
-    }
-
     public function saveChanges()
     {
         if (!$this->property || !isset($this->property['id'])) return;

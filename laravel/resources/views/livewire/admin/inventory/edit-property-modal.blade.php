@@ -356,15 +356,6 @@
                             </div>
                         </div>
                     </div>
-
-                    <!-- Modify All Details Button -->
-                    <div class="pt-6 border-t border-gray-100">
-                        <button wire:click="editAllDetails"
-                                class="w-full py-2.5 px-4 rounded-lg border border-royal-blue/30 text-royal-blue hover:bg-blue-50 font-medium text-sm flex items-center justify-center gap-2 transition-colors">
-                            <span class="material-symbols-outlined text-[18px]">open_in_new</span>
-                            Modify All Details & Media
-                        </button>
-                    </div>
                 </div>
             </div>
 
