@@ -159,9 +159,9 @@
                             <div class="space-y-1 md:col-span-2">
                                 <div class="flex justify-between items-center">
                                     <label class="text-xs font-medium text-gray-500">Description</label>
-                                    <span class="text-xs text-gray-400" x-text="'Characters: ' + ($wire.description ? $wire.description.length : 0) + '/500'"></span>
+                                    <span class="text-xs text-gray-400" x-text="'Characters: ' + ($wire.description ? $wire.description.length : 0)"></span>
                                 </div>
-                                <textarea wire:model.live="description" rows="4" maxlength="500" class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-1 focus:ring-royal-blue focus:border-royal-blue outline-none resize-none" placeholder="Property description"></textarea>
+                                <textarea wire:model.live="description" rows="4" class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-1 focus:ring-royal-blue focus:border-royal-blue outline-none resize-none" placeholder="Property description"></textarea>
                                 @error('description') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
                             </div>
                             <div class="space-y-1">
