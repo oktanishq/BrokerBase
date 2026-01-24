@@ -34,7 +34,7 @@
                 'text-gray-400 line-through decoration-red-500 decoration-2' => $property->status === 'sold',
                 'text-gray-400 italic' => !in_array($property->status, ['available', 'sold']),
             ])>
-                {{ $property->price }}
+                ${{ number_format($property->price, 0) }}
             </h3>
         </div>
 
