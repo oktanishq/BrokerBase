@@ -3,6 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\DB;
 
 return new class extends Migration
 {
@@ -26,6 +27,7 @@ return new class extends Migration
             $table->text('address')->nullable(); // Made optional to match frontend
             $table->decimal('latitude', 10, 8)->nullable();
             $table->decimal('longitude', 11, 8)->nullable();
+            $table->string('maps_embed_url', 500)->nullable();
             
             // Property Specifications
             $table->integer('bedrooms')->default(0);
@@ -72,6 +74,11 @@ return new class extends Migration
             $table->index('created_at');
             $table->index('published_at');
         });
+
+        // Add check constraints to match PostgreSQL schema
+        DB::statement("ALTER TABLE properties ADD CONSTRAINT properties_property_type_check CHECK (property_type::text = ANY (ARRAY['apartment'::character varying, 'villa'::character varying, 'plot'::character varying, 'commercial'::character varying, 'office'::character varying]::text[]))");
+        DB::statement("ALTER TABLE properties ADD CONSTRAINT properties_label_type_check CHECK (label_type::text = ANY (ARRAY['none'::character varying, 'new'::character varying, 'popular'::character varying, 'verified'::character varying, 'custom'::character varying]::text[]))");
+        DB::statement("ALTER TABLE properties ADD CONSTRAINT properties_status_check CHECK (status::text = ANY (ARRAY['draft'::character varying, 'available'::character varying, 'booked'::character varying, 'sold'::character varying]::text[]))");
     }
 
     public function down(): void
