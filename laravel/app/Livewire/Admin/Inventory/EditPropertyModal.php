@@ -10,9 +10,22 @@ class EditPropertyModal extends Component
     public $isOpen = false;
     public $property = null;
     public $saving = false;
-    public $ownerSectionExpanded = false;
+    public $currentTab = 'overview';
 
     // Form data
+    public $title = '';
+    public $description = '';
+    public $property_type = 'apartment';
+    public $price = '';
+    public $area_sqft = '';
+    public $address = '';
+    public $latitude = '';
+    public $longitude = '';
+    public $maps_embed_url = '';
+    public $bedrooms = '';
+    public $bathrooms = '';
+    public $amenities = [];
+    public $watermark_enabled = true;
     public $status = 'available';
     public $is_featured = false;
     public $label_type = 'none';
@@ -44,19 +57,45 @@ class EditPropertyModal extends Component
     {
         if (!$this->property) return;
 
+        $this->title = $this->property['title'] ?? '';
+        $this->description = $this->property['description'] ?? '';
+        $this->property_type = $this->property['property_type'] ?? 'apartment';
+        $this->price = $this->property['price'] ? number_format((float)$this->property['price']) : '';
+        $this->area_sqft = $this->property['area_sqft'] ?? '';
+        $this->address = $this->property['address'] ?? '';
+        $this->latitude = $this->property['latitude'] ?? '';
+        $this->longitude = $this->property['longitude'] ?? '';
+        $this->maps_embed_url = $this->property['maps_embed_url'] ?? '';
+        $this->bedrooms = $this->property['bedrooms'] ?? '';
+        $this->bathrooms = $this->property['bathrooms'] ?? '';
+        $this->amenities = $this->property['amenities'] ?? [];
+        $this->watermark_enabled = $this->property['watermark_enabled'] ?? true;
         $this->status = $this->property['status'] ?? 'available';
         $this->is_featured = $this->property['is_featured'] ?? false;
         $this->label_type = $this->property['label'] ?? 'none';
         $this->custom_label_color = $this->property['custom_label_color'] ?? '#3B82F6';
         $this->owner_name = $this->property['owner_name'] ?? '';
         $this->owner_phone = $this->property['owner_phone'] ?? '';
-        $this->net_price = $this->property['net_price'] ? number_format($this->property['net_price']) : '';
+        $this->net_price = $this->property['net_price'] ? number_format((float)$this->property['net_price']) : '';
         $this->private_notes = $this->property['private_notes'] ?? '';
     }
 
     public function resetForm()
     {
         $this->property = null;
+        $this->title = '';
+        $this->description = '';
+        $this->property_type = 'apartment';
+        $this->price = '';
+        $this->area_sqft = '';
+        $this->address = '';
+        $this->latitude = '';
+        $this->longitude = '';
+        $this->maps_embed_url = '';
+        $this->bedrooms = '';
+        $this->bathrooms = '';
+        $this->amenities = [];
+        $this->watermark_enabled = true;
         $this->status = 'available';
         $this->is_featured = false;
         $this->label_type = 'none';
@@ -65,12 +104,23 @@ class EditPropertyModal extends Component
         $this->owner_phone = '';
         $this->net_price = '';
         $this->private_notes = '';
-        $this->ownerSectionExpanded = false;
+        $this->currentTab = 'overview';
     }
 
-    public function toggleOwnerSection()
+    public function setTab($tab)
     {
-        $this->ownerSectionExpanded = !$this->ownerSectionExpanded;
+        $this->currentTab = $tab;
+    }
+
+    public function addAmenity()
+    {
+        $this->amenities[] = '';
+    }
+
+    public function removeAmenity($index)
+    {
+        unset($this->amenities[$index]);
+        $this->amenities = array_values($this->amenities);
     }
 
     public function setStatus($status)
@@ -96,10 +146,71 @@ class EditPropertyModal extends Component
 
         $this->saving = true;
 
+        $this->validate([
+            'title' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'property_type' => 'required|in:apartment,house,villa,condo,townhouse,land',
+            'price' => 'required|numeric|min:0',
+            'area_sqft' => 'nullable|numeric|min:0',
+            'address' => 'required|string|max:500',
+            'latitude' => 'nullable|numeric|between:-90,90',
+            'longitude' => 'nullable|numeric|between:-180,180',
+            'maps_embed_url' => 'nullable|url',
+            'bedrooms' => 'nullable|integer|min:0',
+            'bathrooms' => 'nullable|integer|min:0',
+            'amenities' => 'nullable|array',
+            'amenities.*' => 'string|max:100',
+            'owner_name' => 'nullable|string|max:255',
+            'owner_phone' => 'nullable|string|max:20',
+            'net_price' => 'nullable|numeric|min:0',
+            'private_notes' => 'nullable|string',
+        ], [
+            'title.required' => 'Please provide a title for the property.',
+            'title.max' => 'The property title must not exceed 255 characters.',
+            'property_type.required' => 'Please select a property type.',
+            'property_type.in' => 'Please select a valid property type.',
+            'price.required' => 'Please enter the property price.',
+            'price.numeric' => 'The price must be a valid number.',
+            'price.min' => 'The price must be a positive number.',
+            'area_sqft.numeric' => 'The area must be a valid number.',
+            'area_sqft.min' => 'The area must be a positive number.',
+            'address.required' => 'Please provide the property address.',
+            'address.max' => 'The address must not exceed 500 characters.',
+            'latitude.numeric' => 'Latitude must be a valid number.',
+            'latitude.between' => 'Latitude must be between -90 and 90.',
+            'longitude.numeric' => 'Longitude must be a valid number.',
+            'longitude.between' => 'Longitude must be between -180 and 180.',
+            'maps_embed_url.url' => 'Please provide a valid URL for the maps embed.',
+            'bedrooms.integer' => 'Bedrooms must be a whole number.',
+            'bedrooms.min' => 'Bedrooms cannot be negative.',
+            'bathrooms.integer' => 'Bathrooms must be a whole number.',
+            'bathrooms.min' => 'Bathrooms cannot be negative.',
+            'amenities.array' => 'Amenities must be a list.',
+            'amenities.*.string' => 'Each amenity must be text.',
+            'amenities.*.max' => 'Each amenity must not exceed 100 characters.',
+            'owner_name.max' => 'Owner name must not exceed 255 characters.',
+            'owner_phone.max' => 'Owner phone must not exceed 20 characters.',
+            'net_price.numeric' => 'Net price must be a valid number.',
+            'net_price.min' => 'Net price must be a positive number.',
+        ]);
+
         try {
             $property = Property::findOrFail($this->property['id']);
 
             $property->update([
+                'title' => $this->title,
+                'description' => $this->description,
+                'property_type' => $this->property_type,
+                'price' => str_replace(',', '', $this->price),
+                'area_sqft' => $this->area_sqft,
+                'address' => $this->address,
+                'latitude' => $this->latitude,
+                'longitude' => $this->longitude,
+                'maps_embed_url' => $this->maps_embed_url,
+                'bedrooms' => $this->bedrooms,
+                'bathrooms' => $this->bathrooms,
+                'amenities' => $this->amenities,
+                'watermark_enabled' => $this->watermark_enabled,
                 'status' => $this->status,
                 'is_featured' => $this->is_featured,
                 'label_type' => $this->label_type,

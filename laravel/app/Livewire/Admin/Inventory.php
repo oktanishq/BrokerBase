@@ -86,21 +86,6 @@ class Inventory extends Component
         $this->dispatch('open-delete-modal', $propertyData)->to(DeleteConfirmationModal::class);
     }
 
-    public function nextPage()
-    {
-        $this->setPage($this->page + 1);
-    }
-
-    public function prevPage()
-    {
-        $this->setPage($this->page - 1);
-    }
-
-    public function goToPage($page)
-    {
-        $this->setPage($page);
-    }
-
     public function getPropertiesProperty()
     {
         $query = Property::query();
