@@ -223,7 +223,7 @@
                             <div class="space-y-1">
                                 <label class="text-xs font-medium text-gray-500">Price</label>
                                 <div class="relative">
-                                    <span class="absolute left-3 top-2 text-gray-400">$</span>
+                                    <span class="absolute left-3 top-2 text-gray-400">₹</span>
                                     <input wire:model.live="price"
                                            x-data="{ formatPrice(event) { event.target.value = event.target.value.replace(/[^0-9]/g, '').replace(/\B(?=(\d{3})+(?!\d))/g, ','); } }"
                                            @input="formatPrice($event)"
@@ -338,7 +338,7 @@
                             <div class="space-y-1 md:col-span-2">
                                 <label class="text-xs font-medium text-gray-500">Net Price (Private)</label>
                                 <div class="relative">
-                                    <span class="absolute left-3 top-2 text-gray-400">$</span>
+                                    <span class="absolute left-3 top-2 text-gray-400">₹</span>
                                     <input wire:model.live="net_price"
                                            x-data="{ formatPrice(event) { event.target.value = event.target.value.replace(/[^0-9]/g, '').replace(/\B(?=(\d{3})+(?!\d))/g, ','); } }"
                                            @input="formatPrice($event)"
