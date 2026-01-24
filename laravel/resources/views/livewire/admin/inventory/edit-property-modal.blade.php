@@ -267,10 +267,29 @@
                                 @error('longitude') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
                             </div>
                             <div class="space-y-1 md:col-span-2">
-                                <label class="text-xs font-medium text-gray-500">Maps Embed URL</label>
-                                <input wire:model.live="maps_embed_url" type="text" class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-1 focus:ring-royal-blue focus:border-royal-blue outline-none" placeholder="https://maps.google.com/...">
-                                @error('maps_embed_url') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
+                                <div class="flex items-end gap-3">
+                                    <div class="flex-1">
+                                        <label class="text-xs font-medium text-gray-500">Maps Embed URL</label>
+                                        <input wire:model.live="maps_embed_url" type="text" class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-1 focus:ring-royal-blue focus:border-royal-blue outline-none" placeholder="https://maps.google.com/...">
+                                        @error('maps_embed_url') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
+                                    </div>
+                                    <button wire:click="loadMap"
+                                            type="button"
+                                            class="px-4 py-2 bg-royal-blue text-white rounded-lg hover:bg-blue-800 transition-colors font-medium text-sm whitespace-nowrap">
+                                        Load Map
+                                    </button>
+                                </div>
                             </div>
+                        </div>
+
+                        <!-- Map Preview -->
+                        <div x-show="$wire.maps_embed_url" class="relative h-64 bg-gray-100 rounded-lg border border-gray-200 overflow-hidden">
+                            <iframe :src="$wire.maps_embed_url"
+                                    class="w-full h-full border-0"
+                                    allowfullscreen
+                                    loading="lazy"
+                                    referrerpolicy="no-referrer-when-downgrade">
+                            </iframe>
                         </div>
                     </div>
 

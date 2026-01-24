@@ -133,6 +133,35 @@ class EditPropertyModal extends Component
         $this->label_type = $type;
     }
 
+    public function loadMap()
+    {
+        // Check if coordinates are provided
+        if (!$this->latitude || !$this->longitude) {
+            session()->flash('error', 'Please enter latitude and longitude to load the map');
+            return;
+        }
+
+        // Validate coordinates
+        $lat = (float)$this->latitude;
+        $lng = (float)$this->longitude;
+
+        if ($lat < -90 || $lat > 90) {
+            session()->flash('error', 'Latitude must be between -90 and 90');
+            return;
+        }
+
+        if ($lng < -180 || $lng > 180) {
+            session()->flash('error', 'Longitude must be between -180 and 180');
+            return;
+        }
+
+        // Generate Google Maps embed URL
+        $this->maps_embed_url = "https://maps.google.com/maps?q={$lat},{$lng}&z=15&output=embed&t=&z=15&ie=UTF8&iwloc=&output=embed&maptype=satellite&source=embed&disableDefaultUI=true&zoomControl=false&mapTypeControl=false&streetViewControl=false&rotateControl=false&fullscreenControl=false&scrollwheel=false";
+
+        // Flash success message
+        session()->flash('success', 'Map loaded successfully!');
+    }
+
     public function saveChanges()
     {
         if (!$this->property || !isset($this->property['id'])) return;
