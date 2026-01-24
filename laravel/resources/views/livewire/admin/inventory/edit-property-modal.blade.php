@@ -166,13 +166,58 @@
                             </div>
                             <div class="space-y-1">
                                 <label class="text-xs font-medium text-gray-500">Property Type</label>
-                                <select wire:model.live="property_type" class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-1 focus:ring-royal-blue focus:border-royal-blue outline-none">
-                                    <option value="apartment">Apartment</option>
-                                    <option value="villa">Villa</option>
-                                    <option value="plot">Plot</option>
-                                    <option value="commercial">Commercial</option>
-                                    <option value="office">Office</option>
-                                </select>
+                                <div x-data="{ typeOpen: false }" class="relative">
+                                    <button @click="typeOpen = !typeOpen"
+                                            class="flex items-center justify-between w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-1 focus:ring-royal-blue focus:border-royal-blue outline-none transition-all">
+                                        <span x-text="$wire.property_type === 'apartment' ? 'Apartment' : ($wire.property_type === 'villa' ? 'Villa' : ($wire.property_type === 'plot' ? 'Plot' : ($wire.property_type === 'commercial' ? 'Commercial' : ($wire.property_type === 'office' ? 'Office' : 'Select Type'))))"></span>
+                                        <span class="material-symbols-outlined text-gray-400 text-lg transition-transform duration-300" :class="typeOpen ? 'rotate-180' : ''">expand_more</span>
+                                    </button>
+
+                                    <div x-show="typeOpen" @click.away="typeOpen = false" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 scale-95 translate-y-1" x-transition:enter-end="opacity-100 scale-100 translate-y-0" x-transition:leave="transition ease-in duration-200" x-transition:leave-start="opacity-100 scale-100 translate-y-0" x-transition:leave-end="opacity-0 scale-95 translate-y-1" class="absolute top-full left-0 mt-1 w-full bg-white border border-gray-200 rounded-lg shadow-lg overflow-hidden z-20">
+                                        <ul class="py-1">
+                                            <li>
+                                                <button @click="$wire.set('property_type', 'apartment'); typeOpen = false"
+                                                        class="w-full text-left px-3 py-2 text-sm flex items-center justify-between hover:bg-gray-50 transition-colors"
+                                                        :class="$wire.property_type === 'apartment' ? 'bg-blue-50 text-blue-700' : 'text-gray-700'">
+                                                    <span>Apartment</span>
+                                                    <span x-show="$wire.property_type === 'apartment'" class="material-symbols-outlined text-blue-600 text-base">check</span>
+                                                </button>
+                                            </li>
+                                            <li>
+                                                <button @click="$wire.set('property_type', 'villa'); typeOpen = false"
+                                                        class="w-full text-left px-3 py-2 text-sm flex items-center justify-between hover:bg-gray-50 transition-colors"
+                                                        :class="$wire.property_type === 'villa' ? 'bg-blue-50 text-blue-700' : 'text-gray-700'">
+                                                    <span>Villa</span>
+                                                    <span x-show="$wire.property_type === 'villa'" class="material-symbols-outlined text-blue-600 text-base">check</span>
+                                                </button>
+                                            </li>
+                                            <li>
+                                                <button @click="$wire.set('property_type', 'plot'); typeOpen = false"
+                                                        class="w-full text-left px-3 py-2 text-sm flex items-center justify-between hover:bg-gray-50 transition-colors"
+                                                        :class="$wire.property_type === 'plot' ? 'bg-blue-50 text-blue-700' : 'text-gray-700'">
+                                                    <span>Plot</span>
+                                                    <span x-show="$wire.property_type === 'plot'" class="material-symbols-outlined text-blue-600 text-base">check</span>
+                                                </button>
+                                            </li>
+                                            <li>
+                                                <button @click="$wire.set('property_type', 'commercial'); typeOpen = false"
+                                                        class="w-full text-left px-3 py-2 text-sm flex items-center justify-between hover:bg-gray-50 transition-colors"
+                                                        :class="$wire.property_type === 'commercial' ? 'bg-blue-50 text-blue-700' : 'text-gray-700'">
+                                                    <span>Commercial</span>
+                                                    <span x-show="$wire.property_type === 'commercial'" class="material-symbols-outlined text-blue-600 text-base">check</span>
+                                                </button>
+                                            </li>
+                                            <li>
+                                                <button @click="$wire.set('property_type', 'office'); typeOpen = false"
+                                                        class="w-full text-left px-3 py-2 text-sm flex items-center justify-between hover:bg-gray-50 transition-colors"
+                                                        :class="$wire.property_type === 'office' ? 'bg-blue-50 text-blue-700' : 'text-gray-700'">
+                                                    <span>Office</span>
+                                                    <span x-show="$wire.property_type === 'office'" class="material-symbols-outlined text-blue-600 text-base">check</span>
+                                                </button>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
                                 @error('property_type') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
                             </div>
                             <div class="space-y-1">
