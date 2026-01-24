@@ -26,7 +26,7 @@ class PropertyListCard extends Component
 
     public function openEditModal()
     {
-        $this->dispatch('open-edit-modal', $this->property->frontend_data);
+        $this->dispatch('open-edit-modal', $this->property->edit_data);
     }
 
     public function openDeleteModal()

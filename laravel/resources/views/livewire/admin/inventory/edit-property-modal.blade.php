@@ -168,11 +168,10 @@
                                 <label class="text-xs font-medium text-gray-500">Property Type</label>
                                 <select wire:model.live="property_type" class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-1 focus:ring-royal-blue focus:border-royal-blue outline-none">
                                     <option value="apartment">Apartment</option>
-                                    <option value="house">House</option>
                                     <option value="villa">Villa</option>
-                                    <option value="condo">Condo</option>
-                                    <option value="townhouse">Townhouse</option>
-                                    <option value="land">Land</option>
+                                    <option value="plot">Plot</option>
+                                    <option value="commercial">Commercial</option>
+                                    <option value="office">Office</option>
                                 </select>
                                 @error('property_type') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
                             </div>

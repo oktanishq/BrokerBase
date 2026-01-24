@@ -1,4 +1,4 @@
-<div>
+<div x-data @property-updated.window="$wire.call('$refresh')">
     <!-- Edit Property Modal -->
     @livewire('admin.inventory.edit-property-modal')
 

@@ -146,13 +146,17 @@ class EditPropertyModal extends Component
 
         $this->saving = true;
 
+        // Clean price fields before validation
+        $this->price = str_replace(',', '', $this->price);
+        $this->net_price = str_replace(',', '', $this->net_price);
+
         $this->validate([
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
-            'property_type' => 'required|in:apartment,house,villa,condo,townhouse,land',
+            'property_type' => 'required|in:apartment,villa,plot,commercial,office',
             'price' => 'required|numeric|min:0',
             'area_sqft' => 'nullable|numeric|min:0',
-            'address' => 'required|string|max:500',
+            'address' => 'nullable|string|max:500',
             'latitude' => 'nullable|numeric|between:-90,90',
             'longitude' => 'nullable|numeric|between:-180,180',
             'maps_embed_url' => 'nullable|url',
@@ -174,7 +178,6 @@ class EditPropertyModal extends Component
             'price.min' => 'The price must be a positive number.',
             'area_sqft.numeric' => 'The area must be a valid number.',
             'area_sqft.min' => 'The area must be a positive number.',
-            'address.required' => 'Please provide the property address.',
             'address.max' => 'The address must not exceed 500 characters.',
             'latitude.numeric' => 'Latitude must be a valid number.',
             'latitude.between' => 'Latitude must be between -90 and 90.',
@@ -197,29 +200,31 @@ class EditPropertyModal extends Component
         try {
             $property = Property::findOrFail($this->property['id']);
 
-            $property->update([
+            $updateData = [
                 'title' => $this->title,
                 'description' => $this->description,
                 'property_type' => $this->property_type,
-                'price' => str_replace(',', '', $this->price),
-                'area_sqft' => $this->area_sqft,
-                'address' => $this->address,
-                'latitude' => $this->latitude,
-                'longitude' => $this->longitude,
-                'maps_embed_url' => $this->maps_embed_url,
-                'bedrooms' => $this->bedrooms,
-                'bathrooms' => $this->bathrooms,
+                'price' => $this->price,
+                'area_sqft' => $this->area_sqft ?: null,
+                'address' => $this->address ?: null,
+                'latitude' => $this->latitude ?: null,
+                'longitude' => $this->longitude ?: null,
+                'maps_embed_url' => $this->maps_embed_url ?: null,
+                'bedrooms' => $this->bedrooms ?: null,
+                'bathrooms' => $this->bathrooms ?: null,
                 'amenities' => $this->amenities,
                 'watermark_enabled' => $this->watermark_enabled,
                 'status' => $this->status,
                 'is_featured' => $this->is_featured,
                 'label_type' => $this->label_type,
                 'custom_label_color' => $this->custom_label_color,
-                'owner_name' => $this->owner_name,
-                'owner_phone' => $this->owner_phone,
-                'net_price' => str_replace(',', '', $this->net_price),
-                'private_notes' => $this->private_notes,
-            ]);
+                'owner_name' => $this->owner_name ?: null,
+                'owner_phone' => $this->owner_phone ?: null,
+                'net_price' => $this->net_price ?: null,
+                'private_notes' => $this->private_notes ?: null,
+            ];
+
+            $property->update($updateData);
 
             // Emit event to refresh inventory with updated data
             $this->dispatch('property-updated', propertyId: $this->property['id'], data: $property->toArray());
@@ -229,9 +234,15 @@ class EditPropertyModal extends Component
 
             // Show success message
             session()->flash('success', 'Property updated successfully!');
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            // Handle validation errors specifically
+            session()->flash('error', 'Validation failed: ' . implode(', ', $e->errors()));
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            // Handle property not found
+            session()->flash('error', 'Property not found.');
         } catch (\Exception $error) {
-            // Show error message
-            session()->flash('error', 'Failed to update property. Please try again.');
+            // Handle other errors
+            session()->flash('error', 'Failed to update property: ' . $error->getMessage());
         } finally {
             $this->saving = false;
         }

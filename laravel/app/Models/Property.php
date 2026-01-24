@@ -428,4 +428,36 @@ class Property extends Model
             'updated_at' => $this->updated_at,
         ];
     }
+
+    /**
+     * Get raw property data for editing
+     */
+    public function getEditDataAttribute(): array
+    {
+        return [
+            'id' => $this->id,
+            'title' => $this->title,
+            'description' => $this->description,
+            'property_type' => $this->property_type,
+            'price' => $this->price,
+            'area_sqft' => $this->area_sqft,
+            'address' => $this->address,
+            'latitude' => $this->latitude,
+            'longitude' => $this->longitude,
+            'maps_embed_url' => $this->maps_embed_url,
+            'bedrooms' => $this->bedrooms,
+            'bathrooms' => $this->bathrooms,
+            'amenities' => $this->amenities,
+            'watermark_enabled' => $this->watermark_enabled,
+            'status' => $this->status,
+            'is_featured' => $this->is_featured,
+            'label_type' => $this->label_type,
+            'custom_label_color' => $this->custom_label_color,
+            'owner_name' => $this->owner_name,
+            'owner_phone' => $this->owner_phone,
+            'net_price' => $this->net_price,
+            'private_notes' => $this->private_notes,
+            'image' => $this->primary_image_url,
+        ];
+    }
 }
