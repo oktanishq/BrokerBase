@@ -128,18 +128,109 @@
                   rows="4"></textarea>
     </div>
 
-    <div class="space-y-4">
-        <label class="block text-sm font-bold text-gray-700">Amenities</label>
-        <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
-            @foreach($availableAmenities as $amenity)
-                <label class="flex items-center space-x-3 cursor-pointer">
-                    <input wire:model="amenities"
-                           value="{{ $amenity }}"
-                           class="h-5 w-5 rounded border-gray-300 text-amber-500 focus:ring-amber-500"
-                           type="checkbox">
-                    <span class="text-sm text-gray-700">{{ $amenity }}</span>
-                </label>
-            @endforeach
+    <!-- Advanced Amenities Section -->
+    <div class="space-y-3">
+        <div class="flex justify-between items-end">
+            <label class="block text-sm font-medium text-gray-700">Amenities</label>
+            @if(count(array_filter($amenities, fn($a) => $a && trim($a))) > 0)
+                <button wire:click="$set('amenities', [])"
+                        type="button"
+                        class="text-xs text-orange-600 font-medium hover:text-orange-700 transition-colors">
+                    Clear All
+                </button>
+            @endif
         </div>
+
+        <!-- Search and Add Amenities -->
+        <div x-data="{ searchOpen: false }" @click.away="searchOpen = false" class="relative group">
+            <div class="flex items-center bg-white border border-gray-200 rounded-lg px-3 py-2.5 focus-within:ring-2 focus-within:ring-orange-500 focus-within:border-transparent transition-all shadow-sm">
+                <span class="material-symbols-outlined text-gray-400 mr-2 text-base">search</span>
+                <input wire:model.live="amenitiesSearch"
+                       @focus="searchOpen = true"
+                       @keydown.escape="searchOpen = false; $wire.set('amenitiesSearch', '')"
+                       type="text"
+                       class="w-full bg-transparent border-none outline-none text-gray-900 placeholder-gray-400 text-sm"
+                       placeholder="Search amenities (e.g. Pool, Gym, WiFi)...">
+                <button wire:click="addAmenity"
+                        type="button"
+                        class="bg-orange-500 hover:bg-orange-600 text-white text-xs px-3 py-1.5 rounded font-medium transition-colors ml-2">
+                    Add
+                </button>
+            </div>
+
+            <!-- Dropdown with filtered results -->
+            <div x-show="searchOpen && $wire.availableAmenities.filter(a => a.name.toLowerCase().includes($wire.amenitiesSearch.toLowerCase()) && !$wire.amenities.includes(a.name)).length > 0"
+                 x-transition:enter="transition ease-out duration-200"
+                 x-transition:enter-start="opacity-0 scale-95"
+                 x-transition:enter-end="opacity-100 scale-100"
+                 x-transition:leave="transition ease-in duration-150"
+                 x-transition:leave-start="opacity-100 scale-100"
+                 x-transition:leave-end="opacity-0 scale-95"
+                 class="absolute top-full left-0 right-0 mt-2 bg-white rounded-lg shadow-xl border border-gray-200 overflow-hidden z-20 max-h-60 overflow-y-auto">
+
+                @foreach($availableAmenities as $amenity)
+                    @if(!in_array($amenity['name'], $amenities) && (empty($amenitiesSearch) || stripos($amenity['name'], $amenitiesSearch) !== false))
+                        <button wire:click="addAmenity('{{ $amenity['name'] }}')"
+                                type="button"
+                                x-on:click="searchOpen = false; $wire.set('amenitiesSearch', '')"
+                                class="w-full text-left px-4 py-2 hover:bg-orange-50 flex items-center justify-between group/item transition-colors">
+                            <div class="flex items-center space-x-3">
+                                <span class="material-symbols-outlined text-gray-400 group-hover/item:text-orange-500 text-sm">{{ $amenity['icon'] }}</span>
+                                <span class="text-sm text-gray-900">{{ $amenity['name'] }}</span>
+                            </div>
+                            <span class="material-symbols-outlined text-orange-500 text-sm opacity-0 group-hover/item:opacity-100">add_circle</span>
+                        </button>
+                    @endif
+                @endforeach
+            </div>
+        </div>
+
+        <!-- Selected Amenities Container -->
+        <div class="bg-gray-50 rounded-lg p-4 border border-gray-200 min-h-[120px]">
+            <p class="text-xs text-gray-500 mb-3">Selected amenities (drag to reorder if needed)</p>
+            <div class="flex flex-wrap gap-2">
+                @forelse($amenities as $amenityName)
+                    @if($amenityName && trim($amenityName))
+                        <div class="inline-flex items-center bg-white border border-gray-200 rounded px-3 py-1.5 shadow-sm group hover:border-orange-300 transition-colors">
+                            @php
+                                $amenityData = collect($availableAmenities)->firstWhere('name', $amenityName);
+                                $icon = $amenityData ? $amenityData['icon'] : 'check';
+                            @endphp
+                            <span class="material-symbols-outlined text-orange-500 text-sm mr-2">{{ $icon }}</span>
+                            <span class="text-sm text-gray-900 font-medium mr-2">{{ $amenityName }}</span>
+                            <button wire:click="removeAmenity('{{ $amenityName }}')"
+                                    type="button"
+                                    class="text-gray-400 hover:text-red-500 transition-colors focus:outline-none">
+                                <span class="material-symbols-outlined text-sm">close</span>
+                            </button>
+                        </div>
+                    @endif
+                @empty
+                    <span class="text-sm text-gray-400 italic">No amenities selected</span>
+                @endforelse
+            </div>
+        </div>
+
+        <!-- Custom Amenities (for backward compatibility) -->
+        @php
+            $emptyAmenities = array_filter($amenities, fn($a) => !$a || !trim($a));
+        @endphp
+        @if(count($emptyAmenities) > 0)
+            <div class="space-y-2">
+                <div class="text-xs text-gray-500 mb-2">Custom amenities:</div>
+                @foreach($amenities as $index => $amenity)
+                    @if(!$amenity || !trim($amenity))
+                        <div class="flex items-center justify-between bg-gray-50 px-3 py-2 rounded-lg">
+                            <span class="text-sm text-gray-700">{{ $amenity }}</span>
+                            <button wire:click="removeAmenity({{ $index }})"
+                                    type="button"
+                                    class="text-red-500 hover:text-red-700 transition-colors">
+                                <span class="material-symbols-outlined text-sm">delete</span>
+                            </button>
+                        </div>
+                    @endif
+                @endforeach
+            </div>
+        @endif
     </div>
 </div>

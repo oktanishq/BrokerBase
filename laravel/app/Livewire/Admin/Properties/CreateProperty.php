@@ -3,6 +3,7 @@
 namespace App\Livewire\Admin\Properties;
 
 use App\Models\Property;
+use App\Data\AmenitiesData;
 use App\Services\ImageUploadService;
 use Livewire\Component;
 use Livewire\WithFileUploads;
@@ -61,7 +62,10 @@ class CreateProperty extends Component
         ['value' => 'commercial', 'label' => 'Commercial', 'icon' => 'storefront']
     ];
 
-    public $availableAmenities = ['Swimming Pool', 'Gymnasium', 'Parking', '24/7 Security'];
+    // Advanced amenities system
+    public $amenitiesSearch = '';
+    public $showAmenitiesDropdown = false;
+    public $availableAmenities = [];
 
     protected $listeners = [
         'exitConfirmed' => 'handleExit',
@@ -69,6 +73,9 @@ class CreateProperty extends Component
 
     public function mount()
     {
+        // Initialize amenities data
+        $this->availableAmenities = AmenitiesData::getAll();
+
         // Load draft data without triggering any loading states
         $this->loadDraft();
     }
@@ -173,6 +180,53 @@ class CreateProperty extends Component
     public function setPropertyType($type)
     {
         $this->type = $type;
+        $this->saveDraft();
+    }
+
+    // Advanced amenities methods
+    public function updatedAmenitiesSearch()
+    {
+        $this->showAmenitiesDropdown = !empty($this->amenitiesSearch);
+    }
+
+    public function addAmenity($amenityName = null)
+    {
+        // If specific amenity name provided (from dropdown), add it
+        if ($amenityName) {
+            if (!in_array($amenityName, $this->amenities)) {
+                $this->amenities[] = $amenityName;
+            }
+        }
+        // If no amenity name but search has text, add it as custom amenity
+        elseif (!empty(trim($this->amenitiesSearch))) {
+            $customAmenity = trim($this->amenitiesSearch);
+            if (!in_array($customAmenity, $this->amenities)) {
+                $this->amenities[] = $customAmenity;
+            }
+        }
+        // Legacy: add empty for manual input (shouldn't happen with new system)
+        else {
+            $this->amenities[] = '';
+        }
+
+        // Reset search and close dropdown
+        $this->amenitiesSearch = '';
+        $this->showAmenitiesDropdown = false;
+        $this->saveDraft();
+    }
+
+    public function removeAmenity($identifier)
+    {
+        if (is_numeric($identifier)) {
+            // Old system: remove by index
+            unset($this->amenities[$identifier]);
+            $this->amenities = array_values($this->amenities);
+        } else {
+            // New system: remove by amenity name
+            $this->amenities = array_filter($this->amenities, function ($amenity) use ($identifier) {
+                return $amenity !== $identifier;
+            });
+        }
         $this->saveDraft();
     }
 
