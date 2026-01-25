@@ -95,7 +95,7 @@
                         <label class="block text-sm font-bold text-gray-700">Price</label>
                         <div class="relative rounded-md shadow-sm">
                             <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-                                <span class="text-gray-500 sm:text-sm">$</span>
+                                <span class="text-gray-500 sm:text-sm">₹</span>
                             </div>
                             <input wire:model="price"
                                    @class([
@@ -110,7 +110,7 @@
                                 <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                             @enderror
                             <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
-                                <span class="text-gray-500 sm:text-sm">USD</span>
+                                <span class="text-gray-500 sm:text-sm">INR</span>
                             </div>
                         </div>
                     </div>
@@ -384,7 +384,7 @@
                         <label class="block text-sm font-bold text-gray-800">Net Price (Bottom Line)</label>
                         <div class="relative rounded-md shadow-sm max-w-xs">
                             <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-                                <span class="text-gray-500 sm:text-sm">$</span>
+                                <span class="text-gray-500 sm:text-sm">₹</span>
                             </div>
                             <input wire:model="netPrice"
                                    class="block w-full rounded-lg border-gray-300 pl-7 py-2.5 pr-12 focus:border-amber-500 focus:ring-amber-500 sm:text-sm"
