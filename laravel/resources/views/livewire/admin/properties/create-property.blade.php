@@ -76,21 +76,16 @@
                     <label class="block text-sm font-bold text-gray-700">Property Type</label>
                     <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
                         @foreach($propertyTypes as $type)
-                            <label class="cursor-pointer group">
-                                <input wire:model="type"
-                                       value="{{ $type['value'] }}"
-                                       class="peer sr-only"
+                            <div wire:click="setPropertyType('{{ $type['value'] }}')"
+                                 class="border-2 rounded-xl p-4 flex flex-col items-center justify-center gap-2 transition-all cursor-pointer {{ $type['value'] === $this->type ? 'border-royal-blue bg-blue-50/50 text-royal-blue' : 'border-gray-200 bg-white text-gray-500 hover:border-royal-blue hover:text-royal-blue' }}">
+                                <input type="radio"
                                        name="property_type"
-                                       type="radio">
-                                <div @class([
-                                    'border-2 rounded-xl p-4 flex flex-col items-center justify-center gap-2 transition-all',
-                                    'border-royal-blue bg-blue-50/50 text-royal-blue' => $type['value'] === $this->type,
-                                    'border-gray-200 bg-white text-gray-500 hover:border-royal-blue hover:text-royal-blue peer-checked:border-royal-blue peer-checked:text-royal-blue peer-checked:bg-blue-50' => $type['value'] !== $this->type
-                                ])>
-                                    <span class="material-symbols-outlined">{{ $type['icon'] }}</span>
-                                    <span class="font-bold text-sm">{{ $type['label'] }}</span>
-                                </div>
-                            </label>
+                                       value="{{ $type['value'] }}"
+                                       class="sr-only"
+                                       {{ $type['value'] === $this->type ? 'checked' : '' }}>
+                                <span class="material-symbols-outlined">{{ $type['icon'] }}</span>
+                                <span class="font-bold text-sm">{{ $type['label'] }}</span>
+                            </div>
                         @endforeach
                     </div>
                 </div>

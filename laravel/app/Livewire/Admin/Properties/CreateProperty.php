@@ -170,6 +170,12 @@ class CreateProperty extends Component
         }
     }
 
+    public function setPropertyType($type)
+    {
+        $this->type = $type;
+        $this->saveDraft();
+    }
+
     // File handling
     public function updatedImages()
     {
