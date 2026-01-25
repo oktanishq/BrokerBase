@@ -1,4 +1,4 @@
-<div>
+<div x-data @property-updated.window="$wire.call('$refresh')">
     <!-- Edit Property Modal -->
     @livewire('admin.inventory.edit-property-modal')
 
@@ -240,7 +240,7 @@
 
         <!-- Pagination controls -->
         <div class="flex items-center gap-2">
-            <button wire:click="prevPage"
+            <button wire:click="previousPage"
                     @disabled($this->properties->onFirstPage())
                     class="px-4 py-2 text-sm font-medium bg-white border border-gray-300 rounded-lg transition-colors {{ $this->properties->onFirstPage() ? 'text-gray-400 cursor-not-allowed' : 'text-gray-500 hover:bg-gray-50' }}">
                 Previous
@@ -249,7 +249,7 @@
             <!-- Page numbers -->
             <div class="flex items-center gap-1">
                 @for ($page = 1; $page <= $this->totalPages; $page++)
-                    <button wire:click="goToPage({{ $page }})"
+                    <button wire:click="gotoPage({{ $page }})"
                             class="px-3 py-2 text-sm font-medium border border-gray-300 rounded-lg transition-colors {{ $this->properties->currentPage() === $page ? 'bg-royal-blue text-white' : 'text-gray-500 hover:bg-gray-50' }}">
                         {{ $page }}
                     </button>
