@@ -170,7 +170,7 @@
 
                 @foreach($availableAmenities as $amenity)
                     @if(!in_array($amenity['name'], $amenities) && (empty($amenitiesSearch) || stripos($amenity['name'], $amenitiesSearch) !== false))
-                        <button wire:click="addAmenity('{{ $amenity['name'] }}')"
+                        <button wire:click="addAmenity({{ json_encode($amenity['name']) }})"
                                 type="button"
                                 x-on:click="searchOpen = false; $wire.set('amenitiesSearch', '')"
                                 class="w-full text-left px-4 py-2 hover:bg-orange-50 flex items-center justify-between group/item transition-colors">
@@ -198,7 +198,7 @@
                             @endphp
                             <span class="material-symbols-outlined text-orange-500 text-sm mr-2">{{ $icon }}</span>
                             <span class="text-sm text-gray-900 font-medium mr-2">{{ $amenityName }}</span>
-                            <button wire:click="removeAmenity('{{ $amenityName }}')"
+                            <button wire:click="removeAmenity({{ json_encode($amenityName) }})"
                                     type="button"
                                     class="text-gray-400 hover:text-red-500 transition-colors focus:outline-none">
                                 <span class="material-symbols-outlined text-sm">close</span>
