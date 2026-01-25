@@ -3,6 +3,7 @@
 namespace App\Livewire\Admin\Inventory;
 
 use App\Models\Property;
+use App\Data\AmenitiesData;
 use Livewire\Component;
 
 class EditPropertyModal extends Component
@@ -34,6 +35,11 @@ class EditPropertyModal extends Component
     public $owner_phone = '';
     public $net_price = '';
     public $private_notes = '';
+
+    // Advanced amenities system
+    public $amenitiesSearch = '';
+    public $showAmenitiesDropdown = false;
+    public $availableAmenities = [];
 
     protected $listeners = [
         'open-edit-modal' => 'openModal',
@@ -78,6 +84,9 @@ class EditPropertyModal extends Component
         $this->owner_phone = $this->property['owner_phone'] ?? '';
         $this->net_price = $this->property['net_price'] ? number_format((float)$this->property['net_price']) : '';
         $this->private_notes = $this->property['private_notes'] ?? '';
+
+        // Initialize amenities data
+        $this->availableAmenities = AmenitiesData::getAll();
     }
 
     public function resetForm()
@@ -105,6 +114,11 @@ class EditPropertyModal extends Component
         $this->net_price = '';
         $this->private_notes = '';
         $this->currentTab = 'overview';
+
+        // Reset amenities system
+        $this->amenitiesSearch = '';
+        $this->showAmenitiesDropdown = false;
+        $this->availableAmenities = AmenitiesData::getAll();
     }
 
     public function setTab($tab)
@@ -112,15 +126,43 @@ class EditPropertyModal extends Component
         $this->currentTab = $tab;
     }
 
-    public function addAmenity()
+    public function addAmenity($amenityName = null)
     {
-        $this->amenities[] = '';
+        // If specific amenity name provided (from dropdown), add it
+        if ($amenityName) {
+            if (!in_array($amenityName, $this->amenities)) {
+                $this->amenities[] = $amenityName;
+            }
+        }
+        // If no amenity name but search has text, add it as custom amenity
+        elseif (!empty(trim($this->amenitiesSearch))) {
+            $customAmenity = trim($this->amenitiesSearch);
+            if (!in_array($customAmenity, $this->amenities)) {
+                $this->amenities[] = $customAmenity;
+            }
+        }
+        // Legacy: add empty for manual input (shouldn't happen with new system)
+        else {
+            $this->amenities[] = '';
+        }
+
+        // Reset search and close dropdown
+        $this->amenitiesSearch = '';
+        $this->showAmenitiesDropdown = false;
     }
 
-    public function removeAmenity($index)
+    public function removeAmenity($identifier)
     {
-        unset($this->amenities[$index]);
-        $this->amenities = array_values($this->amenities);
+        if (is_numeric($identifier)) {
+            // Old system: remove by index
+            unset($this->amenities[$identifier]);
+            $this->amenities = array_values($this->amenities);
+        } else {
+            // New system: remove by amenity name
+            $this->amenities = array_filter($this->amenities, function ($amenity) use ($identifier) {
+                return $amenity !== $identifier;
+            });
+        }
     }
 
     public function setStatus($status)
@@ -160,6 +202,12 @@ class EditPropertyModal extends Component
 
         // Flash success message
         session()->flash('success', 'Map loaded successfully!');
+    }
+
+    // Advanced amenities methods
+    public function updatedAmenitiesSearch()
+    {
+        $this->showAmenitiesDropdown = !empty($this->amenitiesSearch);
     }
 
     public function saveChanges()

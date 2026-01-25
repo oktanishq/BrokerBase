@@ -315,17 +315,91 @@
                             </div>
                         </div>
 
-                        <!-- Amenities Section -->
+                        <!-- Advanced Amenities Section -->
                         <div class="space-y-3">
-                            <label class="text-xs font-medium text-gray-500">Amenities</label>
-                            <div class="space-y-2">
-                                @foreach($amenities as $index => $amenity)
-                                    <div class="flex gap-2">
-                                        <input wire:model.live="amenities.{{ $index }}" type="text" class="flex-1 px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-1 focus:ring-royal-blue focus:border-royal-blue outline-none" placeholder="Amenity">
-                                        <button wire:click="removeAmenity({{ $index }})" class="px-3 py-2 bg-red-500 text-white rounded-lg text-sm hover:bg-red-600 transition-colors">Remove</button>
+                            <div class="flex justify-between items-end">
+                                <label class="block text-sm font-medium text-gray-700">Amenities</label>
+                                <button @click="$wire.set('amenities', [])"
+                                        x-show="$wire.amenities.filter(a => a && a.trim()).length > 0"
+                                        class="text-xs text-orange-600 font-medium hover:text-orange-700 transition-colors">
+                                    Clear All
+                                </button>
+                            </div>
+
+                            <!-- Search and Add Amenities -->
+                            <div x-data="{ searchOpen: false }" @click.away="searchOpen = false" class="relative group">
+                                <div class="flex items-center bg-white border border-gray-200 rounded-lg px-3 py-2.5 focus-within:ring-2 focus-within:ring-orange-500 focus-within:border-transparent transition-all shadow-sm">
+                                    <span class="material-symbols-outlined text-gray-400 mr-2 text-base">search</span>
+                                    <input wire:model.live="amenitiesSearch"
+                                           @focus="searchOpen = true"
+                                           @keydown.escape="searchOpen = false; $wire.set('amenitiesSearch', '')"
+                                           type="text"
+                                           class="w-full bg-transparent border-none outline-none text-gray-900 placeholder-gray-400 text-sm"
+                                           placeholder="Search amenities (e.g. Pool, Gym, WiFi)...">
+                                    <button wire:click="addAmenity"
+                                            class="bg-orange-500 hover:bg-orange-600 text-white text-xs px-3 py-1.5 rounded font-medium transition-colors ml-2">
+                                        Add
+                                    </button>
+                                </div>
+
+                                <!-- Dropdown with filtered results -->
+                                <div x-show="searchOpen && $wire.availableAmenities.filter(a => a.name.toLowerCase().includes($wire.amenitiesSearch.toLowerCase()) && !$wire.amenities.includes(a.name)).length > 0"
+                                     x-transition:enter="transition ease-out duration-200"
+                                     x-transition:enter-start="opacity-0 scale-95"
+                                     x-transition:enter-end="opacity-100 scale-100"
+                                     x-transition:leave="transition ease-in duration-150"
+                                     x-transition:leave-start="opacity-100 scale-100"
+                                     x-transition:leave-end="opacity-0 scale-95"
+                                     class="absolute top-full left-0 right-0 mt-2 bg-white rounded-lg shadow-xl border border-gray-200 overflow-hidden z-20 max-h-60 overflow-y-auto">
+
+                                    <template x-for="amenity in $wire.availableAmenities.filter(a => a.name.toLowerCase().includes($wire.amenitiesSearch.toLowerCase()) && !$wire.amenities.includes(a.name))" :key="amenity.name">
+                                        <button @click="$wire.addAmenity(amenity.name); searchOpen = false; $wire.set('amenitiesSearch', '')"
+                                                class="w-full text-left px-4 py-2 hover:bg-orange-50 flex items-center justify-between group/item transition-colors">
+                                            <div class="flex items-center space-x-3">
+                                                <span class="material-symbols-outlined text-gray-400 group-hover/item:text-orange-500 text-sm" x-text="amenity.icon"></span>
+                                                <span class="text-sm text-gray-900" x-text="amenity.name"></span>
+                                            </div>
+                                            <span class="material-symbols-outlined text-orange-500 text-sm opacity-0 group-hover/item:opacity-100">add_circle</span>
+                                        </button>
+                                    </template>
+                                </div>
+                            </div>
+
+                            <!-- Selected Amenities Container -->
+                            <div class="bg-gray-50 rounded-lg p-4 border border-gray-200 min-h-[120px]">
+                                <p class="text-xs text-gray-500 mb-3">Selected amenities (drag to reorder if needed)</p>
+                                <div class="flex flex-wrap gap-2">
+                                    <template x-for="amenityName in $wire.amenities" :key="amenityName">
+                                        <template x-if="amenityName && amenityName.trim()">
+                                            <div class="inline-flex items-center bg-white border border-gray-200 rounded px-3 py-1.5 shadow-sm group hover:border-orange-300 transition-colors">
+                                                <span class="material-symbols-outlined text-orange-500 text-sm mr-2"
+                                                      x-text="$wire.availableAmenities.find(a => a.name === amenityName)?.icon || 'check'"></span>
+                                                <span class="text-sm text-gray-900 font-medium mr-2" x-text="amenityName"></span>
+                                                <button @click="$wire.removeAmenity(amenityName)"
+                                                        class="text-gray-400 hover:text-red-500 transition-colors focus:outline-none">
+                                                    <span class="material-symbols-outlined text-sm">close</span>
+                                                </button>
+                                            </div>
+                                        </template>
+                                    </template>
+                                    <template x-if="$wire.amenities.filter(a => a && a.trim()).length === 0">
+                                        <span class="text-sm text-gray-400 italic">No amenities selected</span>
+                                    </template>
+                                </div>
+                            </div>
+
+                            <!-- Custom Amenities (for backward compatibility) -->
+                            <div class="space-y-2" x-show="$wire.amenities.filter(a => !a || !a.trim()).length > 0">
+                                <div class="text-xs text-gray-500 mb-2">Custom amenities:</div>
+                                <template x-for="(amenity, index) in $wire.amenities" :key="index">
+                                    <div x-show="!amenity || !amenity.trim()" class="flex items-center justify-between bg-gray-50 px-3 py-2 rounded-lg">
+                                        <span class="text-sm text-gray-700" x-text="amenity"></span>
+                                        <button @click="$wire.removeAmenity(index)"
+                                                class="text-red-500 hover:text-red-700 transition-colors">
+                                            <span class="material-symbols-outlined text-sm">delete</span>
+                                        </button>
                                     </div>
-                                @endforeach
-                                <button wire:click="addAmenity" class="w-full py-2 px-4 bg-orange-500 text-white rounded-lg text-sm hover:bg-orange-600 transition-colors">Add Amenity</button>
+                                </template>
                             </div>
                         </div>
                     </div>
