@@ -59,7 +59,9 @@ Route::middleware('auth')->group(function () {
     Route::post('/admin/settings/update', [SettingsController::class, 'update']);
 
     // Property Management Routes
-    Route::get('/admin/properties/create', [AdminPropertyController::class, 'create'])->name('properties.create');
+    Route::get('/admin/properties/create', function () {
+        return view('admin.properties.create');
+    })->name('properties.create');
     Route::post('/admin/properties/draft', [AdminPropertyController::class, 'storeDraft'])->name('properties.draft');
     Route::post('/admin/properties', [AdminPropertyController::class, 'store'])->name('properties.store');
 
