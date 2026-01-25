@@ -27,18 +27,22 @@
 
                 @foreach($steps as $index => $step)
                     <div class="flex flex-col items-center gap-2 bg-white px-2 z-10">
-                        <div class="flex items-center justify-center size-8 rounded-full ring-4 ring-white shadow-sm
-                                    @if($index < $currentStep) bg-royal-blue text-white
-                                    @elseif($index === $currentStep) bg-royal-blue text-white
-                                    @else bg-white border-2 border-gray-300 text-gray-400 @endif">
+                        <div @class([
+                            'flex items-center justify-center size-8 rounded-full ring-4 ring-white shadow-sm',
+                            'bg-royal-blue text-white' => $index <= $currentStep,
+                            'bg-white border-2 border-gray-300 text-gray-400' => $index > $currentStep,
+                        ])>
                             @if($index < $currentStep)
                                 <span class="material-symbols-outlined text-sm font-bold">check</span>
                             @else
                                 <span class="text-sm font-medium">{{ $index + 1 }}</span>
                             @endif
                         </div>
-                        <span class="text-xs font-bold uppercase tracking-wider
-                                   @if($index <= $currentStep) text-royal-blue @else text-gray-400 @endif">
+                        <span @class([
+                            'text-xs font-bold uppercase tracking-wider',
+                            'text-royal-blue' => $index <= $currentStep,
+                            'text-gray-400' => $index > $currentStep
+                        ])>
                             {{ $stepTitles[$index] }}
                         </span>
                     </div>
@@ -55,7 +59,11 @@
                 <div class="space-y-4">
                     <label class="block text-sm font-bold text-gray-700">Property Title</label>
                     <input wire:model="title"
-                           class="w-full rounded-lg border-gray-300 shadow-sm focus:border-amber-500 focus:ring-amber-500 py-3 px-4 text-sm transition-all @error('title') border-red-500 focus:border-red-500 focus:ring-red-500 @enderror"
+                           @class([
+                               'w-full rounded-lg shadow-sm py-3 px-4 text-sm transition-all',
+                               'border-gray-300 focus:border-amber-500 focus:ring-amber-500' => !$errors->has('title'),
+                               'border-red-500 focus:border-red-500 focus:ring-red-500' => $errors->has('title')
+                           ])
                            placeholder="e.g., Luxury 3BHK in Downtown"
                            type="text"
                            required>
@@ -74,9 +82,11 @@
                                        class="peer sr-only"
                                        name="property_type"
                                        type="radio">
-                                <div class="border-2 rounded-xl p-4 flex flex-col items-center justify-center gap-2 transition-all
-                                           @if($type === $this->type) border-royal-blue bg-blue-50/50 text-royal-blue
-                                           @else border-gray-200 bg-white text-gray-500 hover:border-royal-blue hover:text-royal-blue peer-checked:border-royal-blue peer-checked:text-royal-blue peer-checked:bg-blue-50 @endif">
+                                <div @class([
+                                    'border-2 rounded-xl p-4 flex flex-col items-center justify-center gap-2 transition-all',
+                                    'border-royal-blue bg-blue-50/50 text-royal-blue' => $type['value'] === $this->type,
+                                    'border-gray-200 bg-white text-gray-500 hover:border-royal-blue hover:text-royal-blue peer-checked:border-royal-blue peer-checked:text-royal-blue peer-checked:bg-blue-50' => $type['value'] !== $this->type
+                                ])>
                                     <span class="material-symbols-outlined">{{ $type['icon'] }}</span>
                                     <span class="font-bold text-sm">{{ $type['label'] }}</span>
                                 </div>
@@ -93,7 +103,11 @@
                                 <span class="text-gray-500 sm:text-sm">$</span>
                             </div>
                             <input wire:model="price"
-                                   class="block w-full rounded-lg border-gray-300 pl-7 py-3 pr-12 focus:border-amber-500 focus:ring-amber-500 sm:text-sm @error('price') border-red-500 focus:border-red-500 focus:ring-red-500 @enderror"
+                                   @class([
+                                       'block w-full rounded-lg pl-7 py-3 pr-12 sm:text-sm',
+                                       'border-gray-300 focus:border-amber-500 focus:ring-amber-500' => !$errors->has('price'),
+                                       'border-red-500 focus:border-red-500 focus:ring-red-500' => $errors->has('price')
+                                   ])
                                    placeholder="0.00"
                                    type="number"
                                    step="0.01">
@@ -109,7 +123,11 @@
                         <label class="block text-sm font-bold text-gray-700">Area Size</label>
                         <div class="relative rounded-md shadow-sm">
                             <input wire:model="area"
-                                   class="block w-full rounded-lg border-gray-300 py-3 px-4 pr-12 focus:border-amber-500 focus:ring-amber-500 sm:text-sm @error('area') border-red-500 focus:border-red-500 focus:ring-red-500 @enderror"
+                                   @class([
+                                       'block w-full rounded-lg py-3 px-4 pr-12 sm:text-sm',
+                                       'border-gray-300 focus:border-amber-500 focus:ring-amber-500' => !$errors->has('area'),
+                                       'border-red-500 focus:border-red-500 focus:ring-red-500' => $errors->has('area')
+                                   ])
                                    placeholder="Total area"
                                    type="number">
                             @error('area')
@@ -212,7 +230,11 @@
                     <div class="space-y-2">
                         <label class="block text-xs font-bold text-gray-500 uppercase">Latitude (Optional)</label>
                         <input wire:model="latitude"
-                               class="w-full rounded-lg border-gray-300 py-2 px-3 text-sm focus:border-amber-500 focus:ring-amber-500 @error('latitude') border-red-500 focus:border-red-500 focus:ring-red-500 @enderror"
+                               @class([
+                                   'w-full rounded-lg py-2 px-3 text-sm',
+                                   'border-gray-300 focus:border-amber-500 focus:ring-amber-500' => !$errors->has('latitude'),
+                                   'border-red-500 focus:border-red-500 focus:ring-red-500' => $errors->has('latitude')
+                               ])
                                placeholder="e.g. 25.2048"
                                type="text">
                         @error('latitude')
@@ -222,7 +244,11 @@
                     <div class="space-y-2">
                         <label class="block text-xs font-bold text-gray-500 uppercase">Longitude (Optional)</label>
                         <input wire:model="longitude"
-                               class="w-full rounded-lg border-gray-300 py-2 px-3 text-sm focus:border-amber-500 focus:ring-amber-500 @error('longitude') border-red-500 focus:border-red-500 focus:ring-red-500 @enderror"
+                               @class([
+                                   'w-full rounded-lg py-2 px-3 text-sm',
+                                   'border-gray-300 focus:border-amber-500 focus:ring-amber-500' => !$errors->has('longitude'),
+                                   'border-red-500 focus:border-red-500 focus:ring-red-500' => $errors->has('longitude')
+                               ])
                                placeholder="e.g. 55.2708"
                                type="text">
                         @error('longitude')
