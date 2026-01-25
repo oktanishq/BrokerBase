@@ -42,6 +42,7 @@ class CreateProperty extends Component
 
     // File uploads
     public $images = [];
+    public $newImages = [];
 
     // Map loading state
     public $isLoadingMap = false;
@@ -235,6 +236,21 @@ class CreateProperty extends Component
     {
         // Only validate and save if we actually have images
         if (!empty($this->images)) {
+            $this->validateImages();
+            $this->saveDraft();
+        }
+    }
+
+    public function updatedNewImages()
+    {
+        // Append new images to the main images array
+        if (!empty($this->newImages)) {
+            foreach ($this->newImages as $newImage) {
+                $this->images[] = $newImage;
+            }
+            // Clear the newImages array
+            $this->newImages = [];
+            // Validate and save
             $this->validateImages();
             $this->saveDraft();
         }

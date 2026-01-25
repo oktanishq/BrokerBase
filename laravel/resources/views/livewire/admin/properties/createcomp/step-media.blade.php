@@ -16,23 +16,13 @@
                  );
 
                  if (files.length > 0) {
-                     // Create a new DataTransfer object
+                     // Create DataTransfer and set files on the input
                      const dt = new DataTransfer();
-
-                     // Add existing files if any
-                     const existingInput = document.getElementById('images');
-                     if (existingInput.files) {
-                         Array.from(existingInput.files).forEach(file => dt.items.add(file));
-                     }
-
-                     // Add dropped files
                      files.forEach(file => dt.items.add(file));
 
-                     // Set the files on the input
-                     existingInput.files = dt.files;
-
-                     // Trigger change event to notify Livewire
-                     existingInput.dispatchEvent(new Event('change', { bubbles: true }));
+                     const input = document.getElementById('images');
+                     input.files = dt.files;
+                     input.dispatchEvent(new Event('change', { bubbles: true }));
                  }
              },
              handleDragOver(event) {
@@ -58,12 +48,12 @@
         </div>
         <p class="text-royal-blue font-medium">Drag photos here or <label for="images" class="underline decoration-amber-500 decoration-2 underline-offset-2 cursor-pointer">Browse</label></p>
         <p class="text-xs text-gray-500 mt-1">Supported formats: JPG, PNG, WEBP</p>
-        <input wire:model="images"
-               id="images"
-               type="file"
-               multiple
-               accept="image/*"
-               class="hidden">
+        <input wire:model="newImages"
+                id="images"
+                type="file"
+                multiple
+                accept="image/*"
+                class="hidden">
     </div>
 
     <div class="grid grid-cols-2 sm:grid-cols-3 gap-4">
