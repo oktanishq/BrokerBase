@@ -5,17 +5,61 @@
         <h3 class="text-lg font-bold text-slate-900">Media Gallery</h3>
     </div>
 
-    <div @drop="handleDrop($event)"
-         @dragover.prevent
-         @dragenter.prevent
-         class="border-2 border-dashed border-blue-200 bg-blue-50/50 rounded-xl p-8 flex flex-col items-center justify-center text-center cursor-pointer hover:bg-blue-50 transition-colors">
+    <div x-data="{
+             isDragging: false,
+             handleDrop(event) {
+                 event.preventDefault();
+                 this.isDragging = false;
+
+                 const files = Array.from(event.dataTransfer.files).filter(file =>
+                     file.type.startsWith('image/')
+                 );
+
+                 if (files.length > 0) {
+                     // Create a new DataTransfer object
+                     const dt = new DataTransfer();
+
+                     // Add existing files if any
+                     const existingInput = document.getElementById('images');
+                     if (existingInput.files) {
+                         Array.from(existingInput.files).forEach(file => dt.items.add(file));
+                     }
+
+                     // Add dropped files
+                     files.forEach(file => dt.items.add(file));
+
+                     // Set the files on the input
+                     existingInput.files = dt.files;
+
+                     // Trigger change event to notify Livewire
+                     existingInput.dispatchEvent(new Event('change', { bubbles: true }));
+                 }
+             },
+             handleDragOver(event) {
+                 event.preventDefault();
+             },
+             handleDragEnter(event) {
+                 event.preventDefault();
+                 this.isDragging = true;
+             },
+             handleDragLeave(event) {
+                 event.preventDefault();
+                 this.isDragging = false;
+             }
+         }"
+         @drop="handleDrop($event)"
+         @dragover="handleDragOver($event)"
+         @dragenter="handleDragEnter($event)"
+         @dragleave="handleDragLeave($event)"
+         :class="isDragging ? 'border-blue-400 bg-blue-100' : 'border-blue-200 bg-blue-50/50'"
+         class="border-2 border-dashed rounded-xl p-8 flex flex-col items-center justify-center text-center cursor-pointer transition-colors">
         <div class="size-12 rounded-full bg-white text-royal-blue shadow-sm flex items-center justify-center mb-3">
             <span class="material-symbols-outlined text-3xl">cloud_upload</span>
         </div>
-        <p class="text-royal-blue font-medium">Drag photos here or <span @click="$refs.fileInput.click()" class="underline decoration-amber-500 decoration-2 underline-offset-2">Browse</span></p>
+        <p class="text-royal-blue font-medium">Drag photos here or <label for="images" class="underline decoration-amber-500 decoration-2 underline-offset-2 cursor-pointer">Browse</label></p>
         <p class="text-xs text-gray-500 mt-1">Supported formats: JPG, PNG, WEBP</p>
-        <input x-ref="fileInput"
-               @change="handleFileSelect($event)"
+        <input wire:model="images"
+               id="images"
                type="file"
                multiple
                accept="image/*"

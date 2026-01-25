@@ -249,6 +249,7 @@ class CreateProperty extends Component
         }
     }
 
+
     private function validateImages()
     {
         $maxImages = 10;
