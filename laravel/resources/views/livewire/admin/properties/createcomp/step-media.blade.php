@@ -76,17 +76,23 @@
         @endforeach
     </div>
 
-    <div class="flex items-center justify-between py-3 px-4 bg-gray-50 rounded-lg border border-gray-200">
-        <div class="flex flex-col">
-            <span class="text-sm font-bold text-gray-900">Watermark Photos</span>
-            <span class="text-xs text-gray-500">Apply Dealer Logo Watermark automatically?</span>
+    <div class="py-3 px-4 bg-gradient-to-r from-amber-50 to-orange-50 rounded-lg border border-amber-200">
+        <div class="flex items-start justify-between gap-3">
+            <div class="flex items-start gap-3 flex-1 min-w-0">
+                <div class="flex items-center justify-center w-8 h-8 bg-amber-100 rounded-full flex-shrink-0 mt-0.5">
+                    <span class="material-symbols-outlined text-amber-600 text-sm">lock</span>
+                </div>
+                <div class="flex flex-col min-w-0 flex-1">
+                    <div class="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2">
+                        <span class="text-sm font-bold text-gray-900 truncate">Instagram & YouTube Ready Images</span>
+                        <span class="px-2 py-0.5 bg-amber-500 text-white text-xs font-bold rounded-full self-start sm:self-auto whitespace-nowrap">Coming Soon</span>
+                    </div>
+                    <span class="text-xs text-gray-600 mt-1">Get professionally watermarked images optimized for social media platforms</span>
+                </div>
+            </div>
+            <div class="text-amber-600 flex-shrink-0">
+                <span class="material-symbols-outlined text-lg">arrow_forward</span>
+            </div>
         </div>
-        <label class="relative inline-flex items-center cursor-pointer">
-            <input wire:model="watermark"
-                   class="sr-only peer"
-                   type="checkbox"
-                   value="true">
-            <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-amber-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-amber-500"></div>
-        </label>
     </div>
 </div>
