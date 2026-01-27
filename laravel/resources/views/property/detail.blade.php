@@ -369,8 +369,12 @@
         </div>
     </div>
 
-    <!-- Bottom Thumbnail Strip -->
-    <div class="absolute bottom-0 left-0 right-0 p-6 bg-black/50 backdrop-blur-md" x-show="totalSlides > 1">
+    <!-- Bottom Thumbnail Strip (Hidden by default, shown on hover) -->
+    <div class="absolute bottom-0 left-0 right-0 p-6 bg-black/50 backdrop-blur-md opacity-0 hover:opacity-100 transition-opacity duration-300"
+         x-show="totalSlides > 1"
+         x-data="{ showThumbnails: false }"
+         @mouseenter="showThumbnails = true"
+         @mouseleave="showThumbnails = false">
         <div class="flex justify-center">
             <div class="flex gap-3 pb-2 overflow-x-auto max-w-full">
                 @if(count($property->all_images ?? []) > 0)
