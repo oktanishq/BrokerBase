@@ -165,7 +165,7 @@
                         <span class="material-symbols-outlined text-primary mt-0.5 text-[20px]">location_on</span>
                         <p class="text-base font-normal">{{ $property->location ?? 'Location not specified' }}</p>
                     </div>
-                    <h1 class="text-gold text-[32px] font-bold leading-tight tracking-tight">₹ {{ number_format($property->price ?? 0) }}</h1>
+                    <h1 class="text-gold text-[32px] font-bold leading-tight tracking-tight">{{ $property->price > 0 ? '₹ ' . number_format($property->price) : '₹ TBD' }}</h1>
                 </div>
 
                 <!-- Desktop: Title, Location, then Price -->
@@ -176,7 +176,7 @@
                         <p class="text-lg font-medium">{{ $property->location ?? 'Location not specified' }}</p>
                     </div>
                     <div>
-                        <h1 class="text-gold text-4xl font-extrabold leading-tight tracking-tight">₹ {{ number_format($property->price ?? 0) }}</h1>
+                        <h1 class="text-gold text-4xl font-extrabold leading-tight tracking-tight">{{ $property->price > 0 ? '₹ ' . number_format($property->price) : '₹ TBD' }}</h1>
                     </div>
                 </div>
 
@@ -209,7 +209,7 @@
 
             <!-- About Property Section -->
             <div class="mb-10">
-                <h3 class="text-gray-900 dark:text-white font-bold text-xl mb-4">About this property</h3>
+                <h3 class="text-gray-900 dark:text-white font-bold text-xl mb-4">About</h3>
                 <div class="prose dark:prose-invert max-w-none">
                     <p class="text-gray-600 dark:text-gray-300 text-base leading-relaxed">
                         {!! $property->description ?? 'No description available for this property.' !!}
