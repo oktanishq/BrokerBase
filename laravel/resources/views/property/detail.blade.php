@@ -345,12 +345,11 @@
         </div>
     </div>
 
-    <!-- Bottom Thumbnail Strip (Hidden by default, shown on hover) -->
-    <div class="absolute bottom-0 left-0 right-0 p-6 bg-black/50 backdrop-blur-md opacity-0 hover:opacity-100 transition-opacity duration-300"
+    <!-- Bottom Thumbnail Strip -->
+    <div class="absolute bottom-0 left-0 right-0 p-6 bg-black/50 backdrop-blur-md z-30"
          x-show="totalSlides > 1"
-         x-data="{ showThumbnails: false }"
-         @mouseenter="showThumbnails = true"
-         @mouseleave="showThumbnails = false">
+         @touchstart.stop @touchmove.stop @touchend.stop
+         style="pointer-events: auto;">
         <div class="flex justify-center">
             <div class="flex gap-3 pb-2 overflow-x-auto max-w-full">
                 @if(count($property->all_images ?? []) > 0)
@@ -442,16 +441,18 @@ function imageGallery() {
         goToModalSlide(index) {
             if (this.modalSwiper) {
                 this.modalSwiper.slideTo(index);
+            } else {
+                console.warn('Modal swiper not initialized');
             }
         },
 
         openGalleryModal() {
             this.galleryModalOpen = true;
             this.modalCurrentSlide = this.currentSlide;
-            this.$nextTick(() => {
+            setTimeout(() => {
                 this.initModalSwipers();
                 this.modalSwiper.slideTo(this.currentSlide);
-            });
+            }, 200);
         },
 
         closeGalleryModal() {
