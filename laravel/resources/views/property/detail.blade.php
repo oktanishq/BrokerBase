@@ -48,10 +48,10 @@
 
 <!-- Main Content Grid -->
 <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 px-4 sm:px-6 lg:px-10 mt-6">
-    <!-- Left Column (6 cols) - Image Gallery -->
-    <div class="lg:col-span-6 lg:sticky lg:top-24 lg:self-start h-fit z-10">
+    <!-- Left Column (4 cols) - Image Gallery -->
+    <div class="lg:col-span-4 lg:sticky lg:top-24 lg:self-start h-fit z-10">
         <!-- Image Gallery with Fixed Aspect Ratio -->
-        <div class="relative w-full rounded-2xl overflow-hidden shadow-lg group" style="aspect-ratio: 4/3;">
+        <div class="relative w-full rounded-2xl overflow-hidden shadow-lg group" style="aspect-ratio: 4/5; max-height: calc(100vh - 22rem);">
             <!-- Main Swiper -->
             <div class="swiper main-swiper absolute inset-0">
                 <div class="swiper-wrapper h-full">
@@ -137,39 +137,22 @@
                 @endif
             </div>
         </div>
+
+        <!-- Action Buttons (Desktop) -->
+        <div class="mt-6 hidden lg:flex gap-4">
+            <a :href="'tel:' + getCleanedPhoneNumber()" class="flex-1 flex items-center justify-center gap-2 h-14 rounded-xl border-2 border-primary bg-white hover:bg-gray-50 text-primary font-bold text-lg transition-transform active:scale-[0.98] shadow-sm">
+                <span class="material-symbols-outlined text-[24px]">call</span>
+                Call Now
+            </a>
+            <a :href="getWhatsAppMessage()" target="_blank" rel="noopener noreferrer" class="flex-1 flex items-center justify-center gap-2 h-14 rounded-xl bg-green-500 hover:bg-green-600 text-white font-bold text-lg transition-transform active:scale-[0.98] shadow-md shadow-green-500/20">
+                <i class="fa-brands fa-whatsapp text-[24px]"></i>
+                WhatsApp
+            </a>
+        </div>
     </div>
 
-    <!-- Right Column (6 cols) - Property Details & Actions -->
-    <div class="lg:col-span-6 space-y-6">
-        <!-- Price & Actions Card -->
-        <div class="bg-white dark:bg-background-dark rounded-2xl p-6 shadow-lg border border-gray-100 dark:border-gray-800">
-            <div class="mb-6">
-                <p class="text-gray-500 dark:text-gray-400 text-sm font-medium mb-1">Price</p>
-                <h1 class="text-gold text-4xl font-extrabold leading-tight tracking-tight">$ {{ number_format($property->price ?? 0) }}</h1>
-                <p class="text-xs text-gray-400 mt-1">Plus taxes & fees</p>
-            </div>
-            <div class="w-full h-px bg-gray-100 dark:bg-gray-800 my-6"></div>
-            <div class="space-y-4">
-                <div class="flex items-center gap-3 mb-2">
-                    <div class="size-12 rounded-full bg-gray-100 dark:bg-gray-800 overflow-hidden">
-                        <div class="w-full h-full bg-cover bg-center" style="background-image: url('{{ asset('images/agent-default.jpg') }}')"></div>
-                    </div>
-                    <div>
-                        <p class="text-sm text-gray-500 dark:text-gray-400">Listing Agent</p>
-                        <p class="font-bold text-gray-900 dark:text-white" x-text="settings.agency_name || 'Loading...'"></p>
-                    </div>
-                </div>
-                <a :href="'tel:' + getCleanedPhoneNumber()" class="w-full flex items-center justify-center gap-2 h-14 rounded-xl border-2 border-primary bg-white hover:bg-gray-50 text-primary font-bold text-lg transition-transform active:scale-[0.98] shadow-sm">
-                    <span class="material-symbols-outlined text-[24px]">call</span>
-                    Call Now
-                </a>
-                <a :href="getWhatsAppMessage()" target="_blank" rel="noopener noreferrer" class="w-full flex items-center justify-center gap-2 h-14 rounded-xl bg-green-500 hover:bg-green-600 text-white font-bold text-lg transition-transform active:scale-[0.98] shadow-md shadow-green-500/20">
-                    <i class="fa-brands fa-whatsapp text-[24px]"></i>
-                    WhatsApp
-                </a>
-                <p class="text-center text-xs text-gray-400 pt-2">By contacting, you agree to our Terms of Service.</p>
-            </div>
-        </div>
+    <!-- Right Column (8 cols) - Property Details & Actions -->
+    <div class="lg:col-span-8 space-y-6">
 
         <!-- Property Details Card -->
         <div class="bg-white dark:bg-background-dark rounded-2xl p-6 lg:p-8 shadow-black border border-gray-100 dark:border-gray-800">
@@ -187,6 +170,11 @@
 
                 <!-- Desktop: Title and Location only (price in sidebar) -->
                 <div class="hidden lg:block mb-8">
+                    <div class="mb-6">
+                        <p class="text-gray-500 dark:text-gray-400 text-sm font-medium mb-1">Price</p>
+                        <h1 class="text-gold text-4xl font-extrabold leading-tight tracking-tight">$ {{ number_format($property->price ?? 0) }}</h1>
+                        <p class="text-xs text-gray-400 mt-1">Plus taxes & fees</p>
+                    </div>
                     <h1 class="text-gray-900 dark:text-white text-3xl lg:text-4xl font-extrabold leading-tight mb-3">{{ $property->name ?? 'Property' }}</h1>
                     <div class="flex items-center gap-2 text-gray-500 dark:text-gray-400">
                         <span class="material-symbols-outlined text-primary text-[22px]">location_on</span>
@@ -293,6 +281,7 @@
                 @endif
             </div>
         </div>
+
     </div>
 
 </div>
