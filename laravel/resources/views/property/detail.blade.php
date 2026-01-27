@@ -158,27 +158,25 @@
         <div class="bg-white dark:bg-background-dark rounded-2xl p-6 lg:p-8 shadow-black border border-gray-100 dark:border-gray-800">
             <!-- Property Details Section -->
             <div>
-                <!-- Mobile: Price merged with title (hide "Price" label) -->
+                <!-- Mobile: Title, Location, then Price -->
                 <div class="lg:hidden">
-                    <h1 class="text-gold text-[32px] font-bold leading-tight tracking-tight mb-3">₹ {{ number_format($property->price ?? 0) }}</h1>
                     <h2 class="text-gray-900 dark:text-white text-2xl font-bold leading-snug mb-3">{{ $property->name ?? 'Property' }}</h2>
-                    <div class="flex items-start gap-2 text-gray-500 dark:text-gray-400">
+                    <div class="flex items-start gap-2 text-gray-500 dark:text-gray-400 mb-3">
                         <span class="material-symbols-outlined text-primary mt-0.5 text-[20px]">location_on</span>
                         <p class="text-base font-normal">{{ $property->location ?? 'Location not specified' }}</p>
                     </div>
+                    <h1 class="text-gold text-[32px] font-bold leading-tight tracking-tight">₹ {{ number_format($property->price ?? 0) }}</h1>
                 </div>
 
-                <!-- Desktop: Title and Location only (price in sidebar) -->
+                <!-- Desktop: Title, Location, then Price -->
                 <div class="hidden lg:block mb-8">
-                    <div class="mb-6">
-                        <p class="text-gray-500 dark:text-gray-400 text-sm font-medium mb-1">Price</p>
-                        <h1 class="text-gold text-4xl font-extrabold leading-tight tracking-tight">₹ {{ number_format($property->price ?? 0) }}</h1>
-                        <p class="text-xs text-gray-400 mt-1">Plus taxes & fees</p>
-                    </div>
                     <h1 class="text-gray-900 dark:text-white text-3xl lg:text-4xl font-extrabold leading-tight mb-3">{{ $property->name ?? 'Property' }}</h1>
-                    <div class="flex items-center gap-2 text-gray-500 dark:text-gray-400">
+                    <div class="flex items-center gap-2 text-gray-500 dark:text-gray-400 mb-6">
                         <span class="material-symbols-outlined text-primary text-[22px]">location_on</span>
                         <p class="text-lg font-medium">{{ $property->location ?? 'Location not specified' }}</p>
+                    </div>
+                    <div>
+                        <h1 class="text-gold text-4xl font-extrabold leading-tight tracking-tight">₹ {{ number_format($property->price ?? 0) }}</h1>
                     </div>
                 </div>
 
