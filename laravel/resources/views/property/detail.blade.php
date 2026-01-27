@@ -49,7 +49,7 @@
 <!-- Main Content Grid -->
 <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 px-4 sm:px-6 lg:px-10 mt-6">
     <!-- Left Column (6 cols) - Image Gallery -->
-    <div class="lg:col-span-6 lg:sticky lg:top-20 lg:self-start">
+    <div class="lg:col-span-6 lg:sticky lg:top-24 lg:self-start h-fit z-10">
         <!-- Image Gallery with Fixed Aspect Ratio -->
         <div class="relative w-full rounded-2xl overflow-hidden shadow-lg group" style="aspect-ratio: 4/3;">
             <!-- Main Swiper -->
