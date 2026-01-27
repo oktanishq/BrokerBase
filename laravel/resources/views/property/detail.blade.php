@@ -47,21 +47,21 @@
 <x-public.site-header />
 
 <!-- Main Content Grid -->
-<div class="grid grid-cols-1 lg:grid-cols-12 gap-8 px-4 sm:px-6 lg:px-10 mt-6 items-start">
-    <!-- Left Column (8 cols) - Main Content -->
-    <div class="lg:col-span-8">
-        <!-- Hero Section / Image Gallery -->
-        <div class="relative w-full rounded-2xl overflow-hidden shadow-lg group">
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-8 px-4 sm:px-6 lg:px-10 mt-6">
+    <!-- Left Column (6 cols) - Image Gallery -->
+    <div class="lg:col-span-6 lg:sticky lg:top-20 lg:self-start">
+        <!-- Image Gallery with Fixed Aspect Ratio -->
+        <div class="relative w-full rounded-2xl overflow-hidden shadow-lg group" style="aspect-ratio: 4/3;">
             <!-- Main Swiper -->
-            <div class="swiper main-swiper h-[500px]">
-                <div class="swiper-wrapper">
+            <div class="swiper main-swiper absolute inset-0">
+                <div class="swiper-wrapper h-full">
                     @if(count($property->all_images ?? []) > 0)
                         @foreach($property->all_images as $index => $image)
-                        <div class="swiper-slide">
+                        <div class="swiper-slide h-full">
                             <div class="w-full h-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center relative">
                                 <img src="{{ $image['url'] }}"
                                      alt="{{ $property->name }} - Image {{ $index + 1 }}"
-                                     class="w-full h-full object-cover transition-opacity duration-300"
+                                     class="w-full h-full object-contain transition-opacity duration-300"
                                      onload="this.style.opacity='1'"
                                      style="opacity: 0;">
                                 <!-- Error fallback -->
@@ -72,7 +72,7 @@
                         </div>
                         @endforeach
                     @else
-                        <div class="swiper-slide">
+                        <div class="swiper-slide h-full">
                             <div class="w-full h-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center">
                                 <div class="text-center">
                                     <span class="material-symbols-outlined text-gray-400 text-6xl mb-2 block">image</span>
@@ -96,21 +96,21 @@
                 </button>
 
                 <!-- Status badge -->
-                <div class="absolute top-6 left-6 z-20">
-                    <span class="inline-flex items-center px-4 py-1.5 rounded-full text-sm font-bold bg-green-500 text-white shadow-md uppercase tracking-wider">
+                <div class="absolute top-4 left-4 z-20">
+                    <span class="inline-flex items-center px-3 py-1.5 rounded-full text-sm font-bold bg-green-500 text-white shadow-md uppercase tracking-wider">
                         {{ $property->status ?? 'For Sale' }}
                     </span>
                 </div>
 
                 <!-- Image counter -->
-                <div class="absolute top-6 right-6 z-20" x-show="totalSlides > 1" x-transition>
+                <div class="absolute top-4 right-4 z-20" x-show="totalSlides > 1" x-transition>
                     <div class="bg-black/60 backdrop-blur-md text-white px-3 py-1 rounded-full text-sm font-medium">
                         <span x-text="currentSlide + 1"></span> / <span x-text="totalSlides"></span>
                     </div>
                 </div>
 
                 <!-- Show all photos button -->
-                <div class="absolute bottom-6 right-6 z-20">
+                <div class="absolute bottom-4 right-4 z-20">
                     <button @click="openGalleryModal()"
                             class="inline-flex items-center px-4 py-2 rounded-full text-sm font-medium bg-black/60 hover:bg-black/70 backdrop-blur-md text-white transition-colors">
                         <span class="material-symbols-outlined text-[16px] mr-2">photo_camera</span>
@@ -118,28 +118,61 @@
                     </button>
                 </div>
             </div>
+        </div>
 
-            <!-- Thumbnail swiper (shown when multiple images) -->
-            <div class="mt-4 overflow-x-auto" x-show="totalSlides > 1" x-transition>
-                <div class="flex gap-3 pb-2 min-w-max">
-                    @if(count($property->all_images ?? []) > 0)
-                        @foreach($property->all_images as $index => $image)
-                        <div class="cursor-pointer flex-shrink-0" @click="goToSlide({{ $index }})">
-                            <div class="w-20 h-20 rounded-lg overflow-hidden border-2 transition-all"
-                                 :class="currentSlide === {{ $index }} ? 'border-primary shadow-lg' : 'border-gray-200 dark:border-gray-700'">
-                                <img src="{{ $image['url'] }}"
-                                     alt="Thumbnail {{ $index + 1 }}"
-                                     class="w-full h-full object-cover">
-                            </div>
+        <!-- Thumbnail swiper (shown when multiple images) -->
+        <div class="mt-4 overflow-x-auto" x-show="totalSlides > 1" x-transition>
+            <div class="flex gap-3 pb-2 min-w-max">
+                @if(count($property->all_images ?? []) > 0)
+                    @foreach($property->all_images as $index => $image)
+                    <div class="cursor-pointer flex-shrink-0" @click="goToSlide({{ $index }})">
+                        <div class="w-16 h-16 rounded-lg overflow-hidden border-2 transition-all"
+                             :class="currentSlide === {{ $index }} ? 'border-primary shadow-lg' : 'border-gray-200 dark:border-gray-700'">
+                            <img src="{{ $image['url'] }}"
+                                 alt="Thumbnail {{ $index + 1 }}"
+                                 class="w-full h-full object-cover">
                         </div>
-                        @endforeach
-                    @endif
+                    </div>
+                    @endforeach
+                @endif
+            </div>
+        </div>
+    </div>
+
+    <!-- Right Column (6 cols) - Property Details & Actions -->
+    <div class="lg:col-span-6 space-y-6">
+        <!-- Price & Actions Card -->
+        <div class="bg-white dark:bg-background-dark rounded-2xl p-6 shadow-lg border border-gray-100 dark:border-gray-800">
+            <div class="mb-6">
+                <p class="text-gray-500 dark:text-gray-400 text-sm font-medium mb-1">Price</p>
+                <h1 class="text-gold text-4xl font-extrabold leading-tight tracking-tight">$ {{ number_format($property->price ?? 0) }}</h1>
+                <p class="text-xs text-gray-400 mt-1">Plus taxes & fees</p>
+            </div>
+            <div class="w-full h-px bg-gray-100 dark:bg-gray-800 my-6"></div>
+            <div class="space-y-4">
+                <div class="flex items-center gap-3 mb-2">
+                    <div class="size-12 rounded-full bg-gray-100 dark:bg-gray-800 overflow-hidden">
+                        <div class="w-full h-full bg-cover bg-center" style="background-image: url('{{ asset('images/agent-default.jpg') }}')"></div>
+                    </div>
+                    <div>
+                        <p class="text-sm text-gray-500 dark:text-gray-400">Listing Agent</p>
+                        <p class="font-bold text-gray-900 dark:text-white" x-text="settings.agency_name || 'Loading...'"></p>
+                    </div>
                 </div>
+                <a :href="'tel:' + getCleanedPhoneNumber()" class="w-full flex items-center justify-center gap-2 h-14 rounded-xl border-2 border-primary bg-white hover:bg-gray-50 text-primary font-bold text-lg transition-transform active:scale-[0.98] shadow-sm">
+                    <span class="material-symbols-outlined text-[24px]">call</span>
+                    Call Now
+                </a>
+                <a :href="getWhatsAppMessage()" target="_blank" rel="noopener noreferrer" class="w-full flex items-center justify-center gap-2 h-14 rounded-xl bg-green-500 hover:bg-green-600 text-white font-bold text-lg transition-transform active:scale-[0.98] shadow-md shadow-green-500/20">
+                    <i class="fa-brands fa-whatsapp text-[24px]"></i>
+                    WhatsApp
+                </a>
+                <p class="text-center text-xs text-gray-400 pt-2">By contacting, you agree to our Terms of Service.</p>
             </div>
         </div>
 
-        <!-- Property Details Card (White Background) -->
-        <div class="bg-white dark:bg-background-dark rounded-2xl p-6 lg:p-8 shadow-black border border-gray-100 dark:border-gray-800 mt-6">
+        <!-- Property Details Card -->
+        <div class="bg-white dark:bg-background-dark rounded-2xl p-6 lg:p-8 shadow-black border border-gray-100 dark:border-gray-800">
             <!-- Property Details Section -->
             <div>
                 <!-- Mobile: Price merged with title (hide "Price" label) -->
@@ -262,63 +295,6 @@
         </div>
     </div>
 
-    <!-- Right Column (4 cols) - Sidebar (Price & Actions) -->
-    <div class="lg:col-span-4">
-        <!-- Desktop: Full sidebar with price and buttons -->
-        <div class="bg-white dark:bg-background-dark rounded-2xl p-6 shadow-lg border border-gray-100 dark:border-gray-800 hidden lg:block">
-            <div class="mb-6">
-                <p class="text-gray-500 dark:text-gray-400 text-sm font-medium mb-1">Price</p>
-                <h1 class="text-gold text-4xl font-extrabold leading-tight tracking-tight">$ {{ number_format($property->price ?? 0) }}</h1>
-                <p class="text-xs text-gray-400 mt-1">Plus taxes & fees</p>
-            </div>
-            <div class="w-full h-px bg-gray-100 dark:bg-gray-800 my-6"></div>
-            <div class="space-y-4">
-                <div class="flex items-center gap-3 mb-2">
-                    <div class="size-12 rounded-full bg-gray-100 dark:bg-gray-800 overflow-hidden">
-                        <div class="w-full h-full bg-cover bg-center" style="background-image: url('{{ asset('images/agent-default.jpg') }}')"></div>
-                    </div>
-                    <div>
-                        <p class="text-sm text-gray-500 dark:text-gray-400">Listing Agent</p>
-                        <p class="font-bold text-gray-900 dark:text-white" x-text="settings.agency_name || 'Loading...'"></p>
-                    </div>
-                </div>
-                <a :href="'tel:' + getCleanedPhoneNumber()" class="w-full flex items-center justify-center gap-2 h-14 rounded-xl border-2 border-primary bg-white hover:bg-gray-50 text-primary font-bold text-lg transition-transform active:scale-[0.98] shadow-sm">
-                    <span class="material-symbols-outlined text-[24px]">call</span>
-                    Call Now
-                </a>
-                <a :href="getWhatsAppMessage()" target="_blank" rel="noopener noreferrer" class="w-full flex items-center justify-center gap-2 h-14 rounded-xl bg-green-500 hover:bg-green-600 text-white font-bold text-lg transition-transform active:scale-[0.98] shadow-md shadow-green-500/20">
-                    <i class="fa-brands fa-whatsapp text-[24px]"></i>
-                    WhatsApp
-                </a>
-                <p class="text-center text-xs text-gray-400 pt-2">By contacting, you agree to our Terms of Service.</p>
-            </div>
-        </div>
-
-        <!-- Financing Card (Desktop only) -->
-        <div class="mt-6 p-6 rounded-2xl bg-blue-50 dark:bg-blue-900/20 border border-blue-100 dark:border-blue-800/30 hidden lg:block">
-            <div class="flex items-start gap-4">
-                <span class="material-symbols-outlined text-primary text-3xl">real_estate_agent</span>
-                <div>
-                    <h4 class="font-bold text-gray-900 dark:text-white mb-1">Need help financing?</h4>
-                    <p class="text-sm text-gray-600 dark:text-gray-300 mb-3">Get pre-approved for a mortgage today.</p>
-                    <a class="text-sm font-bold text-primary hover:underline" href="#">Check Rates →</a>
-                </div>
-            </div>
-        </div>
-
-        <!-- Mobile: Compact agent info (no price, no buttons) -->
-        <div class="lg:hidden mt-6 p-4 bg-gray-50 dark:bg-gray-800/50 rounded-xl">
-            <div class="flex items-center gap-3">
-                <div class="size-10 rounded-full bg-gray-200 dark:bg-gray-700 overflow-hidden">
-                    <div class="w-full h-full bg-cover bg-center" style="background-image: url('{{ asset('images/agent-default.jpg') }}')"></div>
-                </div>
-                <div>
-                    <p class="text-xs text-gray-500 dark:text-gray-400">Listed by</p>
-                    <p class="font-bold text-gray-900 dark:text-white" x-text="settings.agency_name || 'Loading...'"></p>
-                </div>
-            </div>
-        </div>
-    </div>
 </div>
 
 <!-- Mobile: Sticky Bottom Action Bar -->
