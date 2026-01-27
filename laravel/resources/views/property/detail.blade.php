@@ -9,8 +9,10 @@
 <link href="https://fonts.googleapis.com" rel="preconnect"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"/>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 <script id="tailwind-config">
         tailwind.config = {
             darkMode: "class",
@@ -40,7 +42,7 @@
         }
     </style>
 </head>
-<body class="bg-background-light dark:bg-background-dark text-[#121317] font-display min-h-screen flex flex-col" x-data="propertyData()" x-init="init()">
+<body class="bg-background-light dark:bg-background-dark text-[#121317] font-display min-h-screen flex flex-col" x-data="imageGallery()" x-init="init()">
 <main class="w-full bg-white min-h-screen flex flex-col relative pb-20 lg:pb-12 mx-auto">
 <x-public.site-header />
 
@@ -48,26 +50,92 @@
 <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 px-4 sm:px-6 lg:px-10 mt-6 items-start">
     <!-- Left Column (8 cols) - Main Content -->
     <div class="lg:col-span-8">
-        <!-- Hero Section / Image Slideshow -->
-        <div class="relative w-full h-[500px] bg-gray-100 dark:bg-gray-800 group rounded-2xl overflow-hidden shadow-lg">
-            <div class="w-full h-full bg-cover bg-center transition-transform duration-700 hover:scale-105" data-alt="{{ $property->name }} - Property image" style="background-image: url('{{ $property->image_url ?? asset('images/no-image.jpg') }}')"></div>
-            <div class="absolute top-6 left-6">
-                <span class="inline-flex items-center px-4 py-1.5 rounded-full text-sm font-bold bg-green-500 text-white shadow-md uppercase tracking-wider">
-                    {{ $property->status ?? 'For Sale' }}
-                </span>
-            </div>
-            <div class="absolute bottom-6 right-6">
-                <button class="inline-flex items-center px-4 py-2 rounded-full text-sm font-medium bg-black/60 hover:bg-black/70 backdrop-blur-md text-white transition-colors">
-                    <span class="material-symbols-outlined text-[16px] mr-2">photo_camera</span>
-                    Show all photos ({{ count($property->all_images ?? []) }})
+        <!-- Hero Section / Image Gallery -->
+        <div class="relative w-full rounded-2xl overflow-hidden shadow-lg group">
+            <!-- Main Swiper -->
+            <div class="swiper main-swiper h-[500px]">
+                <div class="swiper-wrapper">
+                    @if(count($property->all_images ?? []) > 0)
+                        @foreach($property->all_images as $index => $image)
+                        <div class="swiper-slide">
+                            <div class="w-full h-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center relative">
+                                <img src="{{ $image['url'] }}"
+                                     alt="{{ $property->name }} - Image {{ $index + 1 }}"
+                                     class="w-full h-full object-cover transition-opacity duration-300"
+                                     onload="this.style.opacity='1'"
+                                     style="opacity: 0;">
+                                <!-- Error fallback -->
+                                <div class="absolute inset-0 bg-gray-100 dark:bg-gray-800 flex items-center justify-center opacity-0 transition-opacity">
+                                    <span class="material-symbols-outlined text-gray-400 text-4xl">image</span>
+                                </div>
+                            </div>
+                        </div>
+                        @endforeach
+                    @else
+                        <div class="swiper-slide">
+                            <div class="w-full h-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center">
+                                <div class="text-center">
+                                    <span class="material-symbols-outlined text-gray-400 text-6xl mb-2 block">image</span>
+                                    <p class="text-gray-500 dark:text-gray-400">No images available</p>
+                                </div>
+                            </div>
+                        </div>
+                    @endif
+                </div>
+
+                <!-- Navigation buttons -->
+                <button class="swiper-button-prev-custom absolute left-4 top-1/2 -translate-y-1/2 size-12 bg-white/90 hover:bg-white rounded-full flex items-center justify-center text-gray-800 shadow-lg transition-all z-10"
+                        x-show="totalSlides > 1"
+                        x-transition>
+                    <span class="material-symbols-outlined text-xl">chevron_left</span>
                 </button>
+                <button class="swiper-button-next-custom absolute right-4 top-1/2 -translate-y-1/2 size-12 bg-white/90 hover:bg-white rounded-full flex items-center justify-center text-gray-800 shadow-lg transition-all z-10"
+                        x-show="totalSlides > 1"
+                        x-transition>
+                    <span class="material-symbols-outlined text-xl">chevron_right</span>
+                </button>
+
+                <!-- Status badge -->
+                <div class="absolute top-6 left-6 z-20">
+                    <span class="inline-flex items-center px-4 py-1.5 rounded-full text-sm font-bold bg-green-500 text-white shadow-md uppercase tracking-wider">
+                        {{ $property->status ?? 'For Sale' }}
+                    </span>
+                </div>
+
+                <!-- Image counter -->
+                <div class="absolute top-6 right-6 z-20" x-show="totalSlides > 1" x-transition>
+                    <div class="bg-black/60 backdrop-blur-md text-white px-3 py-1 rounded-full text-sm font-medium">
+                        <span x-text="currentSlide + 1"></span> / <span x-text="totalSlides"></span>
+                    </div>
+                </div>
+
+                <!-- Show all photos button -->
+                <div class="absolute bottom-6 right-6 z-20">
+                    <button @click="openGalleryModal()"
+                            class="inline-flex items-center px-4 py-2 rounded-full text-sm font-medium bg-black/60 hover:bg-black/70 backdrop-blur-md text-white transition-colors">
+                        <span class="material-symbols-outlined text-[16px] mr-2">photo_camera</span>
+                        Show all photos (<span x-text="totalSlides"></span>)
+                    </button>
+                </div>
             </div>
-            <button class="absolute left-4 top-1/2 -translate-y-1/2 size-12 bg-white/90 rounded-full flex items-center justify-center text-gray-800 opacity-0 group-hover:opacity-100 transition-all hover:bg-white shadow-lg">
-                <span class="material-symbols-outlined text-xl">chevron_left</span>
-            </button>
-            <button class="absolute right-4 top-1/2 -translate-y-1/2 size-12 bg-white/90 rounded-full flex items-center justify-center text-gray-800 opacity-0 group-hover:opacity-100 transition-all hover:bg-white shadow-lg">
-                <span class="material-symbols-outlined text-xl">chevron_right</span>
-            </button>
+
+            <!-- Thumbnail swiper (shown when multiple images) -->
+            <div class="mt-4 overflow-x-auto" x-show="totalSlides > 1" x-transition>
+                <div class="flex gap-3 pb-2 min-w-max">
+                    @if(count($property->all_images ?? []) > 0)
+                        @foreach($property->all_images as $index => $image)
+                        <div class="cursor-pointer flex-shrink-0" @click="goToSlide({{ $index }})">
+                            <div class="w-20 h-20 rounded-lg overflow-hidden border-2 transition-all"
+                                 :class="currentSlide === {{ $index }} ? 'border-primary shadow-lg' : 'border-gray-200 dark:border-gray-700'">
+                                <img src="{{ $image['url'] }}"
+                                     alt="Thumbnail {{ $index + 1 }}"
+                                     class="w-full h-full object-cover">
+                            </div>
+                        </div>
+                        @endforeach
+                    @endif
+                </div>
+            </div>
         </div>
 
         <!-- Property Details Card (White Background) -->
@@ -267,16 +335,155 @@
 
 </main>
 
+<!-- Fullscreen Image Gallery Overlay -->
+<div x-show="galleryModalOpen"
+     x-transition:enter="transition ease-out duration-300"
+     x-transition:enter-start="opacity-0"
+     x-transition:enter-end="opacity-100"
+     x-transition:leave="transition ease-in duration-200"
+     x-transition:leave-start="opacity-100"
+     x-transition:leave-end="opacity-0"
+     class="fixed inset-0 z-50 bg-black/90 backdrop-blur-sm"
+     @keydown.escape.window="closeGalleryModal()">
+
+    <!-- Close Button -->
+    <button @click="closeGalleryModal()"
+            class="absolute top-4 right-4 z-20 p-3 bg-black/50 hover:bg-black/70 rounded-full text-white transition-colors">
+        <span class="material-symbols-outlined text-2xl">close</span>
+    </button>
+
+    <!-- Main Image Swiper -->
+    <div class="swiper modal-swiper h-full">
+        <div class="swiper-wrapper">
+            @if(count($property->all_images ?? []) > 0)
+                @foreach($property->all_images as $index => $image)
+                <div class="swiper-slide">
+                    <div class="w-full h-full flex items-center justify-center p-4">
+                        <img src="{{ $image['url'] }}"
+                             alt="{{ $property->name }} - Image {{ $index + 1 }}"
+                             class="max-w-full max-h-full object-contain">
+                    </div>
+                </div>
+                @endforeach
+            @endif
+        </div>
+    </div>
+
+    <!-- Bottom Thumbnail Strip -->
+    <div class="absolute bottom-0 left-0 right-0 p-6 bg-black/50 backdrop-blur-md" x-show="totalSlides > 1">
+        <div class="flex justify-center">
+            <div class="flex gap-3 pb-2 overflow-x-auto max-w-full">
+                @if(count($property->all_images ?? []) > 0)
+                    @foreach($property->all_images as $index => $image)
+                    <div class="cursor-pointer flex-shrink-0" @click="goToModalSlide({{ $index }})">
+                        <div class="w-16 h-16 rounded-lg overflow-hidden border-2 transition-all"
+                             :class="modalCurrentSlide === {{ $index }} ? 'border-white shadow-lg' : 'border-white/50'">
+                            <img src="{{ $image['url'] }}"
+                                 alt="Thumbnail {{ $index + 1 }}"
+                                 class="w-full h-full object-cover">
+                        </div>
+                    </div>
+                    @endforeach
+                @endif
+            </div>
+        </div>
+    </div>
+</div>
+
 <script>
-function propertyData() {
+function imageGallery() {
     return {
+        // Main swiper instances
+        mainSwiper: null,
+        modalSwiper: null,
+
+        // State
+        currentSlide: 0,
+        modalCurrentSlide: 0,
+        totalSlides: {{ count($property->all_images ?? []) }},
+        galleryModalOpen: false,
+        showNavigation: false,
+
+        // Settings for WhatsApp (keeping existing functionality)
         settings: {},
         whatsappLink: '',
-        
-        async init() {
-            await this.loadSettings();
+
+        init() {
+            this.initSwipers();
+            this.loadSettings();
         },
-        
+
+        initSwipers() {
+            // Main swiper
+            this.mainSwiper = new Swiper('.main-swiper', {
+                slidesPerView: 1,
+                spaceBetween: 0,
+                loop: this.totalSlides > 1,
+                autoplay: false, // Disabled autoplay for manual control
+                navigation: {
+                    nextEl: '.swiper-button-next-custom',
+                    prevEl: '.swiper-button-prev-custom',
+                },
+                on: {
+                    slideChange: (swiper) => {
+                        this.currentSlide = swiper.realIndex;
+                    },
+                    init: () => {
+                        this.showNavigation = true;
+                    }
+                }
+            });
+        },
+
+        initModalSwipers() {
+            // Modal main swiper (fullscreen)
+            this.modalSwiper = new Swiper('.modal-swiper', {
+                slidesPerView: 1,
+                spaceBetween: 0,
+                loop: this.totalSlides > 1,
+                keyboard: {
+                    enabled: true,
+                    onlyInViewport: false,
+                },
+                on: {
+                    slideChange: (swiper) => {
+                        this.modalCurrentSlide = swiper.realIndex;
+                    }
+                }
+            });
+        },
+
+        goToSlide(index) {
+            if (this.mainSwiper) {
+                this.mainSwiper.slideTo(index);
+            }
+        },
+
+        goToModalSlide(index) {
+            if (this.modalSwiper) {
+                this.modalSwiper.slideTo(index);
+            }
+        },
+
+        openGalleryModal() {
+            this.galleryModalOpen = true;
+            this.modalCurrentSlide = this.currentSlide;
+            this.$nextTick(() => {
+                this.initModalSwipers();
+                this.modalSwiper.slideTo(this.currentSlide);
+            });
+        },
+
+        closeGalleryModal() {
+            this.galleryModalOpen = false;
+            // Destroy modal swiper to prevent conflicts
+            if (this.modalSwiper) {
+                this.modalSwiper.destroy();
+                this.modalSwiper = null;
+            }
+        },
+
+        // Existing WhatsApp functionality
         async loadSettings() {
             try {
                 const response = await fetch('/api/settings');
@@ -289,36 +496,36 @@ function propertyData() {
                 console.error('Failed to load settings:', error);
             }
         },
-        
+
         generateWhatsAppLink() {
             const phone = this.settings.w_no || '';
             const digits = phone.replace(/\D/g, '');
             this.whatsappLink = 'https://wa.me/' + digits;
         },
-        
+
         getWhatsAppMessage() {
             const domain = window.location.origin.replace(/^https?:\/\//, '');
             const message = `Hii i'm interested in\n*${this.getPropertyName()}*\nat ${this.getPropertyLocation()}\nUID: ${this.getPropertyId()}\nLink: ${domain}/property/${this.getPropertyId()}`;
             const encodedMessage = encodeURIComponent(message);
             return `${this.whatsappLink}?text=${encodedMessage}`;
         },
-        
+
         getCleanedPhoneNumber() {
             const phone = this.settings.w_no || '';
             // Keep only digits and + sign
             return phone.replace(/[^\d+]/g, '');
         },
-        
+
         getPropertyName() {
             return document.querySelector('h1')?.textContent?.trim() || 'Property';
         },
-        
+
         getPropertyLocation() {
-            return document.querySelector('[data-alt="Property image"]')?.getAttribute('data-alt') || 'Location not specified';
+            return '{{ $property->location ?? "Location not specified" }}';
         },
-        
+
         getPropertyId() {
-            return window.location.pathname.split('/').pop() || '1';
+            return '{{ $property->id ?? 1 }}';
         }
     }
 }
