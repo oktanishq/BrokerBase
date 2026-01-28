@@ -197,8 +197,12 @@
                             <span class="text-xs font-bold text-gray-900 dark:text-white lg:text-sm">{{ number_format($property->sqft ?? 0) }} Sqft</span>
                         </div>
                         <div class="flex flex-col items-center justify-center p-3 rounded-xl bg-background-light dark:bg-gray-800/50 lg:flex-row lg:px-5 lg:py-3">
-                            <span class="material-symbols-outlined text-gray-700 dark:text-gray-300 mb-1 lg:mb-0 lg:mr-3">apartment</span>
-                            <span class="text-xs font-bold text-gray-900 dark:text-white lg:text-sm">{{ $property->type_label ?? 'N/A' }} Flr</span>
+                            <span class="material-symbols-outlined text-gray-700 dark:text-gray-300 mb-1 lg:mb-0 lg:mr-3">stairs</span>
+                            <span class="text-xs font-bold text-gray-900 dark:text-white lg:text-sm">Flr</span>
+                        </div>
+                        <div class="flex flex-col items-center justify-center p-3 rounded-xl bg-background-light dark:bg-gray-800/50 lg:flex-row lg:px-5 lg:py-3">
+                            <span class="material-symbols-outlined text-gray-700 dark:text-gray-300 mb-1 lg:mb-0 lg:mr-3">{{ $property->type_label == 'Villa' ? 'villa' : ($property->type_label == 'Plot' ? 'landscape' : ($property->type_label == 'Commercial' ? 'business' : 'apartment')) }}</span>
+                            <span class="text-xs font-bold text-gray-900 dark:text-white lg:text-sm">{{ $property->type_label ?? 'N/A' }}</span>
                         </div>
                     </div>
                 </div>
