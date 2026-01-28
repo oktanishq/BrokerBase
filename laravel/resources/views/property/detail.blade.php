@@ -47,7 +47,8 @@
 <x-public.site-header />
 
 <!-- Main Content Grid -->
-<div class="grid grid-cols-1 lg:grid-cols-12 gap-8 px-4 sm:px-6 lg:px-10 mt-6">
+<div class="max-w-7xl mx-auto">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 px-4 sm:px-6 lg:px-10 mt-6">
     <!-- Left Column (4 cols) - Image Gallery -->
     <div class="lg:col-span-4 lg:sticky lg:top-24 lg:self-start h-fit z-10">
         <!-- Image Gallery with Fixed Aspect Ratio -->
