@@ -8,7 +8,7 @@ $similarProperties = \App\Models\Property::where('id', '!=', $currentPropertyId)
 @endphp
 
 @if($similarProperties->count() > 0)
-<div class="mt-12 mb-8">
+<div class="mt-12 mb-8 px-4 sm:px-6 lg:px-10">
     <h3 class="text-gray-900 dark:text-white text-2xl font-bold mb-6">You May Also Like</h3>
     <div class="overflow-x-auto no-scrollbar">
         <div class="flex gap-6 pb-4 min-w-max">
