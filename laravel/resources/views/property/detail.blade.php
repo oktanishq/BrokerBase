@@ -218,9 +218,6 @@
                     <p class="text-gray-600 dark:text-gray-300 text-base leading-relaxed">
                         {!! $property->description ?? 'No description available for this property.' !!}
                     </p>
-                    <a class="inline-flex items-center gap-1 mt-3 text-primary font-semibold text-sm hover:underline cursor-pointer">
-                        Read full description <span class="material-symbols-outlined text-[16px]">arrow_downward</span>
-                    </a>
                 </div>
             </div>
 
