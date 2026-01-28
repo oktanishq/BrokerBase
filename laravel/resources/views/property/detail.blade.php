@@ -228,10 +228,14 @@
             <div class="mb-10">
                 <h3 class="text-gray-900 dark:text-white font-bold text-xl mb-6">Amenities</h3>
                 <div class="grid grid-cols-2 md:grid-cols-3 gap-y-4 gap-x-6">
+                    @php
+                    $amenitiesData = \App\Data\AmenitiesData::getAll();
+                    $iconMap = array_column($amenitiesData, 'icon', 'name');
+                    @endphp
                     @if($property->amenities && count($property->amenities) > 0)
                         @foreach($property->amenities as $amenity)
                         <div class="flex items-center gap-3 text-gray-700 dark:text-gray-300">
-                            <span class="material-symbols-outlined text-green-500 text-[20px]">check_circle</span>
+                            <span class="material-symbols-outlined text-green-500 text-[20px]">{{ $iconMap[$amenity] ?? 'check_circle' }}</span>
                             <span class="text-base">{{ $amenity }}</span>
                         </div>
                         @endforeach
