@@ -146,12 +146,12 @@
 
         <!-- Action Buttons (Desktop) -->
         <div class="mt-6 hidden lg:flex gap-4 flex-shrink-0">
-            <a :href="'tel:' + getCleanedPhoneNumber()" class="flex-1 flex items-center justify-center gap-2 h-14 rounded-xl border-2 border-primary bg-white hover:bg-gray-50 text-primary font-bold text-lg transition-transform active:scale-[0.98] shadow-sm">
-                <span class="material-symbols-outlined text-[24px]">call</span>
+            <a :href="'tel:' + getCleanedPhoneNumber()" class="flex-1 flex items-center justify-center gap-2 h-12 rounded-lg border-2 border-primary bg-white hover:bg-gray-50 text-primary font-bold text-base transition-transform active:scale-[0.98] shadow-sm">
+                <span class="material-symbols-outlined text-[20px]">call</span>
                 Call Now
             </a>
-            <a :href="getWhatsAppMessage()" target="_blank" rel="noopener noreferrer" class="flex-1 flex items-center justify-center gap-2 h-14 rounded-xl bg-green-500 hover:bg-green-600 text-white font-bold text-lg transition-transform active:scale-[0.98] shadow-md shadow-green-500/20">
-                <i class="fa-brands fa-whatsapp text-[24px]"></i>
+            <a :href="getWhatsAppMessage()" target="_blank" rel="noopener noreferrer" class="flex-1 flex items-center justify-center gap-2 h-12 rounded-lg bg-green-500 hover:bg-green-600 text-white font-bold text-base transition-transform active:scale-[0.98] shadow-md shadow-green-500/20">
+                <i class="fa-brands fa-whatsapp text-[20px]"></i>
                 WhatsApp
             </a>
         </div>
@@ -163,7 +163,7 @@
     <div class="lg:col-span-8 space-y-6">
 
         <!-- Property Details Card -->
-        <div class="bg-white dark:bg-background-dark rounded-2xl p-6 lg:p-8 shadow-black border border-gray-100 dark:border-gray-800">
+        <div class="bg-white dark:bg-background-dark rounded-xl p-5 lg:p-6 shadow-sm border border-gray-100 dark:border-gray-800">
             <!-- Property Details Section -->
             <div>
                 <!-- Mobile: Title, Location, then Price -->
@@ -177,38 +177,38 @@
                 </div>
 
                 <!-- Desktop: Title, Location, then Price -->
-                <div class="hidden lg:block mb-8">
-                    <h1 class="text-gray-900 dark:text-white text-3xl lg:text-4xl font-extrabold leading-tight mb-3">{{ $property->name ?? 'Property' }}</h1>
-                    <div class="flex items-center gap-2 text-gray-500 dark:text-gray-400 mb-6">
-                        <span class="material-symbols-outlined text-primary text-[22px]">location_on</span>
-                        <p class="text-lg font-medium">{{ $property->location ?? 'Location not specified' }}</p>
+                <div class="hidden lg:block mb-6">
+                    <h1 class="text-gray-900 dark:text-white text-2xl lg:text-3xl font-extrabold leading-tight mb-2">{{ $property->name ?? 'Property' }}</h1>
+                    <div class="flex items-center gap-2 text-gray-500 dark:text-gray-400 mb-4">
+                        <span class="material-symbols-outlined text-primary text-[20px]">location_on</span>
+                        <p class="text-base font-medium">{{ $property->location ?? 'Location not specified' }}</p>
                     </div>
                     <div>
-                        <h1 class="text-gold text-4xl font-extrabold leading-tight tracking-tight">{{ $property->price > 0 ? '₹ ' . number_format($property->price) : '₹ TBD' }}</h1>
+                        <h1 class="text-gold text-3xl font-extrabold leading-tight tracking-tight">{{ $property->price > 0 ? '₹ ' . number_format($property->price) : '₹ TBD' }}</h1>
                     </div>
                 </div>
 
                 <!-- Property Specs Grid -->
-                <div class="mt-6">
+                <div class="mt-4">
                     <!-- Mobile: 4-col centered grid -->
-                    <div class="grid grid-cols-4 gap-2 lg:flex lg:flex-wrap lg:gap-4">
-                        <div class="flex flex-col items-center justify-center p-3 rounded-xl bg-background-light dark:bg-gray-800/50 lg:flex-row lg:px-5 lg:py-3">
+                    <div class="grid grid-cols-4 gap-2 lg:flex lg:flex-wrap lg:gap-3">
+                        <div class="flex flex-col items-center justify-center p-2 rounded-lg bg-background-light dark:bg-gray-800/50 lg:flex-row lg:px-4 lg:py-2">
                             <span class="material-symbols-outlined text-gray-700 dark:text-gray-300 mb-1 lg:mb-0 lg:mr-3">bed</span>
                             <span class="text-xs font-bold text-gray-900 dark:text-white lg:text-sm">{{ $property->beds ?? 0 }} Beds</span>
                         </div>
-                        <div class="flex flex-col items-center justify-center p-3 rounded-xl bg-background-light dark:bg-gray-800/50 lg:flex-row lg:px-5 lg:py-3">
-                            <span class="material-symbols-outlined text-gray-700 dark:text-gray-300 mb-1 lg:mb-0 lg:mr-3">bathtub</span>
+                        <div class="flex flex-col items-center justify-center p-2 rounded-lg bg-background-light dark:bg-gray-800/50 lg:flex-row lg:px-4 lg:py-2">
+                            <span class="material-symbols-outlined text-gray-700 dark:text-gray-300 mb-1 lg:mb-0 lg:mr-2">bathtub</span>
                             <span class="text-xs font-bold text-gray-900 dark:text-white lg:text-sm">{{ $property->baths ?? 0 }} Baths</span>
                         </div>
-                        <div class="flex flex-col items-center justify-center p-3 rounded-xl bg-background-light dark:bg-gray-800/50 lg:flex-row lg:px-5 lg:py-3">
-                            <span class="material-symbols-outlined text-gray-700 dark:text-gray-300 mb-1 lg:mb-0 lg:mr-3">square_foot</span>
+                        <div class="flex flex-col items-center justify-center p-2 rounded-lg bg-background-light dark:bg-gray-800/50 lg:flex-row lg:px-4 lg:py-2">
+                            <span class="material-symbols-outlined text-gray-700 dark:text-gray-300 mb-1 lg:mb-0 lg:mr-2">square_foot</span>
                             <span class="text-xs font-bold text-gray-900 dark:text-white lg:text-sm">{{ number_format($property->sqft ?? 0) }} Sqft</span>
                         </div>
-                        <div class="flex flex-col items-center justify-center p-3 rounded-xl bg-background-light dark:bg-gray-800/50 lg:flex-row lg:px-5 lg:py-3">
-                            <span class="material-symbols-outlined text-gray-700 dark:text-gray-300 mb-1 lg:mb-0 lg:mr-3">stairs</span>
+                        <div class="flex flex-col items-center justify-center p-2 rounded-lg bg-background-light dark:bg-gray-800/50 lg:flex-row lg:px-4 lg:py-2">
+                            <span class="material-symbols-outlined text-gray-700 dark:text-gray-300 mb-1 lg:mb-0 lg:mr-2">stairs</span>
                             <span class="text-xs font-bold text-gray-900 dark:text-white lg:text-sm">Flr</span>
                         </div>
-                        <div class="flex flex-col items-center justify-center p-3 rounded-xl bg-background-light dark:bg-gray-800/50 lg:flex-row lg:px-5 lg:py-3">
+                        <div class="flex flex-col items-center justify-center p-2 rounded-lg bg-background-light dark:bg-gray-800/50 lg:flex-row lg:px-4 lg:py-2">
                             <span class="material-symbols-outlined text-gray-700 dark:text-gray-300 mb-1 lg:mb-0 lg:mr-3">{{ $property->type_label == 'Villa' ? 'villa' : ($property->type_label == 'Plot' ? 'landscape' : ($property->type_label == 'Commercial' ? 'business' : 'apartment')) }}</span>
                             <span class="text-xs font-bold text-gray-900 dark:text-white lg:text-sm">{{ $property->type_label ?? 'N/A' }}</span>
                         </div>
@@ -217,11 +217,11 @@
             </div>
 
             <!-- Divider -->
-            <div class="w-full h-px bg-gray-100 dark:bg-gray-800 my-8"></div>
+            <div class="w-full h-px bg-gray-100 dark:bg-gray-800 my-6"></div>
 
             <!-- About Property Section -->
-            <div class="mb-10">
-                <h3 class="text-gray-900 dark:text-white font-bold text-xl mb-4">About</h3>
+            <div class="mb-8">
+                <h3 class="text-gray-900 dark:text-white font-bold text-lg mb-3">About</h3>
                 <div class="prose dark:prose-invert max-w-none">
                     <p class="text-gray-600 dark:text-gray-300 text-base leading-relaxed">
                         {!! $property->description ?? 'No description available for this property.' !!}
@@ -230,8 +230,8 @@
             </div>
 
             <!-- Amenities Section -->
-            <div class="mb-10">
-                <h3 class="text-gray-900 dark:text-white font-bold text-xl mb-6">Amenities</h3>
+            <div class="mb-8">
+                <h3 class="text-gray-900 dark:text-white font-bold text-lg mb-4">Amenities</h3>
                 <div class="grid grid-cols-2 md:grid-cols-3 gap-y-4 gap-x-6">
                     @php
                     $amenitiesData = \App\Data\AmenitiesData::getAll();
@@ -255,9 +255,9 @@
 
             <!-- Location Section -->
             <div>
-                <h3 class="text-gray-900 dark:text-white font-bold text-xl mb-4">Location</h3>
+                <h3 class="text-gray-900 dark:text-white font-bold text-lg mb-4">Location</h3>
                 @if($property->maps_embed_url)
-                    <div class="rounded-2xl overflow-hidden bg-gray-200 dark:bg-gray-800 mb-4 relative group h-[300px] border border-gray-200 dark:border-gray-700">
+                    <div class="rounded-xl overflow-hidden bg-gray-200 dark:bg-gray-800 mb-4 relative group h-[250px] border border-gray-200 dark:border-gray-700">
                         <iframe 
                             src="{{ $property->maps_embed_url }}" 
                             class="w-full h-full border-0"
@@ -274,7 +274,7 @@
                         </div>
                     </div>
                 @else
-                    <div class="rounded-2xl overflow-hidden bg-gray-200 dark:bg-gray-800 mb-4 relative group h-[300px] border border-gray-200 dark:border-gray-700 flex items-center justify-center">
+                    <div class="rounded-xl overflow-hidden bg-gray-200 dark:bg-gray-800 mb-4 relative group h-[250px] border border-gray-200 dark:border-gray-700 flex items-center justify-center">
                         <div class="text-center">
                             <span class="material-symbols-outlined text-gray-400 text-6xl mb-2 block">location_on</span>
                             <p class="text-gray-500 dark:text-gray-400 font-medium">{{ $property->location ?? 'Location not specified' }}</p>
