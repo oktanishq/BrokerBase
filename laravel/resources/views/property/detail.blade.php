@@ -49,10 +49,15 @@
 <!-- Main Content Grid -->
 <div class="max-w-7xl mx-auto">
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 px-4 sm:px-6 lg:px-10 mt-6">
+    
     <!-- Left Column (4 cols) - Image Gallery -->
-    <div class="lg:col-span-4 lg:sticky lg:top-24 lg:self-start h-fit z-10">
+    <div class="lg:col-span-4 lg:sticky lg:top-[6rem] lg:z-30 h-fit">
+        
+        <!-- Wrapper: Contains all three components with height limits -->
+        <div class="flex flex-col" style="max-height: calc(100vh - 8rem);">
+        
         <!-- Image Gallery with Fixed Aspect Ratio -->
-        <div class="relative w-full rounded-2xl overflow-hidden shadow-lg group" style="aspect-ratio: 4/5; max-height: calc(100vh - 22rem);">
+        <div class="relative w-full rounded-2xl overflow-hidden shadow-lg group flex-shrink-0" style="aspect-ratio: 4/5;">
             <!-- Main Swiper -->
             <div class="swiper main-swiper absolute inset-0">
                 <div class="swiper-wrapper h-full">
@@ -140,7 +145,7 @@
         </div>
 
         <!-- Action Buttons (Desktop) -->
-        <div class="mt-6 hidden lg:flex gap-4">
+        <div class="mt-6 hidden lg:flex gap-4 flex-shrink-0">
             <a :href="'tel:' + getCleanedPhoneNumber()" class="flex-1 flex items-center justify-center gap-2 h-14 rounded-xl border-2 border-primary bg-white hover:bg-gray-50 text-primary font-bold text-lg transition-transform active:scale-[0.98] shadow-sm">
                 <span class="material-symbols-outlined text-[24px]">call</span>
                 Call Now
@@ -150,6 +155,8 @@
                 WhatsApp
             </a>
         </div>
+        
+        </div> <!-- End wrapper -->
     </div>
 
     <!-- Right Column (8 cols) - Property Details & Actions -->
