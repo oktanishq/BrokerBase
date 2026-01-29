@@ -48,13 +48,13 @@
 
 <!-- Main Content Grid -->
 <div class="max-w-7xl mx-auto">
-    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 px-4 sm:px-6 lg:px-10 mt-6">
+    <div class="grid grid-cols-1 sm:grid-cols-12 gap-8 px-4 sm:px-6 lg:px-10 mt-6">
     
     <!-- Left Column (4 cols) - Image Gallery -->
-    <div class="lg:col-span-4 lg:sticky lg:top-[6rem] lg:z-30 h-fit">
+    <div class="sm:col-span-4 sm:sticky sm:top-[6rem] sm:z-30 h-fit">
         
         <!-- Wrapper: Contains all three components with height limits -->
-        <div class="flex flex-col lg:max-h-[calc(100vh-8rem)]">
+        <div class="flex flex-col sm:max-h-[calc(100vh-8rem)]">
         
         <!-- Image Gallery with Fixed Aspect Ratio -->
         <div class="relative w-full rounded-2xl overflow-hidden shadow-lg group flex-shrink-0" style="aspect-ratio: 4/5;">
@@ -145,7 +145,7 @@
         </div>
 
         <!-- Action Buttons (Desktop) -->
-        <div class="mt-6 hidden lg:flex gap-4 flex-shrink-0">
+        <div class="mt-6 hidden sm:flex gap-4 flex-shrink-0">
             <a :href="'tel:' + getCleanedPhoneNumber()" class="flex-1 flex items-center justify-center gap-2 h-12 rounded-lg border-2 border-primary bg-white hover:bg-gray-50 text-primary font-bold text-base transition-transform active:scale-[0.98] shadow-sm">
                 <span class="material-symbols-outlined text-[20px]">call</span>
                 Call Now
@@ -160,14 +160,14 @@
     </div>
 
     <!-- Right Column (8 cols) - Property Details & Actions -->
-    <div class="lg:col-span-8 space-y-6">
+    <div class="sm:col-span-8 space-y-6">
 
         <!-- Property Details Card -->
         <div class="bg-white dark:bg-background-dark rounded-xl p-5 lg:p-6 shadow-sm border border-gray-100 dark:border-gray-800">
             <!-- Property Details Section -->
             <div>
                 <!-- Mobile: Title, Location, then Price -->
-                <div class="lg:hidden">
+                <div class="sm:hidden">
                     <h2 class="text-gray-900 dark:text-white text-2xl font-bold leading-snug mb-3">{{ $property->name ?? 'Property' }}</h2>
                     <div class="flex items-start gap-2 text-gray-500 dark:text-gray-400 mb-3">
                         <span class="material-symbols-outlined text-primary mt-0.5 text-[20px]">location_on</span>
@@ -177,7 +177,7 @@
                 </div>
 
                 <!-- Desktop: Title, Location, then Price -->
-                <div class="hidden lg:block mb-6">
+                <div class="hidden sm:block mb-6">
                     <h1 class="text-gray-900 dark:text-white text-2xl lg:text-3xl font-extrabold leading-tight mb-2">{{ $property->name ?? 'Property' }}</h1>
                     <div class="flex items-center gap-2 text-gray-500 dark:text-gray-400 mb-4">
                         <span class="material-symbols-outlined text-primary text-[20px]">location_on</span>
@@ -191,26 +191,26 @@
                 <!-- Property Specs Grid -->
                 <div class="mt-4">
                     <!-- Mobile: 4-col centered grid -->
-                    <div class="grid grid-cols-4 gap-2 lg:flex lg:flex-wrap lg:gap-3">
-                        <div class="flex flex-col items-center justify-center p-2 rounded-lg bg-background-light dark:bg-gray-800/50 lg:flex-row lg:px-4 lg:py-2">
-                            <span class="material-symbols-outlined text-gray-700 dark:text-gray-300 mb-1 lg:mb-0 lg:mr-3">bed</span>
-                            <span class="text-xs font-bold text-gray-900 dark:text-white lg:text-sm">{{ $property->beds ?? 0 }} Beds</span>
+                    <div class="grid grid-cols-4 gap-2 sm:flex sm:flex-wrap sm:gap-3">
+                        <div class="flex flex-col items-center justify-center p-2 rounded-lg bg-background-light dark:bg-gray-800/50 sm:flex-row sm:px-4 sm:py-2">
+                            <span class="material-symbols-outlined text-gray-700 dark:text-gray-300 mb-1 sm:mb-0 sm:mr-3">bed</span>
+                            <span class="text-xs font-bold text-gray-900 dark:text-white sm:text-sm">{{ $property->beds ?? 0 }} Beds</span>
                         </div>
-                        <div class="flex flex-col items-center justify-center p-2 rounded-lg bg-background-light dark:bg-gray-800/50 lg:flex-row lg:px-4 lg:py-2">
-                            <span class="material-symbols-outlined text-gray-700 dark:text-gray-300 mb-1 lg:mb-0 lg:mr-2">bathtub</span>
-                            <span class="text-xs font-bold text-gray-900 dark:text-white lg:text-sm">{{ $property->baths ?? 0 }} Baths</span>
+                        <div class="flex flex-col items-center justify-center p-2 rounded-lg bg-background-light dark:bg-gray-800/50 sm:flex-row sm:px-4 sm:py-2">
+                            <span class="material-symbols-outlined text-gray-700 dark:text-gray-300 mb-1 sm:mb-0 sm:mr-2">bathtub</span>
+                            <span class="text-xs font-bold text-gray-900 dark:text-white sm:text-sm">{{ $property->baths ?? 0 }} Baths</span>
                         </div>
-                        <div class="flex flex-col items-center justify-center p-2 rounded-lg bg-background-light dark:bg-gray-800/50 lg:flex-row lg:px-4 lg:py-2">
-                            <span class="material-symbols-outlined text-gray-700 dark:text-gray-300 mb-1 lg:mb-0 lg:mr-2">square_foot</span>
-                            <span class="text-xs font-bold text-gray-900 dark:text-white lg:text-sm">{{ number_format($property->sqft ?? 0) }} Sqft</span>
+                        <div class="flex flex-col items-center justify-center p-2 rounded-lg bg-background-light dark:bg-gray-800/50 sm:flex-row sm:px-4 sm:py-2">
+                            <span class="material-symbols-outlined text-gray-700 dark:text-gray-300 mb-1 sm:mb-0 sm:mr-2">square_foot</span>
+                            <span class="text-xs font-bold text-gray-900 dark:text-white sm:text-sm">{{ number_format($property->sqft ?? 0) }} Sqft</span>
                         </div>
-                        <div class="flex flex-col items-center justify-center p-2 rounded-lg bg-background-light dark:bg-gray-800/50 lg:flex-row lg:px-4 lg:py-2">
-                            <span class="material-symbols-outlined text-gray-700 dark:text-gray-300 mb-1 lg:mb-0 lg:mr-2">stairs</span>
-                            <span class="text-xs font-bold text-gray-900 dark:text-white lg:text-sm">Flr</span>
+                        <div class="flex flex-col items-center justify-center p-2 rounded-lg bg-background-light dark:bg-gray-800/50 sm:flex-row sm:px-4 sm:py-2">
+                            <span class="material-symbols-outlined text-gray-700 dark:text-gray-300 mb-1 sm:mb-0 sm:mr-2">stairs</span>
+                            <span class="text-xs font-bold text-gray-900 dark:text-white sm:text-sm">Flr</span>
                         </div>
-                        <div class="flex flex-col items-center justify-center p-2 rounded-lg bg-background-light dark:bg-gray-800/50 lg:flex-row lg:px-4 lg:py-2">
-                            <span class="material-symbols-outlined text-gray-700 dark:text-gray-300 mb-1 lg:mb-0 lg:mr-3">{{ $property->type_label == 'Villa' ? 'villa' : ($property->type_label == 'Plot' ? 'landscape' : ($property->type_label == 'Commercial' ? 'business' : 'apartment')) }}</span>
-                            <span class="text-xs font-bold text-gray-900 dark:text-white lg:text-sm">{{ $property->type_label ?? 'N/A' }}</span>
+                        <div class="flex flex-col items-center justify-center p-2 rounded-lg bg-background-light dark:bg-gray-800/50 sm:flex-row sm:px-4 sm:py-2">
+                            <span class="material-symbols-outlined text-gray-700 dark:text-gray-300 mb-1 sm:mb-0 sm:mr-3">{{ $property->type_label == 'Villa' ? 'villa' : ($property->type_label == 'Plot' ? 'landscape' : ($property->type_label == 'Commercial' ? 'business' : 'apartment')) }}</span>
+                            <span class="text-xs font-bold text-gray-900 dark:text-white sm:text-sm">{{ $property->type_label ?? 'N/A' }}</span>
                         </div>
                     </div>
                 </div>
@@ -306,7 +306,7 @@
 </div>
 
 <!-- Mobile: Sticky Bottom Action Bar -->
-<div class="fixed bottom-0 left-0 right-0 z-50 lg:hidden bg-white dark:bg-background-dark border-t border-gray-100 dark:border-gray-800 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.1)] flex items-center px-4 gap-3 h-16">
+<div class="fixed bottom-0 left-0 right-0 z-50 sm:hidden bg-white dark:bg-background-dark border-t border-gray-100 dark:border-gray-800 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.1)] flex items-center px-4 gap-3 h-16">
     <a :href="'tel:' + getCleanedPhoneNumber()" class="flex-1 flex items-center justify-center gap-2 h-11 rounded-full border border-primary bg-white hover:bg-gray-50 text-primary font-bold text-base transition-transform active:scale-95 shadow-sm">
         <span class="material-symbols-outlined text-[20px]">call</span>
         Call Now
