@@ -8,10 +8,10 @@ $similarProperties = \App\Models\Property::where('id', '!=', $currentPropertyId)
 @endphp
 
 @if($similarProperties->count() > 0)
-<div class="mt-12 mb-8 px-4 sm:px-6 lg:px-10">
+<div class="mt-12 mb-8 w-full max-w-full">
     <h3 class="text-gray-900 dark:text-white text-2xl font-bold mb-6">You May Also Like</h3>
-    <div class="overflow-x-auto no-scrollbar">
-        <div class="flex gap-6 pb-4 min-w-max">
+    <div class="w-full overflow-x-auto no-scrollbar touch-pan-x">
+        <div class="flex gap-6 pb-4">
             @foreach($similarProperties as $property)
             <a href="{{ route('property.show', $property->id) }}" class="group block flex-shrink-0 w-72">
                 <div class="bg-white dark:bg-background-dark rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-100 dark:border-gray-800">

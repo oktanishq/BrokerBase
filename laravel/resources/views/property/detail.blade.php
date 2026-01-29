@@ -295,10 +295,15 @@
 
     </div>
 
-</div>
+    </div> <!-- End Grid Container -->
 
-<!-- You May Also Like Section 
-<x-public.detail.alsolike :current-property-id="$property->id" /> -->
+    <!-- You May Also Like Section (Flipkart Style - Below Grid) -->
+    <!-- Wrapped in padding to match the grid above -->
+    <div class="px-4 sm:px-6 lg:px-10 w-full max-w-[100vw] overflow-hidden">
+        <x-public.detail.alsolike :current-property-id="$property->id" />
+    </div>
+
+</div>
 
 <!-- Mobile: Sticky Bottom Action Bar -->
 <div class="fixed bottom-0 left-0 right-0 z-50 lg:hidden bg-white dark:bg-background-dark border-t border-gray-100 dark:border-gray-800 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.1)] flex items-center px-4 gap-3 h-16">
