@@ -54,7 +54,7 @@
     <div class="lg:col-span-4 lg:sticky lg:top-[6rem] lg:z-30 h-fit">
         
         <!-- Wrapper: Contains all three components with height limits -->
-        <div class="flex flex-col" style="max-height: calc(100vh - 8rem);">
+        <div class="flex flex-col lg:max-h-[calc(100vh-8rem)]">
         
         <!-- Image Gallery with Fixed Aspect Ratio -->
         <div class="relative w-full rounded-2xl overflow-hidden shadow-lg group flex-shrink-0" style="aspect-ratio: 4/5;">
