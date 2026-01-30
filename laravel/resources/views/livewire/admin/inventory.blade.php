@@ -19,6 +19,19 @@
             'size_desc': 'square_foot'
         };
         return icons[sortValue] || 'sort';
+    },
+    getSortLabel() {
+        const labels = {
+            'newest': 'Newest',
+            'oldest': 'Oldest',
+            'price_asc': 'Price: Low to High',
+            'price_desc': 'Price: High to Low',
+            'title_asc': 'A to Z',
+            'title_desc': 'Z to A',
+            'size_asc': 'Small to Large',
+            'size_desc': 'Large to Small'
+        };
+        return labels[$wire.sortBy] || 'Newest';
     }
 }" @property-updated.window="$wire.call('$refresh')">
     <!-- Edit Property Modal -->
@@ -191,11 +204,11 @@
                     <!-- Desktop Full Version -->
                     <button @click="sortOpen = !sortOpen; statusOpen = false; typeOpen = false"
                             class="hidden md:flex items-center justify-between w-full sm:w-44 px-4 py-2.5 rounded-xl border-2 border-slate-200 bg-gradient-to-r from-white to-slate-50 hover:from-slate-50 hover:to-slate-100 hover:border-slate-300 transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-blue-500/20 text-slate-700 font-semibold shadow-sm hover:shadow-md">
-                        <span class="flex items-center space-x-2 text-sm">
-                            <span class="text-slate-500">Sort:</span>
-                            <span x-text="$wire.sortOptions[$wire.sortBy] || 'Newest'"></span>
+                        <span class="flex items-center space-x-2 text-sm truncate">
+                            <span class="text-slate-500 whitespace-nowrap">Sort:</span>
+                            <span class="truncate" x-text="getSortLabel()"></span>
                         </span>
-                        <span class="material-symbols-outlined text-slate-400 text-lg transition-transform duration-300" :class="sortOpen ? 'rotate-180' : ''">expand_more</span>
+                        <span class="material-symbols-outlined text-slate-400 text-lg transition-transform duration-300 flex-shrink-0 ml-2" :class="sortOpen ? 'rotate-180' : ''">expand_more</span>
                     </button>
 
                     <div x-show="sortOpen" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 scale-95 translate-y-1" x-transition:enter-end="opacity-100 scale-100 translate-y-0" x-transition:leave="transition ease-in duration-200" x-transition:leave-start="opacity-100 scale-100 translate-y-0" x-transition:leave-end="opacity-0 scale-95 translate-y-1" class="absolute top-full right-0 mt-2 w-56 bg-white border-2 border-slate-200 rounded-xl shadow-xl shadow-slate-900/10 overflow-hidden z-20">
