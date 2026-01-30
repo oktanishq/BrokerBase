@@ -17,6 +17,7 @@ class Inventory extends Component
     public $typeFilter = 'all';
     public $viewMode = 'list'; // 'list' or 'grid'
     public $perPage = 10;
+    public $editingPropertyId = null;
 
     protected $listeners = [
         'property-updated' => 'handlePropertyUpdate',
@@ -27,7 +28,11 @@ class Inventory extends Component
 
     public function mount()
     {
-        // Initialize if needed
+        // Check if there's a property ID in the query string to edit
+        if (request()->has('edit') && request('edit')) {
+            $this->editingPropertyId = request('edit');
+            $this->openEditModal(request('edit'));
+        }
     }
 
     public function updatingSearchTerm()
@@ -74,6 +79,15 @@ class Inventory extends Component
         // Refresh the properties list
         $this->resetPage();
         session()->flash('success', 'Property deleted successfully!');
+    }
+
+    public function openEditModal($propertyId)
+    {
+        $property = Property::find($propertyId);
+        if ($property) {
+            // Use edit_data which includes the image field
+            $this->dispatch('open-edit-modal', $property->edit_data)->to(EditPropertyModal::class);
+        }
     }
 
     public function forwardToEditModal($propertyData)

@@ -19,14 +19,18 @@
 <div class="flex items-center justify-between">
 <div>
 <p class="text-sm text-gray-600">Total Properties</p>
-<p class="text-2xl font-bold text-gray-900">24</p>
+<p class="text-2xl font-bold text-gray-900">{{ $totalProperties }}</p>
 </div>
 <div class="h-12 w-12 bg-blue-100 rounded-full flex items-center justify-center">
 <span class="material-symbols-outlined text-blue-600">warehouse</span>
 </div>
 </div>
 <div class="mt-4 flex items-center text-sm">
-<span class="text-green-600 font-medium">+12%</span>
+@if($totalGrowthPercent >= 0)
+<span class="text-green-600 font-medium">+{{ $totalGrowthPercent }}%</span>
+@else
+<span class="text-red-600 font-medium">{{ $totalGrowthPercent }}%</span>
+@endif
 <span class="text-gray-500 ml-1">from last month</span>
 </div>
 </div>
@@ -35,14 +39,18 @@
 <div class="flex items-center justify-between">
 <div>
 <p class="text-sm text-gray-600">Active Listings</p>
-<p class="text-2xl font-bold text-gray-900">18</p>
+<p class="text-2xl font-bold text-gray-900">{{ $activeListings }}</p>
 </div>
 <div class="h-12 w-12 bg-green-100 rounded-full flex items-center justify-center">
 <span class="material-symbols-outlined text-green-600">visibility</span>
 </div>
 </div>
 <div class="mt-4 flex items-center text-sm">
-<span class="text-green-600 font-medium">+8%</span>
+@if($activeGrowthPercent >= 0)
+<span class="text-green-600 font-medium">+{{ $activeGrowthPercent }}%</span>
+@else
+<span class="text-red-600 font-medium">{{ $activeGrowthPercent }}%</span>
+@endif
 <span class="text-gray-500 ml-1">from last month</span>
 </div>
 </div>
@@ -50,15 +58,19 @@
 <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
 <div class="flex items-center justify-between">
 <div>
-<p class="text-sm text-gray-600">Properties Sold</p>
-<p class="text-2xl font-bold text-gray-900">6</p>
+<p class="text-sm text-gray-600">Marked as Sold</p>
+<p class="text-2xl font-bold text-gray-900">{{ $propertiesSold }}</p>
 </div>
 <div class="h-12 w-12 bg-amber-100 rounded-full flex items-center justify-center">
 <span class="material-symbols-outlined text-amber-600">check_circle</span>
 </div>
 </div>
 <div class="mt-4 flex items-center text-sm">
-<span class="text-green-600 font-medium">+3</span>
+@if($soldGrowthCount >= 0)
+<span class="text-green-600 font-medium">+{{ $soldGrowthCount }}</span>
+@else
+<span class="text-red-600 font-medium">{{ $soldGrowthCount }}</span>
+@endif
 <span class="text-gray-500 ml-1">this month</span>
 </div>
 </div>
@@ -67,113 +79,85 @@
 <!-- Recent Listings Table -->
 <div class="flex flex-col bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden -mt-4">
 <div class="p-6 border-b border-gray-100 flex justify-between items-center">
-<h3 class="text-lg font-bold text-slate-900">Recent Listings</h3>
-<a class="text-sm text-royal-blue font-medium hover:underline" href="#">View All</a>
+<h3 class="text-lg font-bold text-slate-900">Recently Updated</h3>
+<a class="text-sm text-royal-blue font-medium hover:underline" href="{{ route('admin.inventory') }}">View All</a>
 </div>
 <div class="overflow-x-auto">
-<table class="w-full min-w-[700px]">
+<table class="w-full">
 <thead class="bg-gray-50">
 <tr>
 <th class="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Property</th>
-<th class="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Price</th>
-<th class="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Status</th>
+<th class="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider hidden sm:table-cell">Price</th>
+<th class="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider hidden sm:table-cell">Status</th>
 <th class="px-6 py-4 text-right text-xs font-semibold text-gray-500 uppercase tracking-wider">Actions</th>
 </tr>
 </thead>
 <tbody class="divide-y divide-gray-100">
-<!-- Row 1 -->
+@forelse($recentlyUpdated as $property)
 <tr class="hover:bg-gray-50/50 transition-colors">
 <td class="px-6 py-4 whitespace-nowrap">
 <div class="flex items-center gap-4">
-<div class="w-16 h-12 rounded-lg bg-cover bg-center shrink-0" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCToc03ewI-R-MLH1VeaILvpzcsPrzcNl35tCllapTZwSgSR39FEB-O03otqjWOPaQcd-FItQ4ORhThF5Ph3HmSpDPRgp1FgiERkSyWa_HVyO0UAkX8ApEuSzr8Z15ELVzKGK2pqUeHYTW4Ar_ZjAVyN-hy7GRG9SX86kKSlbXaRaHpijSfGxAa_XmtxQxozG8aaQRu7OlewhaXfNoZLh9hcU0aPLn-Us23Btb3P7qcH_zGOl8RrHEakkzwn2n7KGBDwjm-oBB_f70f');"></div>
+@php
+$imageUrl = $property->primary_image_url ?? 'https://via.placeholder.com/64x48/f3f4f6/9ca3af?text=No+Image';
+@endphp
+<div class="w-16 h-12 rounded-sm bg-cover bg-center shrink-0" style="background-image: url('{{ $imageUrl }}');"></div>
 <div class="flex flex-col">
-<span class="text-sm font-bold text-slate-900">Seaside Villa</span>
-<span class="text-xs text-gray-500">12 Ocean Dr, Malibu</span>
+<span class="text-sm font-bold text-slate-900">{{ $property->title }}</span>
+<span class="text-xs text-gray-500">{{ $property->address ?? 'No address' }}</span>
 </div>
 </div>
 </td>
-<td class="px-6 py-4 whitespace-nowrap">
-<span class="text-sm font-bold text-royal-blue">$2,500,000</span>
+<td class="px-6 py-4 whitespace-nowrap hidden sm:table-cell">
+<span class="text-sm font-bold text-royal-blue">₹{{ number_format($property->price) }}</span>
 </td>
-<td class="px-6 py-4 whitespace-nowrap">
-<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-800">
-<span class="size-1.5 rounded-full bg-emerald-600"></span>
-Available
+<td class="px-6 py-4 whitespace-nowrap hidden sm:table-cell">
+@php
+$statusClass = match($property->status) {
+    'available' => 'bg-emerald-100 text-emerald-800',
+    'sold' => 'bg-rose-100 text-rose-800',
+    'booked' => 'bg-amber-100 text-amber-800',
+    'draft' => 'bg-gray-100 text-gray-600',
+    default => 'bg-gray-100 text-gray-600',
+};
+$statusDotClass = match($property->status) {
+    'available' => 'bg-emerald-600',
+    'sold' => 'bg-rose-600',
+    'booked' => 'bg-amber-600',
+    'draft' => 'bg-gray-500',
+    default => 'bg-gray-500',
+};
+$statusLabel = match($property->status) {
+    'available' => 'Available',
+    'sold' => 'Sold',
+    'booked' => 'Booked',
+    'draft' => 'Draft',
+    default => ucfirst($property->status),
+};
+@endphp
+<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold {{ $statusClass }}">
+<span class="size-1.5 rounded-full {{ $statusDotClass }}"></span>
+{{ $statusLabel }}
 </span>
 </td>
 <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
 <div class="flex items-center justify-end gap-2">
-<button class="p-2 text-gray-400 hover:text-royal-blue hover:bg-blue-50 rounded-full transition-colors">
+<a href="{{ route('admin.inventory', ['edit' => $property->id]) }}" class="p-2 text-gray-400 hover:text-royal-blue hover:bg-blue-50 rounded-full transition-colors">
 <span class="material-symbols-outlined text-[20px]">edit</span>
-</button>
-<button class="p-2 text-gray-400 hover:text-green-600 hover:bg-green-50 rounded-full transition-colors">
+</a>
+<button @click="navigator.clipboard.writeText('{{ url('/property/' . $property->id) }}'); $event.target.closest('button').querySelector('.copy-success').style.display = 'inline'; setTimeout(() => { $event.target.closest('button').querySelector('.copy-success').style.display = 'none'; }, 2000)" class="p-2 text-gray-400 hover:text-green-600 hover:bg-green-50 rounded-full transition-colors relative">
 <span class="material-symbols-outlined text-[20px]">share</span>
+<span class="copy-success hidden absolute -top-1 -right-1 bg-green-500 text-white text-xs px-1 rounded">✓</span>
 </button>
 </div>
 </td>
 </tr>
-<!-- Row 2 -->
-<tr class="hover:bg-gray-50/50 transition-colors">
-<td class="px-6 py-4 whitespace-nowrap">
-<div class="flex items-center gap-4">
-<div class="w-16 h-12 rounded-lg bg-cover bg-center shrink-0" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDdhjV4Kk0pc9BPnmOBfpnmUfWfZXgnJiKxKd0fBo3FkvF2Dw1_m-VUSfwR9RXPR9Mh_K6UP3m5MdbMtnevhMoJrYW9VcXQ0KkJcc3q3jt0T-8ADSIPTYb-T_SxL4I8HInHQ0ngU4p9h80Do3Ac7mXpX37jGdGqg4KkyMS2oZunrbaz8rrealQBNZd2sfkiIoKIxqvnAwuxwKG3267dMdaaTT_4aAlFfUdds9vqolu76zP8xpGfu04YE81DWahgI_ejytJbVjAk6OzQ');"></div>
-<div class="flex flex-col">
-<span class="text-sm font-bold text-slate-900">Downtown Loft</span>
-<span class="text-xs text-gray-500">45 Main St, Seattle</span>
-</div>
-</div>
-</td>
-<td class="px-6 py-4 whitespace-nowrap">
-<span class="text-sm font-bold text-royal-blue">$850,000</span>
-</td>
-<td class="px-6 py-4 whitespace-nowrap">
-<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-rose-100 text-rose-800">
-<span class="size-1.5 rounded-full bg-rose-600"></span>
-Sold
-</span>
-</td>
-<td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-<div class="flex items-center justify-end gap-2">
-<button class="p-2 text-gray-400 hover:text-royal-blue hover:bg-blue-50 rounded-full transition-colors">
-<span class="material-symbols-outlined text-[20px]">edit</span>
-</button>
-<button class="p-2 text-gray-400 hover:text-green-600 hover:bg-green-50 rounded-full transition-colors">
-<span class="material-symbols-outlined text-[20px]">share</span>
-</button>
-</div>
+@empty
+<tr>
+<td colspan="4" class="px-6 py-8 text-center text-gray-500">
+No properties found. Add your first property to get started.
 </td>
 </tr>
-<!-- Row 3 -->
-<tr class="hover:bg-gray-50/50 transition-colors">
-<td class="px-6 py-4 whitespace-nowrap">
-<div class="flex items-center gap-4">
-<div class="w-16 h-12 rounded-lg bg-cover bg-center shrink-0" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBfzjxBa0QRGyirjWArZ9PEzGMK-80-ujNe0C_d6PslGsrAKlwY51dm59CQrX5PCl5EmDtYgaw76ydR5BVo2KlkyFVZpKuwn7Sh8Nm0VjWjn16rWRidqJgL0WWzZ0-M08Ohldedy0d1fJU65k9eHxppvivlAKcb7cia0ZfoVeIrKCy1HLsc7bVuQvjl2MFW_gOPLHw8H5Aw-3bnNHaZLFlwHgFk5BvZFtwSrDub-FuNFjfndRlF1bH6SyWGfLChuh_9OyViHfocIrBx');"></div>
-<div class="flex flex-col">
-<span class="text-sm font-bold text-slate-900">The Oaks Estate</span>
-<span class="text-xs text-gray-500">892 Oak Ln, Austin</span>
-</div>
-</div>
-</td>
-<td class="px-6 py-4 whitespace-nowrap">
-<span class="text-sm font-bold text-royal-blue">$1,200,000</span>
-</td>
-<td class="px-6 py-4 whitespace-nowrap">
-<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-gray-100 text-gray-600">
-<span class="size-1.5 rounded-full bg-gray-500"></span>
-Draft
-</span>
-</td>
-<td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-<div class="flex items-center justify-end gap-2">
-<button class="p-2 text-gray-400 hover:text-royal-blue hover:bg-blue-50 rounded-full transition-colors">
-<span class="material-symbols-outlined text-[20px]">edit</span>
-</button>
-<button class="p-2 text-gray-400 hover:text-green-600 hover:bg-green-50 rounded-full transition-colors">
-<span class="material-symbols-outlined text-[20px]">share</span>
-</button>
-</div>
-</td>
-</tr>
+@endforelse
 </tbody>
 </table>
 </div>
