@@ -16,8 +16,8 @@
     </div>
 
     <!-- Property Details -->
-    <div class="p-5 flex flex-col flex-1 justify-between gap-3">
-        <div class="flex flex-col gap-1">
+    <div class="p-5 flex flex-col flex-1 justify-between gap-3 sm:overflow-hidden">
+        <div class="flex flex-col gap-1 sm:overflow-hidden">
             <!-- Status and Date -->
             <div class="flex items-center justify-between">
                 <span @class([
@@ -40,13 +40,15 @@
             </div>
 
             <!-- Title and Price -->
-            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mt-1">
-                <h3 class="text-xl font-bold text-slate-900 leading-tight truncate"
-                    title="{{ $property->title }}">
-                    {{ $property->title }}
-                </h3>
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mt-1 sm:overflow-hidden">
+                <div class="w-full sm:w-0 sm:flex-grow sm:min-w-0 overflow-hidden">
+                    <h3 class="text-xl font-bold text-slate-900 leading-tight truncate max-w-full block"
+                        title="{{ $property->title }}">
+                        {{ $property->title }}
+                    </h3>
+                </div>
                 <h3 @class([
-                    'text-xl font-bold',
+                    'text-xl font-bold shrink-0',
                     'text-amber-600' => $property->status === 'available',
                     'text-gray-400 line-through decoration-red-500 decoration-2' => $property->status === 'sold',
                     'text-gray-400 italic' => !in_array($property->status, ['available', 'sold']),
