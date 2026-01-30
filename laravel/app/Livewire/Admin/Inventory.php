@@ -15,6 +15,7 @@ class Inventory extends Component
     public $searchTerm = '';
     public $statusFilter = 'all';
     public $typeFilter = 'all';
+    public $sortBy = 'newest';
     public $viewMode = 'list'; // 'list' or 'grid'
     public $perPage = 10;
     public $editingPropertyId = null;
@@ -46,6 +47,11 @@ class Inventory extends Component
     }
 
     public function updatingTypeFilter()
+    {
+        $this->resetPage();
+    }
+
+    public function updatingSortBy()
     {
         $this->resetPage();
     }
@@ -100,6 +106,31 @@ class Inventory extends Component
         $this->dispatch('open-delete-modal', $propertyData)->to(DeleteConfirmationModal::class);
     }
 
+    public function getSortOptionsProperty()
+    {
+        return [
+            'newest' => 'Newest First',
+            'oldest' => 'Oldest First',
+            'price_asc' => 'Price: Low to High',
+            'price_desc' => 'Price: High to Low',
+            'title_asc' => 'Title: A to Z',
+            'title_desc' => 'Title: Z to A',
+            'size_asc' => 'Size: Small to Large',
+            'size_desc' => 'Size: Large to Small',
+        ];
+    }
+
+    public function getSortIcon($sortBy)
+    {
+        return match($sortBy) {
+            'newest', 'oldest' => 'schedule',
+            'price_asc', 'price_desc' => 'payments',
+            'title_asc', 'title_desc' => 'sort_by_alpha',
+            'size_asc', 'size_desc' => 'square_foot',
+            default => 'sort',
+        };
+    }
+
     public function getPropertiesProperty()
     {
         $query = Property::query();
@@ -124,6 +155,34 @@ class Inventory extends Component
         // Apply type filter
         if ($this->typeFilter !== 'all') {
             $query->where('property_type', $this->typeFilter);
+        }
+
+        // Apply sorting
+        switch ($this->sortBy) {
+            case 'newest':
+                $query->orderBy('created_at', 'desc');
+                break;
+            case 'oldest':
+                $query->orderBy('created_at', 'asc');
+                break;
+            case 'price_asc':
+                $query->orderBy('price', 'asc');
+                break;
+            case 'price_desc':
+                $query->orderBy('price', 'desc');
+                break;
+            case 'title_asc':
+                $query->orderBy('title', 'asc');
+                break;
+            case 'title_desc':
+                $query->orderBy('title', 'desc');
+                break;
+            case 'size_asc':
+                $query->orderBy('area_sqft', 'asc');
+                break;
+            case 'size_desc':
+                $query->orderBy('area_sqft', 'desc');
+                break;
         }
 
         return $query->paginate($this->perPage);
