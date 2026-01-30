@@ -11,6 +11,7 @@
         const icons = {
             'newest': 'schedule',
             'oldest': 'schedule',
+            'updated_desc': 'edit',
             'price_asc': 'payments',
             'price_desc': 'payments',
             'title_asc': 'sort_by_alpha',
@@ -24,6 +25,7 @@
         const labels = {
             'newest': 'Newest',
             'oldest': 'Oldest',
+            'updated_desc': 'Latest Updated',
             'price_asc': 'Price: Low to High',
             'price_desc': 'Price: High to Low',
             'title_asc': 'A to Z',
@@ -233,6 +235,17 @@
                                         Oldest First
                                     </span>
                                     <span x-show="$wire.sortBy === 'oldest'" class="material-symbols-outlined text-blue-600 text-base">check</span>
+                                </button>
+                            </li>
+                            <li>
+                                <button @click="$wire.set('sortBy', 'updated_desc'); sortOpen = false"
+                                        class="w-full text-left px-4 py-3 text-sm flex items-center justify-between hover:bg-slate-50 transition-colors group"
+                                        :class="$wire.sortBy === 'updated_desc' ? 'bg-blue-50 text-blue-700' : 'text-slate-700'">
+                                    <span class="flex items-center">
+                                        <span class="material-symbols-outlined text-slate-400 mr-3 text-lg">edit</span>
+                                        Latest Updated
+                                    </span>
+                                    <span x-show="$wire.sortBy === 'updated_desc'" class="material-symbols-outlined text-blue-600 text-base">check</span>
                                 </button>
                             </li>
                             <li>

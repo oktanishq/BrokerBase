@@ -111,6 +111,7 @@ class Inventory extends Component
         return [
             'newest' => 'Newest First',
             'oldest' => 'Oldest First',
+            'updated_desc' => 'Latest Updated',
             'price_asc' => 'Price: Low to High',
             'price_desc' => 'Price: High to Low',
             'title_asc' => 'Title: A to Z',
@@ -124,6 +125,7 @@ class Inventory extends Component
     {
         return match($sortBy) {
             'newest', 'oldest' => 'schedule',
+            'updated_desc' => 'edit',
             'price_asc', 'price_desc' => 'payments',
             'title_asc', 'title_desc' => 'sort_by_alpha',
             'size_asc', 'size_desc' => 'square_foot',
@@ -164,6 +166,9 @@ class Inventory extends Component
                 break;
             case 'oldest':
                 $query->orderBy('created_at', 'asc');
+                break;
+            case 'updated_desc':
+                $query->orderBy('updated_at', 'desc');
                 break;
             case 'price_asc':
                 $query->orderBy('price', 'asc');
