@@ -286,8 +286,8 @@
                 </div>
             </div>
 
-            <!-- View Toggle -->
-            <div class="flex items-center bg-gray-50 rounded-lg p-1 border border-gray-200 ml-auto sm:ml-0">
+            <!-- View Toggle (Desktop only - mobile has floating button) -->
+            <div class="hidden md:flex items-center bg-gray-50 rounded-lg p-1 border border-gray-200 ml-auto sm:ml-0">
                 <button wire:click="$set('viewMode', 'grid')"
                         class="p-1.5 rounded transition-all {{ $viewMode === 'grid' ? 'bg-white shadow-sm text-royal-blue' : 'text-gray-400 hover:text-gray-600' }}"
                         title="Grid View">
