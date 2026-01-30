@@ -2,10 +2,33 @@
     statusOpen: false,
     typeOpen: false,
     sortOpen: false,
+    viewMode: $wire.viewMode,
+    init() {
+        // Load view mode from LocalStorage on init
+        const savedView = localStorage.getItem('inventory_view');
+        if (savedView && (savedView === 'list' || savedView === 'grid')) {
+            this.viewMode = savedView;
+            $wire.setViewMode(savedView);
+        } else {
+            this.viewMode = $wire.viewMode;
+        }
+        
+        // Watch for view mode changes from Livewire
+        $watch('$wire.viewMode', (value) => {
+            this.viewMode = value;
+            localStorage.setItem('inventory_view', value);
+        });
+    },
     closeDropdowns() {
         this.statusOpen = false;
         this.typeOpen = false;
         this.sortOpen = false;
+    },
+    toggleViewMode() {
+        const newMode = this.viewMode === 'list' ? 'grid' : 'list';
+        this.viewMode = newMode;
+        localStorage.setItem('inventory_view', newMode);
+        $wire.setViewMode(newMode);
     },
     getSortIcon(sortValue) {
         const icons = {
@@ -321,13 +344,15 @@
 
             <!-- View Toggle (Desktop only - mobile has floating button) -->
             <div class="hidden md:flex items-center bg-gray-50 rounded-lg p-1 border border-gray-200 ml-auto sm:ml-0">
-                <button wire:click="$set('viewMode', 'grid')"
-                        class="p-1.5 rounded transition-all {{ $viewMode === 'grid' ? 'bg-white shadow-sm text-royal-blue' : 'text-gray-400 hover:text-gray-600' }}"
+                <button @click="toggleViewMode()"
+                        class="p-1.5 rounded transition-all"
+                        :class="viewMode === 'grid' ? 'bg-white shadow-sm text-royal-blue' : 'text-gray-400 hover:text-gray-600'"
                         title="Grid View">
                     <span class="material-symbols-outlined text-[22px]">grid_view</span>
                 </button>
-                <button wire:click="$set('viewMode', 'list')"
-                        class="p-1.5 rounded transition-all {{ $viewMode === 'list' ? 'bg-white shadow-sm text-royal-blue' : 'text-gray-400 hover:text-gray-600' }}"
+                <button @click="toggleViewMode()"
+                        class="p-1.5 rounded transition-all"
+                        :class="viewMode === 'list' ? 'bg-white shadow-sm text-royal-blue' : 'text-gray-400 hover:text-gray-600'"
                         title="List View">
                     <span class="material-symbols-outlined text-[22px]">view_list</span>
                 </button>
@@ -435,9 +460,9 @@
     <div x-show="!statusOpen && !typeOpen && !sortOpen"
          x-transition
          class="fixed bottom-6 right-6 z-40 md:hidden">
-        <button @click="$wire.set('viewMode', $wire.viewMode === 'grid' ? 'list' : 'grid')"
+        <button @click="toggleViewMode()"
                 class="flex items-center justify-center w-14 h-14 bg-royal-blue text-white rounded-full shadow-lg shadow-blue-900/30 hover:bg-blue-800 transition-all active:scale-95">
-            <span class="material-symbols-outlined text-2xl" x-text="$wire.viewMode === 'grid' ? 'view_list' : 'grid_view'"></span>
+            <span class="material-symbols-outlined text-2xl" x-text="viewMode === 'grid' ? 'view_list' : 'grid_view'"></span>
         </button>
     </div>
 </div>

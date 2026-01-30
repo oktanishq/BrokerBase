@@ -36,6 +36,17 @@ class Inventory extends Component
         }
     }
 
+    public function updatedViewMode($value)
+    {
+        // Save view mode preference to LocalStorage via JavaScript
+        $this->dispatch('viewModeChanged', $value)->to('livewire.admin.inventory');
+    }
+
+    public function setViewMode($mode)
+    {
+        $this->viewMode = $mode;
+    }
+
     public function updatingSearchTerm()
     {
         $this->resetPage();
@@ -59,11 +70,6 @@ class Inventory extends Component
     public function updatingPerPage()
     {
         $this->resetPage();
-    }
-
-    public function updatedViewMode()
-    {
-        // Handle view mode change if needed
     }
 
     public function handlePropertyUpdate($propertyId, $data)
