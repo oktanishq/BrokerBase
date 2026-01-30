@@ -1,10 +1,10 @@
-<div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-all duration-300 group flex md:flex-row w-full {{ $property->status === 'sold' ? 'opacity-90 hover:opacity-100' : '' }}">
+<div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-all duration-300 group flex md:flex-row w-full min-h-[140px] {{ $property->status === 'sold' ? 'opacity-90 hover:opacity-100' : '' }}">
 
     <!-- Property Image -->
-    <div class="relative w-24 h-24 md:w-64 lg:w-72 shrink-0 overflow-hidden">
-        <div class="w-full h-full bg-cover bg-center group-hover:scale-105 transition-transform duration-500 {{ $property->status === 'sold' ? 'grayscale contrast-125' : '' }}"
-             style="background-image: url('{{ $property->image ?? '/images/placeholder-property.jpg' }}')">
-        </div>
+    <div class="relative w-36 h-36 md:w-64 md:h-48 lg:w-72 shrink-0 overflow-hidden">
+        <img src="{{ $property->image ?? '/images/placeholder-property.jpg' }}"
+             alt="{{ $property->title }}"
+             class="w-full h-full object-cover {{ $property->status === 'sold' ? 'grayscale contrast-125' : '' }} group-hover:scale-105 transition-transform duration-500">
 
         <!-- View Count -->
         <div class="absolute bottom-2 right-2 bg-black/60 backdrop-blur-sm text-white px-2 py-0.5 rounded flex items-center gap-1 text-xs font-medium">
