@@ -5,16 +5,20 @@ namespace App\Livewire\Public;
 use App\Models\Property;
 use App\Models\Setting;
 use Livewire\Component;
+use Livewire\WithPagination;
 
 class Listings extends Component
 {
-    public $properties = [];
-    public $loading = true;
+    use WithPagination;
+
     public $error = null;
     public $settings = [];
     public $currentFilters = [];
     public $searchQuery = '';
     public $categoryFilter = 'all';
+    
+    // Sorting - protected so it doesn't get serialized
+    protected $sortBy = 'newest'; // 'newest', 'price_low', 'price_high', 'popular'
 
     protected $listeners = [
         'filtersApplied' => 'applyFilters',
@@ -26,7 +30,8 @@ class Listings extends Component
     public function mount()
     {
         $this->loadSettings();
-        $this->loadProperties();
+        // Get sortBy from URL if present
+        $this->sortBy = request()->get('sort', 'newest');
     }
 
     public function loadSettings()
@@ -38,28 +43,54 @@ class Listings extends Component
         }
     }
 
-    public function loadProperties()
+    /**
+     * Get properties for the view
+     */
+    public function getProperties()
     {
-        try {
-            $this->loading = true;
-            $this->error = null;
+        $query = Property::query();
 
-            $query = Property::query();
+        // Base filter: Only show available properties on homepage
+        $query->where('status', 'available');
 
-            // Base filter: Only show available properties on homepage
-            $query->where('status', 'available');
+        // Apply additional filters
+        $this->applyFiltersToQuery($query);
+        
+        // Apply sorting
+        $this->applySorting($query);
 
-            // Apply additional filters
-            $this->applyFiltersToQuery($query);
+        // Use pagination
+        return $query->paginate(6);
+    }
 
-            $this->properties = $query->get()->toArray();
-
-        } catch (\Exception $e) {
-            $this->error = 'Failed to load properties. Please try again.';
-            $this->properties = [];
-        } finally {
-            $this->loading = false;
+    /**
+     * Apply sorting to query
+     */
+    protected function applySorting($query)
+    {
+        switch ($this->sortBy) {
+            case 'newest':
+                $query->latest('created_at');
+                break;
+            case 'price_low':
+                $query->orderBy('price', 'asc');
+                break;
+            case 'price_high':
+                $query->orderBy('price', 'desc');
+                break;
+            case 'popular':
+                $query->orderBy('views_count', 'desc');
+                break;
         }
+    }
+
+    /**
+     * Update sort and refresh
+     */
+    public function setSort($sort)
+    {
+        $this->sortBy = $sort;
+        return redirect()->route('home', ['sort' => $sort]);
     }
 
     public function applyFiltersToQuery($query)
@@ -164,7 +195,15 @@ class Listings extends Component
     public function applyCategory($category)
     {
         $this->categoryFilter = $category;
-        $this->loadProperties();
+        $this->resetPage();
+    }
+
+    /**
+     * Handle sort changes
+     */
+    public function updatedSortBy($value)
+    {
+        return redirect()->route('home', ['sort' => $value]);
     }
 
     public function getWhatsAppMessage($property)
@@ -200,6 +239,8 @@ class Listings extends Component
 
     public function render()
     {
-        return view('livewire.public.listings');
+        return view('livewire.public.listings', [
+            'properties' => $this->getProperties(),
+        ]);
     }
 }
