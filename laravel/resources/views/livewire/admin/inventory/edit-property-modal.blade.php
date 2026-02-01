@@ -45,41 +45,43 @@
 
                 <!-- Tab Navigation -->
                 <div x-data="{ scrollLeft: 0 }" class="relative px-4 md:px-6 pb-4">
-                    <!-- Left Shadow Hint -->
-                    <div class="absolute left-4 top-1 bottom-1 w-8 bg-gradient-to-r from-gray-100 to-transparent pointer-events-none z-10 md:hidden"></div>
+                    <!-- Left Shadow Hint (Mobile only) -->
+                    <div class="absolute left-4 top-1 bottom-1 w-8 bg-gradient-to-r from-gray-100 to-transparent pointer-events-none z-10 md:hidden" :class="scrollLeft > 0 ? 'opacity-100' : 'opacity-0'"></div>
                     
-                    <!-- Right Shadow Hint -->
-                    <div class="absolute right-4 top-1 bottom-1 w-8 bg-gradient-to-l from-gray-100 to-transparent pointer-events-none z-10 md:hidden"></div>
+                    <!-- Right Shadow Hint (Mobile only) -->
+                    <div class="absolute right-4 top-1 bottom-1 w-8 bg-gradient-to-l from-gray-100 to-transparent pointer-events-none z-10 md:hidden" :class="scrollLeft < $el.scrollWidth - $el.clientWidth - 16 ? 'opacity-100' : 'opacity-0'"></div>
                     
-                    <!-- Tabs Container with Horizontal Scroll -->
-                    <div class="flex overflow-x-auto gap-1 bg-gray-100 p-1 rounded-lg scrollbar-hide snap-x" 
+                    <!-- Tabs Container -->
+                    <!-- Mobile: Horizontal scroll with hidden scrollbar -->
+                    <!-- Desktop: Equal spacing with justify-evenly -->
+                    <div class="flex overflow-x-auto md:overflow-visible justify-evenly md:justify-between gap-1 bg-gray-100 p-1 rounded-lg scrollbar-hide snap-x md:snap-none" 
                          style="scrollbar-width: none; -ms-overflow-style: none;"
                          x-on:scroll="scrollLeft = $el.scrollLeft">
                         <style>
                             .scrollbar-hide::-webkit-scrollbar { display: none; }
                         </style>
                         <button wire:click="setTab('overview')"
-                                class="flex-shrink-0 py-2 px-4 rounded-md text-sm font-medium transition-all whitespace-nowrap snap-center {{ $currentTab === 'overview' ? 'bg-white text-royal-blue shadow-sm' : 'text-gray-600 hover:text-gray-800' }}">
+                                class="flex-shrink-0 md:flex-1 py-2 px-4 rounded-md text-sm font-medium transition-all whitespace-nowrap snap-center md:snap-none {{ $currentTab === 'overview' ? 'bg-white text-royal-blue shadow-sm' : 'text-gray-600 hover:text-gray-800' }}">
                             Overview
                         </button>
                         <button wire:click="setTab('basic-info')"
-                                class="flex-shrink-0 py-2 px-4 rounded-md text-sm font-medium transition-all whitespace-nowrap snap-center {{ $currentTab === 'basic-info' ? 'bg-white text-royal-blue shadow-sm' : 'text-gray-600 hover:text-gray-800' }}">
+                                class="flex-shrink-0 md:flex-1 py-2 px-4 rounded-md text-sm font-medium transition-all whitespace-nowrap snap-center md:snap-none {{ $currentTab === 'basic-info' ? 'bg-white text-royal-blue shadow-sm' : 'text-gray-600 hover:text-gray-800' }}">
                             Basic Info
                         </button>
                         <button wire:click="setTab('details')"
-                                class="flex-shrink-0 py-2 px-4 rounded-md text-sm font-medium transition-all whitespace-nowrap snap-center {{ $currentTab === 'details' ? 'bg-white text-royal-blue shadow-sm' : 'text-gray-600 hover:text-gray-800' }}">
+                                class="flex-shrink-0 md:flex-1 py-2 px-4 rounded-md text-sm font-medium transition-all whitespace-nowrap snap-center md:snap-none {{ $currentTab === 'details' ? 'bg-white text-royal-blue shadow-sm' : 'text-gray-600 hover:text-gray-800' }}">
                             Details
                         </button>
                         <button wire:click="setTab('image')"
-                                class="flex-shrink-0 py-2 px-4 rounded-md text-sm font-medium transition-all whitespace-nowrap snap-center {{ $currentTab === 'image' ? 'bg-white text-royal-blue shadow-sm' : 'text-gray-600 hover:text-gray-800' }}">
+                                class="flex-shrink-0 md:flex-1 py-2 px-4 rounded-md text-sm font-medium transition-all whitespace-nowrap snap-center md:snap-none {{ $currentTab === 'image' ? 'bg-white text-royal-blue shadow-sm' : 'text-gray-600 hover:text-gray-800' }}">
                             Image
                         </button>
                         <button wire:click="setTab('location')"
-                                class="flex-shrink-0 py-2 px-4 rounded-md text-sm font-medium transition-all whitespace-nowrap snap-center {{ $currentTab === 'location' ? 'bg-white text-royal-blue shadow-sm' : 'text-gray-600 hover:text-gray-800' }}">
+                                class="flex-shrink-0 md:flex-1 py-2 px-4 rounded-md text-sm font-medium transition-all whitespace-nowrap snap-center md:snap-none {{ $currentTab === 'location' ? 'bg-white text-royal-blue shadow-sm' : 'text-gray-600 hover:text-gray-800' }}">
                             Location
                         </button>
                         <button wire:click="setTab('private')"
-                                class="flex-shrink-0 py-2 px-4 rounded-md text-sm font-medium transition-all whitespace-nowrap snap-center {{ $currentTab === 'private' ? 'bg-white text-royal-blue shadow-sm' : 'text-gray-600 hover:text-gray-800' }}">
+                                class="flex-shrink-0 md:flex-1 py-2 px-4 rounded-md text-sm font-medium transition-all whitespace-nowrap snap-center md:snap-none {{ $currentTab === 'private' ? 'bg-white text-royal-blue shadow-sm' : 'text-gray-600 hover:text-gray-800' }}">
                             Private
                         </button>
                     </div>
