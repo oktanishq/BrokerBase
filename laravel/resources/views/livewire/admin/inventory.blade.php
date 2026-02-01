@@ -85,6 +85,129 @@
         <!-- Filters and View Toggle -->
         <div class="flex flex-col sm:flex-row w-full md:w-auto items-center gap-3 justify-between md:justify-end">
             <div class="flex gap-3 w-full sm:w-auto" @click.away="closeDropdowns()">
+                <!-- Sort Dropdown -->
+                <div class="relative">
+                    <!-- Mobile Icon-Only Version (shown when space is tight) -->
+                    <button @click="sortOpen = !sortOpen; statusOpen = false; typeOpen = false"
+                            class="md:hidden flex items-center justify-center w-10 h-10 rounded-lg border-2 border-slate-200 bg-gradient-to-r from-white to-slate-50 hover:from-slate-50 hover:to-slate-100 hover:border-slate-300 transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-blue-500/20 text-slate-700 font-semibold shadow-sm hover:shadow-md">
+                        <span class="material-symbols-outlined text-slate-400 text-lg" :class="sortOpen ? 'text-royal-blue' : ''">sort</span>
+                    </button>
+
+                    <!-- Desktop Full Version -->
+                    <button @click="sortOpen = !sortOpen; statusOpen = false; typeOpen = false"
+                            class="hidden md:flex items-center justify-between w-full sm:w-44 px-4 py-2.5 rounded-xl border-2 border-slate-200 bg-gradient-to-r from-white to-slate-50 hover:from-slate-50 hover:to-slate-100 hover:border-slate-300 transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-blue-500/20 text-slate-700 font-semibold shadow-sm hover:shadow-md">
+                        <span class="flex items-center space-x-2 text-sm truncate">
+                            <span class="text-slate-500 whitespace-nowrap">Sort:</span>
+                            <span class="truncate" x-text="getSortLabel()"></span>
+                        </span>
+                        <span class="material-symbols-outlined text-slate-400 text-lg transition-transform duration-300 flex-shrink-0 ml-2" :class="sortOpen ? 'rotate-180' : ''">expand_more</span>
+                    </button>
+
+                    <div x-show="sortOpen" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 scale-95 translate-y-1" x-transition:enter-end="opacity-100 scale-100 translate-y-0" x-transition:leave="transition ease-in duration-200" x-transition:leave-start="opacity-100 scale-100 translate-y-0" x-transition:leave-end="opacity-0 scale-95 translate-y-1" class="absolute top-full left-0 mt-2 w-56 bg-white border-2 border-slate-200 rounded-xl shadow-xl shadow-slate-900/10 overflow-hidden z-20">
+                        <ul class="py-2">
+                            <li>
+                                <button @click="$wire.set('sortBy', 'newest'); sortOpen = false"
+                                        class="w-full text-left px-4 py-3 text-sm flex items-center justify-between hover:bg-slate-50 transition-colors group"
+                                        :class="$wire.sortBy === 'newest' ? 'bg-blue-50 text-blue-700' : 'text-slate-700'">
+                                    <span class="flex items-center">
+                                        <span class="material-symbols-outlined text-slate-400 mr-3 text-lg">schedule</span>
+                                        Newest First
+                                    </span>
+                                    <span x-show="$wire.sortBy === 'newest'" class="material-symbols-outlined text-blue-600 text-base">check</span>
+                                </button>
+                            </li>
+                            <li>
+                                <button @click="$wire.set('sortBy', 'oldest'); sortOpen = false"
+                                        class="w-full text-left px-4 py-3 text-sm flex items-center justify-between hover:bg-slate-50 transition-colors group"
+                                        :class="$wire.sortBy === 'oldest' ? 'bg-blue-50 text-blue-700' : 'text-slate-700'">
+                                    <span class="flex items-center">
+                                        <span class="material-symbols-outlined text-slate-400 mr-3 text-lg">schedule</span>
+                                        Oldest First
+                                    </span>
+                                    <span x-show="$wire.sortBy === 'oldest'" class="material-symbols-outlined text-blue-600 text-base">check</span>
+                                </button>
+                            </li>
+                            <li>
+                                <button @click="$wire.set('sortBy', 'updated_desc'); sortOpen = false"
+                                        class="w-full text-left px-4 py-3 text-sm flex items-center justify-between hover:bg-slate-50 transition-colors group"
+                                        :class="$wire.sortBy === 'updated_desc' ? 'bg-blue-50 text-blue-700' : 'text-slate-700'">
+                                    <span class="flex items-center">
+                                        <span class="material-symbols-outlined text-slate-400 mr-3 text-lg">edit</span>
+                                        Latest Updated
+                                    </span>
+                                    <span x-show="$wire.sortBy === 'updated_desc'" class="material-symbols-outlined text-blue-600 text-base">check</span>
+                                </button>
+                            </li>
+                            <li>
+                                <button @click="$wire.set('sortBy', 'price_asc'); sortOpen = false"
+                                        class="w-full text-left px-4 py-3 text-sm flex items-center justify-between hover:bg-slate-50 transition-colors group"
+                                        :class="$wire.sortBy === 'price_asc' ? 'bg-blue-50 text-blue-700' : 'text-slate-700'">
+                                    <span class="flex items-center">
+                                        <span class="material-symbols-outlined text-slate-400 mr-3 text-lg">payments</span>
+                                        Price: Low to High
+                                    </span>
+                                    <span x-show="$wire.sortBy === 'price_asc'" class="material-symbols-outlined text-blue-600 text-base">check</span>
+                                </button>
+                            </li>
+                            <li>
+                                <button @click="$wire.set('sortBy', 'price_desc'); sortOpen = false"
+                                        class="w-full text-left px-4 py-3 text-sm flex items-center justify-between hover:bg-slate-50 transition-colors group"
+                                        :class="$wire.sortBy === 'price_desc' ? 'bg-blue-50 text-blue-700' : 'text-slate-700'">
+                                    <span class="flex items-center">
+                                        <span class="material-symbols-outlined text-slate-400 mr-3 text-lg">payments</span>
+                                        Price: High to Low
+                                    </span>
+                                    <span x-show="$wire.sortBy === 'price_desc'" class="material-symbols-outlined text-blue-600 text-base">check</span>
+                                </button>
+                            </li>
+                            <li>
+                                <button @click="$wire.set('sortBy', 'title_asc'); sortOpen = false"
+                                        class="w-full text-left px-4 py-3 text-sm flex items-center justify-between hover:bg-slate-50 transition-colors group"
+                                        :class="$wire.sortBy === 'title_asc' ? 'bg-blue-50 text-blue-700' : 'text-slate-700'">
+                                    <span class="flex items-center">
+                                        <span class="material-symbols-outlined text-slate-400 mr-3 text-lg">sort_by_alpha</span>
+                                        Title: A to Z
+                                    </span>
+                                    <span x-show="$wire.sortBy === 'title_asc'" class="material-symbols-outlined text-blue-600 text-base">check</span>
+                                </button>
+                            </li>
+                            <li>
+                                <button @click="$wire.set('sortBy', 'title_desc'); sortOpen = false"
+                                        class="w-full text-left px-4 py-3 text-sm flex items-center justify-between hover:bg-slate-50 transition-colors group"
+                                        :class="$wire.sortBy === 'title_desc' ? 'bg-blue-50 text-blue-700' : 'text-slate-700'">
+                                    <span class="flex items-center">
+                                        <span class="material-symbols-outlined text-slate-400 mr-3 text-lg">sort_by_alpha</span>
+                                        Title: Z to A
+                                    </span>
+                                    <span x-show="$wire.sortBy === 'title_desc'" class="material-symbols-outlined text-blue-600 text-base">check</span>
+                                </button>
+                            </li>
+                            <li>
+                                <button @click="$wire.set('sortBy', 'size_asc'); sortOpen = false"
+                                        class="w-full text-left px-4 py-3 text-sm flex items-center justify-between hover:bg-slate-50 transition-colors group"
+                                        :class="$wire.sortBy === 'size_asc' ? 'bg-blue-50 text-blue-700' : 'text-slate-700'">
+                                    <span class="flex items-center">
+                                        <span class="material-symbols-outlined text-slate-400 mr-3 text-lg">square_foot</span>
+                                        Size: Small to Large
+                                    </span>
+                                    <span x-show="$wire.sortBy === 'size_asc'" class="material-symbols-outlined text-blue-600 text-base">check</span>
+                                </button>
+                            </li>
+                            <li>
+                                <button @click="$wire.set('sortBy', 'size_desc'); sortOpen = false"
+                                        class="w-full text-left px-4 py-3 text-sm flex items-center justify-between hover:bg-slate-50 transition-colors group"
+                                        :class="$wire.sortBy === 'size_desc' ? 'bg-blue-50 text-blue-700' : 'text-slate-700'">
+                                    <span class="flex items-center">
+                                        <span class="material-symbols-outlined text-slate-400 mr-3 text-lg">square_foot</span>
+                                        Size: Large to Small
+                                    </span>
+                                    <span x-show="$wire.sortBy === 'size_desc'" class="material-symbols-outlined text-blue-600 text-base">check</span>
+                                </button>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
                 <!-- Status Filter -->
                 <div class="relative">
                     <button @click="statusOpen = !statusOpen; typeOpen = false; sortOpen = false"
@@ -212,129 +335,6 @@
                                         Commercial
                                     </span>
                                     <span x-show="$wire.typeFilter === 'commercial'" class="material-symbols-outlined text-pink-600 text-base">check</span>
-                                </button>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-
-                <!-- Sort Dropdown -->
-                <div class="relative">
-                    <!-- Mobile Icon-Only Version (shown when space is tight) -->
-                    <button @click="sortOpen = !sortOpen; statusOpen = false; typeOpen = false"
-                            class="md:hidden flex items-center justify-center w-10 h-10 rounded-lg border-2 border-slate-200 bg-gradient-to-r from-white to-slate-50 hover:from-slate-50 hover:to-slate-100 hover:border-slate-300 transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-blue-500/20 text-slate-700 font-semibold shadow-sm hover:shadow-md">
-                        <span class="material-symbols-outlined text-slate-400 text-lg" :class="sortOpen ? 'text-royal-blue' : ''">sort</span>
-                    </button>
-
-                    <!-- Desktop Full Version -->
-                    <button @click="sortOpen = !sortOpen; statusOpen = false; typeOpen = false"
-                            class="hidden md:flex items-center justify-between w-full sm:w-44 px-4 py-2.5 rounded-xl border-2 border-slate-200 bg-gradient-to-r from-white to-slate-50 hover:from-slate-50 hover:to-slate-100 hover:border-slate-300 transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-blue-500/20 text-slate-700 font-semibold shadow-sm hover:shadow-md">
-                        <span class="flex items-center space-x-2 text-sm truncate">
-                            <span class="text-slate-500 whitespace-nowrap">Sort:</span>
-                            <span class="truncate" x-text="getSortLabel()"></span>
-                        </span>
-                        <span class="material-symbols-outlined text-slate-400 text-lg transition-transform duration-300 flex-shrink-0 ml-2" :class="sortOpen ? 'rotate-180' : ''">expand_more</span>
-                    </button>
-
-                    <div x-show="sortOpen" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 scale-95 translate-y-1" x-transition:enter-end="opacity-100 scale-100 translate-y-0" x-transition:leave="transition ease-in duration-200" x-transition:leave-start="opacity-100 scale-100 translate-y-0" x-transition:leave-end="opacity-0 scale-95 translate-y-1" class="absolute top-full right-0 mt-2 w-56 bg-white border-2 border-slate-200 rounded-xl shadow-xl shadow-slate-900/10 overflow-hidden z-20">
-                        <ul class="py-2">
-                            <li>
-                                <button @click="$wire.set('sortBy', 'newest'); sortOpen = false"
-                                        class="w-full text-left px-4 py-3 text-sm flex items-center justify-between hover:bg-slate-50 transition-colors group"
-                                        :class="$wire.sortBy === 'newest' ? 'bg-blue-50 text-blue-700' : 'text-slate-700'">
-                                    <span class="flex items-center">
-                                        <span class="material-symbols-outlined text-slate-400 mr-3 text-lg">schedule</span>
-                                        Newest First
-                                    </span>
-                                    <span x-show="$wire.sortBy === 'newest'" class="material-symbols-outlined text-blue-600 text-base">check</span>
-                                </button>
-                            </li>
-                            <li>
-                                <button @click="$wire.set('sortBy', 'oldest'); sortOpen = false"
-                                        class="w-full text-left px-4 py-3 text-sm flex items-center justify-between hover:bg-slate-50 transition-colors group"
-                                        :class="$wire.sortBy === 'oldest' ? 'bg-blue-50 text-blue-700' : 'text-slate-700'">
-                                    <span class="flex items-center">
-                                        <span class="material-symbols-outlined text-slate-400 mr-3 text-lg">schedule</span>
-                                        Oldest First
-                                    </span>
-                                    <span x-show="$wire.sortBy === 'oldest'" class="material-symbols-outlined text-blue-600 text-base">check</span>
-                                </button>
-                            </li>
-                            <li>
-                                <button @click="$wire.set('sortBy', 'updated_desc'); sortOpen = false"
-                                        class="w-full text-left px-4 py-3 text-sm flex items-center justify-between hover:bg-slate-50 transition-colors group"
-                                        :class="$wire.sortBy === 'updated_desc' ? 'bg-blue-50 text-blue-700' : 'text-slate-700'">
-                                    <span class="flex items-center">
-                                        <span class="material-symbols-outlined text-slate-400 mr-3 text-lg">edit</span>
-                                        Latest Updated
-                                    </span>
-                                    <span x-show="$wire.sortBy === 'updated_desc'" class="material-symbols-outlined text-blue-600 text-base">check</span>
-                                </button>
-                            </li>
-                            <li>
-                                <button @click="$wire.set('sortBy', 'price_asc'); sortOpen = false"
-                                        class="w-full text-left px-4 py-3 text-sm flex items-center justify-between hover:bg-slate-50 transition-colors group"
-                                        :class="$wire.sortBy === 'price_asc' ? 'bg-blue-50 text-blue-700' : 'text-slate-700'">
-                                    <span class="flex items-center">
-                                        <span class="material-symbols-outlined text-slate-400 mr-3 text-lg">payments</span>
-                                        Price: Low to High
-                                    </span>
-                                    <span x-show="$wire.sortBy === 'price_asc'" class="material-symbols-outlined text-blue-600 text-base">check</span>
-                                </button>
-                            </li>
-                            <li>
-                                <button @click="$wire.set('sortBy', 'price_desc'); sortOpen = false"
-                                        class="w-full text-left px-4 py-3 text-sm flex items-center justify-between hover:bg-slate-50 transition-colors group"
-                                        :class="$wire.sortBy === 'price_desc' ? 'bg-blue-50 text-blue-700' : 'text-slate-700'">
-                                    <span class="flex items-center">
-                                        <span class="material-symbols-outlined text-slate-400 mr-3 text-lg">payments</span>
-                                        Price: High to Low
-                                    </span>
-                                    <span x-show="$wire.sortBy === 'price_desc'" class="material-symbols-outlined text-blue-600 text-base">check</span>
-                                </button>
-                            </li>
-                            <li>
-                                <button @click="$wire.set('sortBy', 'title_asc'); sortOpen = false"
-                                        class="w-full text-left px-4 py-3 text-sm flex items-center justify-between hover:bg-slate-50 transition-colors group"
-                                        :class="$wire.sortBy === 'title_asc' ? 'bg-blue-50 text-blue-700' : 'text-slate-700'">
-                                    <span class="flex items-center">
-                                        <span class="material-symbols-outlined text-slate-400 mr-3 text-lg">sort_by_alpha</span>
-                                        Title: A to Z
-                                    </span>
-                                    <span x-show="$wire.sortBy === 'title_asc'" class="material-symbols-outlined text-blue-600 text-base">check</span>
-                                </button>
-                            </li>
-                            <li>
-                                <button @click="$wire.set('sortBy', 'title_desc'); sortOpen = false"
-                                        class="w-full text-left px-4 py-3 text-sm flex items-center justify-between hover:bg-slate-50 transition-colors group"
-                                        :class="$wire.sortBy === 'title_desc' ? 'bg-blue-50 text-blue-700' : 'text-slate-700'">
-                                    <span class="flex items-center">
-                                        <span class="material-symbols-outlined text-slate-400 mr-3 text-lg">sort_by_alpha</span>
-                                        Title: Z to A
-                                    </span>
-                                    <span x-show="$wire.sortBy === 'title_desc'" class="material-symbols-outlined text-blue-600 text-base">check</span>
-                                </button>
-                            </li>
-                            <li>
-                                <button @click="$wire.set('sortBy', 'size_asc'); sortOpen = false"
-                                        class="w-full text-left px-4 py-3 text-sm flex items-center justify-between hover:bg-slate-50 transition-colors group"
-                                        :class="$wire.sortBy === 'size_asc' ? 'bg-blue-50 text-blue-700' : 'text-slate-700'">
-                                    <span class="flex items-center">
-                                        <span class="material-symbols-outlined text-slate-400 mr-3 text-lg">square_foot</span>
-                                        Size: Small to Large
-                                    </span>
-                                    <span x-show="$wire.sortBy === 'size_asc'" class="material-symbols-outlined text-blue-600 text-base">check</span>
-                                </button>
-                            </li>
-                            <li>
-                                <button @click="$wire.set('sortBy', 'size_desc'); sortOpen = false"
-                                        class="w-full text-left px-4 py-3 text-sm flex items-center justify-between hover:bg-slate-50 transition-colors group"
-                                        :class="$wire.sortBy === 'size_desc' ? 'bg-blue-50 text-blue-700' : 'text-slate-700'">
-                                    <span class="flex items-center">
-                                        <span class="material-symbols-outlined text-slate-400 mr-3 text-lg">square_foot</span>
-                                        Size: Large to Small
-                                    </span>
-                                    <span x-show="$wire.sortBy === 'size_desc'" class="material-symbols-outlined text-blue-600 text-base">check</span>
                                 </button>
                             </li>
                         </ul>
