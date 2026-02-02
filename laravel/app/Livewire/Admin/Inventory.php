@@ -19,6 +19,10 @@ class Inventory extends Component
     public $viewMode = 'list'; // 'list' or 'grid'
     public $perPage = 10;
     public $editingPropertyId = null;
+    public $jumpToPage = null;
+
+    // How many pages to show on each side of current page
+    protected $onEachSide = 1;
 
     protected $listeners = [
         'property-updated' => 'handlePropertyUpdate',
@@ -34,6 +38,62 @@ class Inventory extends Component
             $this->editingPropertyId = request('edit');
             $this->openEditModal(request('edit'));
         }
+    }
+
+    /**
+     * Boot the component and check if current page is valid
+     */
+    public function boot()
+    {
+        // Check if we're on a page that no longer exists (e.g., after items were deleted)
+        $this->checkPageValidity();
+    }
+
+    /**
+     * Check if current page is valid and redirect to page 1 if not
+     */
+    protected function checkPageValidity()
+    {
+        // Get the current page from the query string
+        $currentPage = $this->getPage();
+        
+        // Calculate total pages based on current filters
+        $totalItems = $this->getFilteredTotalCount();
+        $totalPages = $totalItems > 0 ? ceil($totalItems / $this->perPage) : 1;
+        
+        // If current page is greater than total pages, reset to page 1
+        if ($currentPage > $totalPages && $currentPage > 1) {
+            $this->setPage(1);
+        }
+    }
+
+    /**
+     * Get filtered total count (same logic as getPropertiesProperty but just counting)
+     */
+    protected function getFilteredTotalCount()
+    {
+        $query = Property::query();
+        
+        // Apply same filters as getPropertiesProperty()
+        if ($this->searchTerm) {
+            $query->where(function ($q) {
+                if (is_numeric($this->searchTerm)) {
+                    $q->where('id', $this->searchTerm);
+                }
+                $q->orWhere('title', 'ILIKE', '%' . $this->searchTerm . '%')
+                  ->orWhere('address', 'ILIKE', '%' . $this->searchTerm . '%');
+            });
+        }
+        
+        if ($this->statusFilter !== 'all') {
+            $query->where('status', $this->statusFilter);
+        }
+        
+        if ($this->typeFilter !== 'all') {
+            $query->where('property_type', $this->typeFilter);
+        }
+        
+        return $query->count();
     }
 
     public function updatedViewMode($value)
@@ -70,6 +130,77 @@ class Inventory extends Component
     public function updatingPerPage()
     {
         $this->resetPage();
+    }
+
+    /**
+     * Jump to a specific page
+     */
+    public function updatedJumpToPage($value)
+    {
+        if ($value && $value >= 1 && $value <= $this->totalPages) {
+            $this->setPage($value);
+            $this->jumpToPage = null;
+        }
+    }
+
+    /**
+     * Get the pagination window for sliding window pagination
+     * Returns an array with 'leftGap', 'pages', 'rightGap' to determine what to show
+     */
+    public function getPaginationWindowProperty()
+    {
+        $currentPage = $this->properties->currentPage();
+        $totalPages = $this->totalPages;
+        $onEachSide = $this->onEachSide;
+
+        // If total pages is small, show all
+        if ($totalPages <= 7) {
+            return [
+                'showAll' => true,
+                'pages' => range(1, $totalPages),
+            ];
+        }
+
+        // Calculate the window around current page
+        $windowStart = max(1, $currentPage - $onEachSide);
+        $windowEnd = min($totalPages, $currentPage + $onEachSide);
+
+        // Determine if we need ellipsis
+        $showLeftEllipsis = $windowStart > 2;
+        $showRightEllipsis = $windowEnd < $totalPages - 1;
+
+        // Build pages array
+        $pages = [];
+
+        // Always add first page
+        $pages[] = 1;
+
+        // Add left ellipsis if needed
+        if ($showLeftEllipsis) {
+            $pages[] = '...';
+        }
+
+        // Add pages in the window
+        for ($i = $windowStart; $i <= $windowEnd; $i++) {
+            if ($i > 1 && $i < $totalPages) {
+                $pages[] = $i;
+            }
+        }
+
+        // Add right ellipsis if needed
+        if ($showRightEllipsis) {
+            $pages[] = '...';
+        }
+
+        // Always add last page
+        if ($totalPages > 1) {
+            $pages[] = $totalPages;
+        }
+
+        return [
+            'showAll' => false,
+            'pages' => $pages,
+        ];
     }
 
     public function handlePropertyUpdate($propertyId, $data)
