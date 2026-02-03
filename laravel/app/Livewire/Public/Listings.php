@@ -16,9 +16,14 @@ class Listings extends Component
     public $currentFilters = [];
     public $searchQuery = '';
     public $categoryFilter = 'all';
+    public $perPage = 6;  // Items per page
+    public $jumpToPage = null;  // Jump to page input
     
     // Sorting - protected so it doesn't get serialized
     protected $sortBy = 'newest'; // 'newest', 'price_low', 'price_high', 'popular'
+    
+    // How many pages to show on each side of current page
+    protected $onEachSide = 1;
 
     protected $listeners = [
         'filtersApplied' => 'applyFilters',
@@ -44,9 +49,9 @@ class Listings extends Component
     }
 
     /**
-     * Get properties for the view
+     * Get properties for the view (lazy-loaded property)
      */
-    public function getProperties()
+    public function getPropertiesProperty()
     {
         $query = Property::query();
 
@@ -59,8 +64,196 @@ class Listings extends Component
         // Apply sorting
         $this->applySorting($query);
 
-        // Use pagination
-        return $query->paginate(6);
+        // Use pagination with perPage setting
+        return $query->paginate($this->perPage);
+    }
+
+    /**
+     * Get filtered total count (same logic as getPropertiesProperty but just counting)
+     */
+    protected function getFilteredTotalCount()
+    {
+        $query = Property::query();
+        
+        // Base filter: Only show available properties on homepage
+        $query->where('status', 'available');
+        
+        // Apply same filters as getPropertiesProperty()
+        if (!empty($this->searchQuery)) {
+            $query->where(function($q) {
+                $q->where('title', 'like', '%' . $this->searchQuery . '%')
+                  ->orWhere('address', 'like', '%' . $this->searchQuery . '%');
+            });
+        }
+        
+        if ($this->categoryFilter !== 'all') {
+            switch ($this->categoryFilter) {
+                case 'sale':
+                    $query->where('status', 'available');
+                    break;
+                case 'rent':
+                    break;
+                case '2bhk':
+                    $query->where('bedrooms', 2);
+                    break;
+                case '3bhk':
+                    $query->where('bedrooms', 3);
+                    break;
+                case 'commercial':
+                    $query->where('property_type', 'commercial');
+                    break;
+            }
+        }
+        
+        if (!empty($this->currentFilters['propertyType'])) {
+            $query->where('property_type', $this->currentFilters['propertyType']);
+        }
+        
+        if (!empty($this->currentFilters['minPrice'])) {
+            $query->where('price', '>=', $this->currentFilters['minPrice']);
+        }
+        
+        if (!empty($this->currentFilters['maxPrice'])) {
+            $query->where('price', '<=', $this->currentFilters['maxPrice']);
+        }
+        
+        if (!empty($this->currentFilters['configuration'])) {
+            $query->whereIn('bedrooms', $this->currentFilters['configuration']);
+        }
+        
+        if (!empty($this->currentFilters['carpetArea'])) {
+            switch ($this->currentFilters['carpetArea']) {
+                case '500':
+                    $query->where('area_sqft', '<=', 500);
+                    break;
+                case '1000':
+                    $query->whereBetween('area_sqft', [500, 1000]);
+                    break;
+                case '1500':
+                    $query->whereBetween('area_sqft', [1000, 1500]);
+                    break;
+                case '2000':
+                    $query->where('area_sqft', '>=', 1500);
+                    break;
+            }
+        }
+        
+        if (!empty($this->currentFilters['bathrooms'])) {
+            $query->where('bathrooms', $this->currentFilters['bathrooms']);
+        }
+        
+        return $query->count();
+    }
+
+    /**
+     * Handle jumpToPage property changes (validation only, no auto-navigation)
+     */
+    public function updatedJumpToPage($value)
+    {
+        // This method is kept for Livewire property hydration
+        // Navigation is handled via jumpToPageAction() method
+        // No auto-navigation on keystroke
+    }
+
+    /**
+     * Jump to a specific page when Go button is clicked or Enter is pressed
+     */
+    public function jumpToPageAction()
+    {
+        if (!$this->jumpToPage) {
+            return;
+        }
+        
+        // Calculate total pages from filtered count (without accessing properties)
+        $totalItems = $this->getFilteredTotalCount();
+        $totalPages = $totalItems > 0 ? ceil($totalItems / $this->perPage) : 1;
+        
+        if ($this->jumpToPage >= 1 && $this->jumpToPage <= $totalPages) {
+            $this->setPage($this->jumpToPage);
+        }
+        
+        // Clear the input after navigation
+        $this->jumpToPage = null;
+    }
+
+    /**
+     * Get the pagination window for sliding window pagination
+     */
+    public function getPaginationWindowProperty()
+    {
+        $currentPage = $this->properties->currentPage();
+        $totalPages = $this->totalPages;
+        $onEachSide = $this->onEachSide;
+
+        // If total pages is small, show all
+        if ($totalPages <= 7) {
+            return [
+                'showAll' => true,
+                'pages' => range(1, $totalPages),
+            ];
+        }
+
+        // Calculate the window around current page
+        $windowStart = max(1, $currentPage - $onEachSide);
+        $windowEnd = min($totalPages, $currentPage + $onEachSide);
+
+        // Determine if we need ellipsis
+        $showLeftEllipsis = $windowStart > 2;
+        $showRightEllipsis = $windowEnd < $totalPages - 1;
+
+        // Build pages array
+        $pages = [];
+
+        // Always add first page
+        $pages[] = 1;
+
+        // Add left ellipsis if needed
+        if ($showLeftEllipsis) {
+            $pages[] = '...';
+        }
+
+        // Add pages in the window
+        for ($i = $windowStart; $i <= $windowEnd; $i++) {
+            if ($i > 1 && $i < $totalPages) {
+                $pages[] = $i;
+            }
+        }
+
+        // Add right ellipsis if needed
+        if ($showRightEllipsis) {
+            $pages[] = '...';
+        }
+
+        // Always add last page
+        if ($totalPages > 1) {
+            $pages[] = $totalPages;
+        }
+
+        return [
+            'showAll' => false,
+            'pages' => $pages,
+        ];
+    }
+
+    public function getShowingFromProperty()
+    {
+        if ($this->properties->total() === 0) return 0;
+        return ($this->properties->currentPage() - 1) * $this->properties->perPage() + 1;
+    }
+
+    public function getShowingToProperty()
+    {
+        return min($this->properties->currentPage() * $this->properties->perPage(), $this->properties->total());
+    }
+
+    public function getShowingCountProperty()
+    {
+        return $this->properties->total();
+    }
+
+    public function getTotalPagesProperty()
+    {
+        return $this->properties->lastPage();
     }
 
     /**
@@ -177,19 +370,19 @@ class Listings extends Component
     public function applyFilters($filters)
     {
         $this->currentFilters = $filters;
-        $this->loadProperties();
+        $this->resetPage();
     }
 
     public function resetFilters()
     {
         $this->currentFilters = [];
-        $this->loadProperties();
+        $this->resetPage();
     }
 
     public function applySearch($search)
     {
         $this->searchQuery = $search;
-        $this->loadProperties();
+        $this->resetPage();
     }
 
     public function applyCategory($category)
@@ -240,7 +433,7 @@ class Listings extends Component
     public function render()
     {
         return view('livewire.public.listings', [
-            'properties' => $this->getProperties(),
+            'properties' => $this->properties,
         ]);
     }
 }

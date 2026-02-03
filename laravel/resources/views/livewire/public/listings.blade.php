@@ -158,11 +158,174 @@
         </div>
 
         <!-- Pagination -->
-        @if($properties->hasPages())
-            <div class="flex justify-center mt-8">
-                <nav class="flex items-center gap-2">
-                    {{ $properties->links() }}
-                </nav>
+        @if($properties->count() > 0)
+            <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 border-t border-gray-200 pt-6 mt-8">
+                <!-- Desktop: Left side - Show dropdown and results info -->
+                <div class="hidden md:flex items-center gap-4">
+                    <!-- Items per page dropdown -->
+                    <div class="flex items-center gap-2">
+                        <label class="text-sm text-gray-600 whitespace-nowrap">Show:</label>
+                        <div class="relative">
+                            <select wire:model.live="perPage" 
+                                    class="appearance-none pl-3 pr-8 py-2 text-sm bg-white border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:royal-blue/20 focus:border-royal-blue transition-all min-w-[70px] cursor-pointer hover:border-gray-300">
+                                <option value="6">6</option>
+                                <option value="12">12</option>
+                                <option value="18">18</option>
+                                <option value="24">24</option>
+                            </select>
+                            <span class="absolute right-2 top-1/2 -translate-y-1/2 material-symbols-outlined text-gray-400 text-lg pointer-events-none">expand_more</span>
+                        </div>
+                        <span class="text-sm text-gray-600">per page</span>
+                    </div>
+                    
+                    <!-- Results info -->
+                    <span class="text-sm text-gray-500">
+                        Showing {{ $this->showingFrom }}-{{ $this->showingTo }} of {{ $this->showingCount }} properties
+                    </span>
+                </div>
+
+                <!-- Desktop: Pagination controls -->
+                <div class="hidden md:flex items-center gap-2">
+                    <!-- Jump to page -->
+                    <div class="flex items-center gap-2 text-sm">
+                        <span class="text-gray-500">Jump to:</span>
+                        <input type="number" 
+                               wire:model="jumpToPage"
+                               wire:keydown.enter="jumpToPageAction()"
+                               min="1" 
+                               max="{{ $this->totalPages }}" 
+                               placeholder="Page"
+                               class="w-16 py-2 px-2 text-center text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:royal-blue/20 focus:border-royal-blue transition-all" />
+                        <button wire:click="jumpToPageAction()" 
+                                class="px-3 py-2 text-sm font-medium text-white bg-royal-blue rounded-lg hover:bg-blue-800 transition-colors">
+                            Go
+                        </button>
+                    </div>
+                    
+                    <!-- Page numbers -->
+                    <div class="flex items-center gap-1">
+                        <button wire:click="previousPage"
+                                @disabled($properties->onFirstPage())
+                                class="flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-colors {{ $properties->onFirstPage() ? 'text-gray-300 cursor-not-allowed' : 'text-gray-600 hover:bg-gray-100 border border-gray-200' }}">
+                            <span class="material-symbols-outlined text-lg mr-1">chevron_left</span>
+                            <span>Prev</span>
+                        </button>
+
+                        @if($this->paginationWindow['showAll'])
+                            @foreach($this->paginationWindow['pages'] as $page)
+                                <button wire:click="gotoPage({{ $page }})"
+                                        class="w-9 h-9 text-sm font-medium rounded-lg transition-colors {{ $properties->currentPage() === $page ? 'bg-royal-blue text-white shadow-sm' : 'text-gray-600 hover:bg-gray-100 border border-gray-200' }}">
+                                    {{ $page }}
+                                </button>
+                            @endforeach
+                        @else
+                            @foreach($this->paginationWindow['pages'] as $page)
+                                @if($page === '...')
+                                    <span class="px-2 text-gray-400">...</span>
+                                @else
+                                    <button wire:click="gotoPage({{ $page }})"
+                                            class="w-9 h-9 text-sm font-medium rounded-lg transition-colors {{ $properties->currentPage() === $page ? 'bg-royal-blue text-white shadow-sm' : 'text-gray-600 hover:bg-gray-100 border border-gray-200' }}">
+                                        {{ $page }}
+                                    </button>
+                                @endif
+                            @endforeach
+                        @endif
+
+                        <button wire:click="nextPage"
+                                @disabled(!$properties->hasMorePages())
+                                class="flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-colors {{ !$properties->hasMorePages() ? 'text-gray-300 cursor-not-allowed' : 'text-white bg-royal-blue hover:bg-blue-800 shadow-sm' }}">
+                            <span>Next</span>
+                            <span class="material-symbols-outlined text-lg ml-1">chevron_right</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Mobile: Stacked layout -->
+                <div class="flex flex-col gap-3 w-full md:hidden">
+                    <!-- Row 1: Page numbers -->
+                    <div class="flex items-center justify-center gap-1 overflow-x-auto py-1">
+                        <button wire:click="previousPage"
+                                @disabled($properties->onFirstPage())
+                                class="flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-colors {{ $properties->onFirstPage() ? 'text-gray-300 cursor-not-allowed' : 'text-gray-600 hover:bg-gray-100 border border-gray-200' }}">
+                            <span class="material-symbols-outlined text-lg">chevron_left</span>
+                        </button>
+
+                        @if($this->paginationWindow['showAll'])
+                            @foreach($this->paginationWindow['pages'] as $page)
+                                <button wire:click="gotoPage({{ $page }})"
+                                        class="w-9 h-9 text-sm font-medium rounded-lg transition-colors {{ $properties->currentPage() === $page ? 'bg-royal-blue text-white shadow-sm' : 'text-gray-600 hover:bg-gray-100 border border-gray-200' }}">
+                                    {{ $page }}
+                                </button>
+                            @endforeach
+                        @else
+                            @foreach($this->paginationWindow['pages'] as $page)
+                                @if($page === '...')
+                                    <span class="px-2 text-gray-400">...</span>
+                                @else
+                                    <button wire:click="gotoPage({{ $page }})"
+                                            class="w-9 h-9 text-sm font-medium rounded-lg transition-colors {{ $properties->currentPage() === $page ? 'bg-royal-blue text-white shadow-sm' : 'text-gray-600 hover:bg-gray-100 border border-gray-200' }}">
+                                        {{ $page }}
+                                    </button>
+                                @endif
+                            @endforeach
+                        @endif
+
+                        <button wire:click="nextPage"
+                                @disabled(!$properties->hasMorePages())
+                                class="flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-colors {{ !$properties->hasMorePages() ? 'text-gray-300 cursor-not-allowed' : 'text-white bg-royal-blue hover:bg-blue-800 shadow-sm' }}">
+                            <span class="material-symbols-outlined text-lg">chevron_right</span>
+                        </button>
+                    </div>
+
+                    <!-- Row 2: Jump to and Show per page inline -->
+                    <div class="flex items-center justify-between gap-2">
+                        <!-- Jump to page -->
+                        <div class="flex items-center gap-2 text-sm">
+                            <span class="text-gray-500">Jump to:</span>
+                            <input type="number" 
+                                   wire:model="jumpToPage"
+                                   wire:keydown.enter="jumpToPageAction()"
+                                   min="1" 
+                                   max="{{ $this->totalPages }}" 
+                                   placeholder="Page"
+                                   class="w-16 py-2 px-2 text-center text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:royal-blue/20 focus:border-royal-blue transition-all" />
+                            <button wire:click="jumpToPageAction()" 
+                                    class="px-3 py-2 text-sm font-medium text-white bg-royal-blue rounded-lg hover:bg-blue-800 transition-colors">
+                                Go
+                            </button>
+                        </div>
+                        
+                        <!-- Items per page dropdown -->
+                        <div class="flex items-center gap-2">
+                            <label class="text-sm text-gray-600 whitespace-nowrap">Show:</label>
+                            <div class="relative">
+                                <select wire:model.live="perPage" 
+                                        class="appearance-none pl-3 pr-8 py-2 text-sm bg-white border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:royal-blue/20 focus:border-royal-blue transition-all min-w-[70px] cursor-pointer hover:border-gray-300">
+                                    <option value="6">6</option>
+                                    <option value="12">12</option>
+                                    <option value="18">18</option>
+                                    <option value="24">24</option>
+                                </select>
+                                <span class="absolute right-2 top-1/2 -translate-y-1/2 material-symbols-outlined text-gray-400 text-lg pointer-events-none">expand_more</span>
+                            </div>
+                            <span class="text-sm text-gray-600">/page</span>
+                        </div>
+                    </div>
+
+                    <!-- Row 3: Results info -->
+                    <div class="text-center">
+                        <span class="text-sm text-gray-500">
+                            Showing {{ $this->showingFrom }}-{{ $this->showingTo }} of {{ $this->showingCount }} properties
+                        </span>
+                    </div>
+
+                    <!-- Row 4: Page indicator -->
+                    <div class="text-center">
+                        <span class="text-sm text-gray-400">
+                            Page {{ $properties->currentPage() }} of {{ $this->totalPages }}
+                        </span>
+                    </div>
+                </div>
             </div>
         @endif
     </div>
