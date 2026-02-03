@@ -29,7 +29,7 @@ class CreateProperty extends Component
     public $bedrooms = 3;
     public $bathrooms = 2;
     public $description = '';
-    public $amenities = ['Swimming Pool', 'Parking'];
+    public $amenities = [];
     public $address = '';
     public $latitude = '';
     public $longitude = '';
@@ -60,7 +60,8 @@ class CreateProperty extends Component
         ['value' => 'apartment', 'label' => 'Apartment', 'icon' => 'apartment'],
         ['value' => 'villa', 'label' => 'Villa', 'icon' => 'villa'],
         ['value' => 'plot', 'label' => 'Plot', 'icon' => 'landscape'],
-        ['value' => 'commercial', 'label' => 'Commercial', 'icon' => 'storefront']
+        ['value' => 'commercial', 'label' => 'Commercial', 'icon' => 'storefront'],
+        ['value' => 'office', 'label' => 'Office', 'icon' => 'business_center']
     ];
 
     // Advanced amenities system
@@ -190,24 +191,61 @@ class CreateProperty extends Component
         $this->showAmenitiesDropdown = !empty($this->amenitiesSearch);
     }
 
+    /**
+     * Normalize amenities array to ensure it's a clean indexed array
+     */
+    protected function normalizeAmenities()
+    {
+        // Ensure amenities is an array
+        if (!is_array($this->amenities)) {
+            $this->amenities = [];
+        }
+
+        // Filter out empty/null values and reindex
+        $this->amenities = array_values(array_filter($this->amenities, function ($amenity) {
+            return $amenity !== null && $amenity !== '' && trim($amenity) !== '';
+        }));
+    }
+
+    /**
+     * Validate that amenities is a valid indexed array
+     */
+    protected function validateAmenities()
+    {
+        // Ensure amenities is an array
+        if (!is_array($this->amenities)) {
+            $this->amenities = [];
+            return;
+        }
+
+        // Ensure it's a sequential indexed array (not associative)
+        $keys = array_keys($this->amenities);
+        if (array_keys($keys) !== $keys) {
+            // It's an associative array, convert to indexed
+            $this->amenities = array_values($this->amenities);
+        }
+
+        // Normalize to remove any corrupted data
+        $this->normalizeAmenities();
+    }
+
     public function addAmenity($amenityName = null)
     {
+        // Normalize amenities first
+        $this->validateAmenities();
+
         // If specific amenity name provided (from dropdown), add it
         if ($amenityName) {
-            if (!in_array($amenityName, $this->amenities)) {
+            if (!in_array($amenityName, $this->amenities, true)) {
                 $this->amenities[] = $amenityName;
             }
         }
         // If no amenity name but search has text, add it as custom amenity
         elseif (!empty(trim($this->amenitiesSearch))) {
             $customAmenity = trim($this->amenitiesSearch);
-            if (!in_array($customAmenity, $this->amenities)) {
+            if (!in_array($customAmenity, $this->amenities, true)) {
                 $this->amenities[] = $customAmenity;
             }
-        }
-        // Legacy: add empty for manual input (shouldn't happen with new system)
-        else {
-            $this->amenities[] = '';
         }
 
         // Reset search and close dropdown
@@ -216,18 +254,18 @@ class CreateProperty extends Component
         $this->saveDraft();
     }
 
-    public function removeAmenity($identifier)
+    public function removeAmenity($amenityName)
     {
-        if (is_numeric($identifier)) {
-            // Old system: remove by index
-            unset($this->amenities[$identifier]);
-            $this->amenities = array_values($this->amenities);
-        } else {
-            // New system: remove by amenity name
-            $this->amenities = array_filter($this->amenities, function ($amenity) use ($identifier) {
-                return $amenity !== $identifier;
-            });
-        }
+        // Validate amenities is an indexed array
+        $this->validateAmenities();
+
+        // Remove by amenity name only
+        $this->amenities = array_filter($this->amenities, function ($amenity) use ($amenityName) {
+            return $amenity !== $amenityName;
+        });
+
+        // Reindex array
+        $this->amenities = array_values($this->amenities);
         $this->saveDraft();
     }
 
@@ -322,6 +360,9 @@ class CreateProperty extends Component
     // Draft management
     public function saveDraft()
     {
+        // Normalize amenities before saving
+        $this->normalizeAmenities();
+
         $draftData = [
             'title' => $this->title,
             'type' => $this->type,
@@ -357,7 +398,7 @@ class CreateProperty extends Component
             $this->bedrooms = $draft['bedrooms'] ?? 3;
             $this->bathrooms = $draft['bathrooms'] ?? 2;
             $this->description = $draft['description'] ?? '';
-            $this->amenities = $draft['amenities'] ?? ['Swimming Pool', 'Parking'];
+            $this->amenities = $draft['amenities'] ?? [];
             $this->address = $draft['address'] ?? '';
             $this->latitude = $draft['latitude'] ?? '';
             $this->longitude = $draft['longitude'] ?? '';
@@ -396,6 +437,9 @@ class CreateProperty extends Component
                     return;
                 }
             }
+
+            // Normalize amenities before saving
+            $this->normalizeAmenities();
 
             // Create property
             $property = Property::create([

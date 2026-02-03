@@ -29,7 +29,8 @@
                        'border-red-500 focus:border-red-500 focus:ring-red-500' => $errors->has('latitude')
                    ])
                    placeholder="e.g. 25.2048"
-                   type="text">
+                   step="any"
+                   type="number">
             @error('latitude')
                 <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
             @enderror
@@ -43,7 +44,8 @@
                        'border-red-500 focus:border-red-500 focus:ring-red-500' => $errors->has('longitude')
                    ])
                    placeholder="e.g. 55.2708"
-                   type="text">
+                   step="any"
+                   type="number">
             @error('longitude')
                 <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
             @enderror

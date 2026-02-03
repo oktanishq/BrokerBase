@@ -18,7 +18,7 @@
 
     <div class="space-y-4">
         <label class="block text-sm font-bold text-gray-700">Property Type</label>
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div class="grid grid-cols-2 md:grid-cols-5 gap-4">
             @foreach($propertyTypes as $type)
                 <div wire:click="setPropertyType('{{ $type['value'] }}')"
                      class="border-2 rounded-xl p-4 flex flex-col items-center justify-center gap-2 transition-all cursor-pointer {{ $type['value'] === $this->type ? 'border-royal-blue bg-blue-50/50 text-royal-blue' : 'border-gray-200 bg-white text-gray-500 hover:border-royal-blue hover:text-royal-blue' }}">
@@ -132,7 +132,7 @@
     <div class="space-y-3">
         <div class="flex justify-between items-end">
             <label class="block text-sm font-medium text-gray-700">Amenities</label>
-            @if(count(array_filter($amenities, fn($a) => $a && trim($a))) > 0)
+            @if(is_array($amenities) && count(array_filter($amenities ?? [], fn($a) => $a && trim($a))) > 0)
                 <button wire:click="$set('amenities', [])"
                         type="button"
                         class="text-xs text-orange-600 font-medium hover:text-orange-700 transition-colors">
@@ -151,11 +151,13 @@
                        type="text"
                        class="w-full bg-transparent border-none outline-none text-gray-900 placeholder-gray-400 text-sm"
                        placeholder="Search amenities (e.g. Pool, Gym, WiFi)...">
-                <button wire:click="addAmenity"
-                        type="button"
-                        class="bg-orange-500 hover:bg-orange-600 text-white text-xs px-3 py-1.5 rounded font-medium transition-colors ml-2">
-                    Add
-                </button>
+                @if(!empty(trim($amenitiesSearch)))
+                    <button wire:click="addAmenity"
+                            type="button"
+                            class="bg-orange-500 hover:bg-orange-600 text-white text-xs px-3 py-1.5 rounded font-medium transition-colors ml-2">
+                        Add
+                    </button>
+                @endif
             </div>
 
             <!-- Dropdown with filtered results -->
@@ -169,7 +171,7 @@
                  class="absolute top-full left-0 right-0 mt-2 bg-white rounded-lg shadow-xl border border-gray-200 overflow-hidden z-20 max-h-60 overflow-y-auto">
 
                 @foreach($availableAmenities as $amenity)
-                    @if(!in_array($amenity['name'], $amenities) && (empty($amenitiesSearch) || stripos($amenity['name'], $amenitiesSearch) !== false))
+                    @if(!in_array($amenity['name'], $amenities ?? [], true) && (empty($amenitiesSearch) || stripos($amenity['name'], $amenitiesSearch) !== false))
                         <button wire:click="addAmenity({{ json_encode($amenity['name']) }})"
                                 type="button"
                                 x-on:click="searchOpen = false; $wire.set('amenitiesSearch', '')"
@@ -189,7 +191,7 @@
         <div class="bg-gray-50 rounded-lg p-4 border border-gray-200 min-h-[120px]">
             <p class="text-xs text-gray-500 mb-3">Selected amenities (drag to reorder if needed)</p>
             <div class="flex flex-wrap gap-2">
-                @forelse($amenities as $amenityName)
+                @forelse($amenities ?? [] as $amenityName)
                     @if($amenityName && trim($amenityName))
                         <div class="inline-flex items-center bg-white border border-gray-200 rounded px-3 py-1.5 shadow-sm group hover:border-orange-300 transition-colors">
                             @php
@@ -213,7 +215,7 @@
 
         <!-- Custom Amenities (for backward compatibility) -->
         @php
-            $emptyAmenities = array_filter($amenities, fn($a) => !$a || !trim($a));
+            $emptyAmenities = is_array($amenities) ? array_filter($amenities, fn($a) => !$a || !trim($a)) : [];
         @endphp
         @if(count($emptyAmenities) > 0)
             <div class="space-y-2">
@@ -222,7 +224,7 @@
                     @if(!$amenity || !trim($amenity))
                         <div class="flex items-center justify-between bg-gray-50 px-3 py-2 rounded-lg">
                             <span class="text-sm text-gray-700">{{ $amenity }}</span>
-                            <button wire:click="removeAmenity({{ $index }})"
+                            <button wire:click="removeAmenity({{ json_encode($amenity) }})"
                                     type="button"
                                     class="text-red-500 hover:text-red-700 transition-colors">
                                 <span class="material-symbols-outlined text-sm">delete</span>
