@@ -16,7 +16,7 @@
 
             <label class="relative flex-1 items-center">
                 <span class="absolute left-4 text-[#666e85] material-symbols-outlined top-1/2 -translate-y-1/2">search</span>
-                <input wire:model.live.debounce.300ms="search" maxlength="100" class="w-full bg-[#f1f1f4] text-[#121317] placeholder:text-[#666e85] h-12 rounded-full pl-20 pr-4 focus:outline-none focus:ring-2 focus:ring-primary/20 border-none text-base transition-all" placeholder="Search by ID, location, title or price..." type="text"/>
+                <input wire:model.live.debounce.300ms="search" maxlength="100" class="w-full bg-[#f1f1f4] text-[#121317] placeholder:text-[#666e85] h-12 rounded-full pl-20 pr-4 focus:outline-none focus:ring-2 focus:ring-primary/20 border-none text-base transition-all" placeholder="Search by ID, location, title, price or property type..." type="text"/>
             </label>
         </div>
     </div>

@@ -176,7 +176,9 @@ class Listings extends Component
                   // Search by address (case-insensitive)
                   ->orWhereRaw('LOWER(address) LIKE ?', [$searchTerm])
                   // Search by price (numeric comparison if input is numeric)
-                  ->orWhere('price', 'like', '%' . $sanitizedSearch . '%');
+                  ->orWhere('price', 'like', '%' . $sanitizedSearch . '%')
+                  // Search by property type (case-insensitive)
+                  ->orWhereRaw('LOWER(property_type) LIKE ?', [$searchTerm]);
             });
         }
         
@@ -385,7 +387,7 @@ class Listings extends Component
 
     public function applyFiltersToQuery($query)
     {
-        // Apply search - case-insensitive, searches ID, title, address, and price
+        // Apply search - case-insensitive, searches ID, title, address, price, and property type
         $sanitizedSearch = $this->sanitizeSearchInput($this->searchQuery);
         if (!empty($sanitizedSearch)) {
             $searchTerm = '%' . strtolower($sanitizedSearch) . '%';
@@ -400,7 +402,9 @@ class Listings extends Component
                   // Search by address (case-insensitive)
                   ->orWhereRaw('LOWER(address) LIKE ?', [$searchTerm])
                   // Search by price (numeric comparison if input is numeric)
-                  ->orWhere('price', 'like', '%' . $sanitizedSearch . '%');
+                  ->orWhere('price', 'like', '%' . $sanitizedSearch . '%')
+                  // Search by property type (case-insensitive) - e.g., apartment, villa, commercial, office, plot
+                  ->orWhereRaw('LOWER(property_type) LIKE ?', [$searchTerm]);
             });
         }
 
