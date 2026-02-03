@@ -33,8 +33,7 @@ class Property extends Model
         'owner_name',
         'owner_phone',
         'private_notes',
-        'primary_image_path',
-        'images_metadata',
+        'images',
         'watermark_enabled',
         'user_id',
         'published_at',
@@ -52,7 +51,7 @@ class Property extends Model
         'watermark_enabled' => 'boolean',
         'views_count' => 'integer',
         'amenities' => 'array',
-        'images_metadata' => 'array',
+        'images' => 'array',
         'published_at' => 'datetime',
         'sold_at' => 'datetime',
         'created_at' => 'datetime',
@@ -104,51 +103,52 @@ class Property extends Model
 
     /**
      * Get all images with metadata and URLs
+     * Uses single 'images' column instead of dual-column approach
      */
     public function getAllImagesAttribute(): array
     {
-        $images = [];
+        if (!$this->images || !is_array($this->images) || empty($this->images)) {
+            return [];
+        }
         
-        // Add primary image if exists
-        if ($this->primary_image_path) {
-            $images[] = [
-                'path' => $this->primary_image_path,
-                'url' => asset('storage/' . $this->primary_image_path),
-                'type' => 'primary',
-                'is_primary' => true,
+        return array_map(function ($image) {
+            return [
+                'path' => $image['path'] ?? null,
+                'url' => isset($image['path']) ? asset('storage/' . $image['path']) : null,
+                'order' => $image['order'] ?? 0,
+                'is_primary' => $image['is_primary'] ?? false,
+                'original_name' => $image['original_name'] ?? null,
+                'size' => $image['size'] ?? null,
+                'mime_type' => $image['mime_type'] ?? null,
+                'is_watermarked' => $image['is_watermarked'] ?? ($this->watermark_enabled ?? true),
             ];
-        }
-        
-        // Add gallery images
-        if ($this->images_metadata) {
-            foreach ($this->images_metadata as $image) {
-                $images[] = [
-                    'path' => $image['path'],
-                    'url' => asset('storage/' . $image['path']),
-                    'type' => 'gallery',
-                    'is_primary' => false,
-                    'original_name' => $image['original_name'] ?? null,
-                    'size' => $image['size'] ?? null,
-                    'mime_type' => $image['mime_type'] ?? null,
-                    'order' => $image['order'] ?? 0,
-                    'is_watermarked' => $image['is_watermarked'] ?? false,
-                ];
-            }
-        }
-        
-        return $images;
+        }, $this->images);
     }
 
     /**
-     * Get primary image URL
+     * Get primary image URL (first image in array)
      */
     public function getPrimaryImageUrlAttribute(): ?string
     {
-        if (!$this->primary_image_path) {
+        $images = $this->all_images;
+        if (empty($images)) {
             return null;
         }
         
-        return asset('storage/' . $this->primary_image_path);
+        return $images[0]['url'] ?? null;
+    }
+
+    /**
+     * Get primary image path (first image in array)
+     */
+    public function getPrimaryImagePathAttribute(): ?string
+    {
+        $images = $this->all_images;
+        if (empty($images)) {
+            return null;
+        }
+        
+        return $images[0]['path'] ?? null;
     }
 
     /**
@@ -304,27 +304,116 @@ class Property extends Model
     }
 
     /**
-     * Save images metadata
+     * Save images to the single 'images' column
+     * Automatically sets first image as primary
      */
     public function saveImages(array $images, bool $watermarkEnabled = true): void
     {
-        $metadata = [];
+        $formattedImages = [];
         
         foreach ($images as $index => $image) {
-            $metadata[] = [
+            $formattedImages[] = [
                 'path' => $image['path'],
+                'order' => $index + 1,
+                'is_primary' => $index === 0,
                 'original_name' => $image['original_name'] ?? null,
                 'size' => $image['size'] ?? null,
                 'mime_type' => $image['mime_type'] ?? null,
-                'order' => $index + 1,
                 'is_watermarked' => $watermarkEnabled,
             ];
         }
         
-        $this->update([
-            'images_metadata' => $metadata,
-            'watermark_enabled' => $watermarkEnabled,
+        $this->update(['images' => $formattedImages]);
+    }
+
+    /**
+     * Add a single image to the existing images
+     */
+    public function addImage(array $imageData): void
+    {
+        $images = $this->images ?? [];
+        
+        // Reorder existing images to be non-primary
+        foreach ($images as &$img) {
+            $img['is_primary'] = false;
+            $img['order'] = $img['order'] ?? count($images) + 1;
+        }
+        
+        // Add new image as primary at the beginning
+        array_unshift($images, [
+            'path' => $imageData['path'],
+            'order' => 1,
+            'is_primary' => true,
+            'original_name' => $imageData['original_name'] ?? null,
+            'size' => $imageData['size'] ?? null,
+            'mime_type' => $imageData['mime_type'] ?? null,
+            'is_watermarked' => $imageData['is_watermarked'] ?? ($this->watermark_enabled ?? true),
         ]);
+        
+        // Update order for all images
+        foreach ($images as $index => &$img) {
+            $img['order'] = $index + 1;
+        }
+        
+        $this->update(['images' => $images]);
+    }
+
+    /**
+     * Remove an image by path
+     */
+    public function removeImage(string $imagePath): void
+    {
+        $images = $this->images ?? [];
+        $filteredImages = [];
+        $removedWasPrimary = false;
+        
+        foreach ($images as $image) {
+            if ($image['path'] !== $imagePath) {
+                $filteredImages[] = $image;
+            } else {
+                $removedWasPrimary = $image['is_primary'] ?? false;
+            }
+        }
+        
+        // If we removed the primary image, set the new first image as primary
+        if ($removedWasPrimary && !empty($filteredImages)) {
+            $filteredImages[0]['is_primary'] = true;
+        }
+        
+        // Update order
+        foreach ($filteredImages as $index => &$img) {
+            $img['order'] = $index + 1;
+        }
+        
+        $this->update(['images' => $filteredImages]);
+    }
+
+    /**
+     * Reorder images
+     */
+    public function reorderImages(array $orderedPaths): void
+    {
+        $images = $this->images ?? [];
+        $reordered = [];
+        
+        foreach ($orderedPaths as $index => $path) {
+            foreach ($images as $image) {
+                if ($image['path'] === $path) {
+                    $reordered[] = [
+                        'path' => $image['path'],
+                        'order' => $index + 1,
+                        'is_primary' => $index === 0,
+                        'original_name' => $image['original_name'] ?? null,
+                        'size' => $image['size'] ?? null,
+                        'mime_type' => $image['mime_type'] ?? null,
+                        'is_watermarked' => $image['is_watermarked'] ?? ($this->watermark_enabled ?? true),
+                    ];
+                    break;
+                }
+            }
+        }
+        
+        $this->update(['images' => $reordered]);
     }
 
     /**
@@ -410,7 +499,8 @@ class Property extends Model
             'title' => $this->title,
             'price' => $this->formatted_price,
             'location' => $this->location,
-            'image' => $this->image,
+            'image' => $this->primary_image_url,
+            'images' => $this->all_images,
             'views' => $this->views,
             'bedrooms' => $this->bedrooms,
             'bathrooms' => $this->bathrooms,
@@ -458,6 +548,7 @@ class Property extends Model
             'net_price' => $this->net_price,
             'private_notes' => $this->private_notes,
             'image' => $this->primary_image_url,
+            'images' => $this->all_images,
         ];
     }
 }

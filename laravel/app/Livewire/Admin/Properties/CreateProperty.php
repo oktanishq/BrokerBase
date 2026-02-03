@@ -636,14 +636,9 @@ class CreateProperty extends Component
             $uploadedImages[] = $uploadResult;
         }
 
-        // Save images to property
+        // Save images to property using single column approach
         if (!empty($uploadedImages)) {
             $property->saveImages($uploadedImages, $this->watermark);
-
-            // Set primary image
-            if (isset($uploadedImages[0])) {
-                $property->update(['primary_image_path' => $uploadedImages[0]['path']]);
-            }
         }
     }
 
