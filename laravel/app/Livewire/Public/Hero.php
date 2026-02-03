@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Public;
 
+use App\Models\Property;
 use App\Models\Setting;
 use Livewire\Component;
 
@@ -12,6 +13,22 @@ class Hero extends Component
     public function mount()
     {
         $this->settings = Setting::first()?->toArray() ?? [];
+    }
+
+    /**
+     * Get count of active (available) listings
+     */
+    public function getActiveListingsCountProperty()
+    {
+        return Property::where('status', 'available')->count();
+    }
+
+    /**
+     * Get total count of all properties
+     */
+    public function getTotalPropertiesCountProperty()
+    {
+        return Property::count();
     }
 
     public function getCleanedPhoneNumber()

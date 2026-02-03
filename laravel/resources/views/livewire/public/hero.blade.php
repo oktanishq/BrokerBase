@@ -24,12 +24,12 @@
             </div>
             <div class="flex gap-6 mt-4">
                 <div class="bg-white rounded-xl p-4 flex flex-col items-center shadow-sm border border-[#eef0f3]">
-                    <span class="text-2xl font-bold text-primary">12</span>
+                    <span class="text-2xl font-bold text-primary">{{ $this->activeListingsCount }}</span>
                     <span class="text-xs text-[#666e85] font-medium uppercase tracking-wider">Active Listings</span>
                 </div>
                 <div class="bg-white rounded-xl p-4 flex flex-col items-center shadow-sm border border-[#eef0f3]">
-                    <span class="text-2xl font-bold text-primary">50+</span>
-                    <span class="text-xs text-[#666e85] font-medium uppercase tracking-wider">Properties Sold</span>
+                    <span class="text-2xl font-bold text-primary">{{ $this->totalPropertiesCount }}</span>
+                    <span class="text-xs text-[#666e85] font-medium uppercase tracking-wider">Total Properties</span>
                 </div>
             </div>
         </div>
