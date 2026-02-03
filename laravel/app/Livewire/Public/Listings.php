@@ -39,6 +39,33 @@ class Listings extends Component
         $this->sortBy = request()->get('sort', 'newest');
     }
 
+    /**
+     * Boot the component and check if current page is valid
+     */
+    public function boot()
+    {
+        // Check if we're on a page that no longer exists (e.g., after items were deleted or perPage changed)
+        $this->checkPageValidity();
+    }
+
+    /**
+     * Check if current page is valid and redirect to page 1 if not
+     */
+    protected function checkPageValidity()
+    {
+        // Get the current page from the query string
+        $currentPage = $this->getPage();
+        
+        // Calculate total pages based on current filters
+        $totalItems = $this->getFilteredTotalCount();
+        $totalPages = $totalItems > 0 ? ceil($totalItems / $this->perPage) : 1;
+        
+        // If current page is greater than total pages, reset to page 1
+        if ($currentPage > $totalPages && $currentPage > 1) {
+            $this->setPage(1);
+        }
+    }
+
     public function loadSettings()
     {
         try {
