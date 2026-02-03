@@ -77,6 +77,11 @@ class Property extends Model
     ];
 
     /**
+     * Valid property types for validation
+     */
+    const VALID_PROPERTY_TYPES = ['apartment', 'villa', 'plot', 'commercial', 'office'];
+
+    /**
      * Constants for status
      */
     const STATUS_DRAFT = 'draft';
@@ -92,6 +97,16 @@ class Property extends Model
     const LABEL_POPULAR = 'popular';
     const LABEL_VERIFIED = 'verified';
     const LABEL_CUSTOM = 'custom';
+
+    /**
+     * Valid label types for validation
+     */
+    const VALID_LABEL_TYPES = ['none', 'new', 'popular', 'verified', 'custom'];
+
+    /**
+     * Valid status types for validation
+     */
+    const VALID_STATUS_TYPES = ['draft', 'available', 'booked', 'sold'];
 
     /**
      * Get the user that owns the property

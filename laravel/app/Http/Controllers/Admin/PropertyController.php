@@ -78,11 +78,11 @@ class PropertyController extends Controller
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
-            'property_type' => 'required|in:apartment,villa,plot,commercial',
+            'property_type' => 'required|in:apartment,villa,plot,commercial,office',
             'price' => 'nullable|numeric|min:0',
             'area_sqft' => 'nullable|integer|min:0',
             'net_price' => 'nullable|numeric|min:0',
-            'address' => 'nullable|string', // Made optional to match frontend
+            'address' => 'nullable|string',
             'latitude' => 'nullable|numeric',
             'longitude' => 'nullable|numeric',
             'maps_embed_url' => 'nullable|url',
@@ -97,7 +97,7 @@ class PropertyController extends Controller
             'label_type' => 'nullable|in:none,new,popular,verified,custom',
             'custom_label_color' => 'nullable|string|regex:/^#[0-9A-F]{6}$/i',
             'watermark_enabled' => 'nullable|boolean',
-            // Handle amenities as JSON string from FormData
+            'images' => 'nullable|json',
             'amenities' => 'nullable|json',
         ]);
 
@@ -181,7 +181,7 @@ class PropertyController extends Controller
         $validated = $request->validate([
             'title' => 'sometimes|required|string|max:255',
             'description' => 'nullable|string',
-            'property_type' => 'sometimes|required|in:apartment,villa,plot,commercial',
+            'property_type' => 'sometimes|required|in:apartment,villa,plot,commercial,office',
             'price' => 'nullable|numeric|min:0',
             'area_sqft' => 'nullable|integer|min:0',
             'net_price' => 'nullable|numeric|min:0',
@@ -200,6 +200,7 @@ class PropertyController extends Controller
             'owner_phone' => 'nullable|string|max:50',
             'private_notes' => 'nullable|string',
             'watermark_enabled' => 'nullable|boolean',
+            'images' => 'nullable|json',
         ]);
 
         try {
@@ -277,7 +278,7 @@ class PropertyController extends Controller
         $validated = $request->validate([
             'title' => 'nullable|string|max:255',
             'description' => 'nullable|string',
-            'property_type' => 'nullable|in:apartment,villa,plot,commercial',
+            'property_type' => 'nullable|in:apartment,villa,plot,commercial,office',
             'price' => 'nullable|numeric|min:0',
             'area_sqft' => 'nullable|integer|min:0',
             'address' => 'nullable|string',
@@ -287,6 +288,7 @@ class PropertyController extends Controller
             'bedrooms' => 'nullable|integer|min:0',
             'bathrooms' => 'nullable|integer|min:0',
             'amenities' => 'nullable|array',
+            'images' => 'nullable|json',
         ]);
 
         try {
