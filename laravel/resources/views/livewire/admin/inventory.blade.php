@@ -429,12 +429,13 @@
                 <div class="flex items-center gap-2 text-sm">
                     <span class="text-gray-500">Jump to:</span>
                     <input type="number" 
-                           wire:model.live="jumpToPage" 
+                           wire:model="jumpToPage"
+                           wire:keydown.enter="jumpToPageAction()"
                            min="1" 
                            max="{{ $this->totalPages }}" 
                            placeholder="Page"
                            class="w-16 py-2 px-2 text-center text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:royal-blue/20 focus:border-royal-blue transition-all" />
-                    <button wire:click="$refresh" 
+                    <button wire:click="jumpToPageAction()" 
                             class="px-3 py-2 text-sm font-medium text-white bg-royal-blue rounded-lg hover:bg-blue-800 transition-colors">
                         Go
                     </button>
@@ -521,11 +522,16 @@
                     <div class="flex items-center gap-2 text-sm">
                         <span class="text-gray-500">Jump to:</span>
                         <input type="number" 
-                               wire:model.live="jumpToPage" 
+                               wire:model="jumpToPage"
+                               wire:keydown.enter="jumpToPageAction()"
                                min="1" 
                                max="{{ $this->totalPages }}" 
                                placeholder="Page"
                                class="w-16 py-2 px-2 text-center text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:royal-blue/20 focus:border-royal-blue transition-all" />
+                        <button wire:click="jumpToPageAction()" 
+                                class="px-3 py-2 text-sm font-medium text-white bg-royal-blue rounded-lg hover:bg-blue-800 transition-colors">
+                            Go
+                        </button>
                     </div>
                     
                     <!-- Items per page dropdown -->

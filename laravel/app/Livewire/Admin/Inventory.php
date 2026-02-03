@@ -133,13 +133,23 @@ class Inventory extends Component
     }
 
     /**
-     * Jump to a specific page
+     * Handle jumpToPage property changes (validation only, no auto-navigation)
      */
     public function updatedJumpToPage($value)
     {
-        if ($value && $value >= 1 && $value <= $this->totalPages) {
-            $this->setPage($value);
-            $this->jumpToPage = null;
+        // This method is kept for Livewire property hydration
+        // Navigation is handled via jumpToPageAction() method
+        // No auto-navigation on keystroke
+    }
+
+    /**
+     * Jump to a specific page when Go button is clicked or Enter is pressed
+     */
+    public function jumpToPageAction()
+    {
+        if ($this->jumpToPage && $this->jumpToPage >= 1 && $this->jumpToPage <= $this->totalPages) {
+            $this->setPage($this->jumpToPage);
+            $this->jumpToPage = null; // Clear the input after navigation
         }
     }
 
