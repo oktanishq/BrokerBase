@@ -43,6 +43,7 @@ class CreateProperty extends Component
     // File uploads
     public $images = [];
     public $newImages = [];
+    public $primaryImageIndex = 0;
 
     // Map loading state
     public $isLoadingMap = false;
@@ -343,10 +344,81 @@ class CreateProperty extends Component
     public function removeImage($index)
     {
         if (isset($this->images[$index])) {
+            // If removing the primary image, set new primary
+            if ($this->primaryImageIndex === $index && count($this->images) > 1) {
+                // If removing first image, new first image becomes primary
+                // Otherwise keep primary index but adjust for removed image
+                $this->primaryImageIndex = $index === 0 ? 0 : max(0, $index - 1);
+            } elseif ($this->primaryImageIndex > $index) {
+                // Adjust primary index if we removed an image before it
+                $this->primaryImageIndex--;
+            }
+            
             unset($this->images[$index]);
             $this->images = array_values($this->images); // Reindex array
             $this->saveDraft();
         }
+    }
+
+    /**
+     * Set an image as the primary image and move it to first position
+     */
+    public function setPrimaryImage($index)
+    {
+        if (isset($this->images[$index])) {
+            // If already at position 0, just update the primary index
+            if ($index === 0) {
+                $this->primaryImageIndex = 0;
+                $this->saveDraft();
+                return;
+            }
+            
+            // Get the image to move to primary
+            $imageToMove = $this->images[$index];
+            
+            // Remove the image from its current position
+            unset($this->images[$index]);
+            $this->images = array_values($this->images);
+            
+            // Insert at the beginning
+            array_unshift($this->images, $imageToMove);
+            
+            // Set primary to first position
+            $this->primaryImageIndex = 0;
+            
+            $this->saveDraft();
+        }
+    }
+
+    /**
+     * Reorder images after drag and drop
+     * Called from SortableJS
+     */
+    public function reorderImages($newOrder)
+    {
+        // newOrder is an array of indices in the new order
+        if (!is_array($newOrder) || count($newOrder) !== count($this->images)) {
+            return;
+        }
+        
+        // Reorder the images array
+        $reorderedImages = [];
+        foreach ($newOrder as $index) {
+            if (isset($this->images[$index])) {
+                $reorderedImages[] = $this->images[$index];
+            }
+        }
+        
+        $this->images = $reorderedImages;
+        
+        // Adjust primary image index if needed
+        // If primary was at old index X and is now at new index Y
+        $oldPrimaryIndex = $this->primaryImageIndex;
+        if ($oldPrimaryIndex < count($newOrder)) {
+            $this->primaryImageIndex = array_search($oldPrimaryIndex, $newOrder, true);
+        }
+        
+        $this->saveDraft();
     }
 
 
@@ -428,6 +500,7 @@ class CreateProperty extends Component
             'netPrice' => $this->netPrice,
             'privateNotes' => $this->privateNotes,
             'currentStep' => $this->currentStep,
+            'primaryImageIndex' => $this->primaryImageIndex,
         ];
 
         session(['propertyDraft' => $draftData]);
@@ -455,6 +528,7 @@ class CreateProperty extends Component
             $this->netPrice = $draft['netPrice'] ?? '';
             $this->privateNotes = $draft['privateNotes'] ?? '';
             $this->currentStep = $draft['currentStep'] ?? 0;
+            $this->primaryImageIndex = $draft['primaryImageIndex'] ?? 0;
         }
     }
 
@@ -633,6 +707,9 @@ class CreateProperty extends Component
                 $imageUploadService->applyWatermark($uploadResult['path']);
             }
 
+            // Mark as primary if this is the selected primary image
+            $uploadResult['is_primary'] = ($index === $this->primaryImageIndex);
+            
             $uploadedImages[] = $uploadResult;
         }
 
