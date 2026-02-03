@@ -44,26 +44,44 @@
                 @endif
 
                 <!-- Tab Navigation -->
-                <div class="px-6 pb-4">
-                    <div class="flex space-x-1 bg-gray-100 p-1 rounded-lg">
+                <div x-data="{ scrollLeft: 0 }" class="relative px-4 md:px-6 pb-4">
+                    <!-- Left Shadow Hint (Mobile only) -->
+                    <div class="absolute left-4 top-1 bottom-1 w-8 bg-gradient-to-r from-gray-100 to-transparent pointer-events-none z-10 md:hidden" :class="scrollLeft > 0 ? 'opacity-100' : 'opacity-0'"></div>
+                    
+                    <!-- Right Shadow Hint (Mobile only) -->
+                    <div class="absolute right-4 top-1 bottom-1 w-8 bg-gradient-to-l from-gray-100 to-transparent pointer-events-none z-10 md:hidden" :class="scrollLeft < $el.scrollWidth - $el.clientWidth - 16 ? 'opacity-100' : 'opacity-0'"></div>
+                    
+                    <!-- Tabs Container -->
+                    <!-- Mobile: Horizontal scroll with hidden scrollbar -->
+                    <!-- Desktop: Equal spacing with justify-evenly -->
+                    <div class="flex overflow-x-auto md:overflow-visible justify-evenly md:justify-between gap-1 bg-gray-100 p-1 rounded-lg scrollbar-hide snap-x md:snap-none" 
+                         style="scrollbar-width: none; -ms-overflow-style: none;"
+                         x-on:scroll="scrollLeft = $el.scrollLeft">
+                        <style>
+                            .scrollbar-hide::-webkit-scrollbar { display: none; }
+                        </style>
                         <button wire:click="setTab('overview')"
-                                class="flex-1 py-2 px-3 rounded-md text-sm font-medium transition-all {{ $currentTab === 'overview' ? 'bg-white text-royal-blue shadow-sm' : 'text-gray-600 hover:text-gray-800' }}">
+                                class="flex-shrink-0 md:flex-1 py-2 px-4 rounded-md text-sm font-medium transition-all whitespace-nowrap snap-center md:snap-none {{ $currentTab === 'overview' ? 'bg-white text-royal-blue shadow-sm' : 'text-gray-600 hover:text-gray-800' }}">
                             Overview
                         </button>
                         <button wire:click="setTab('basic-info')"
-                                class="flex-1 py-2 px-3 rounded-md text-sm font-medium transition-all {{ $currentTab === 'basic-info' ? 'bg-white text-royal-blue shadow-sm' : 'text-gray-600 hover:text-gray-800' }}">
+                                class="flex-shrink-0 md:flex-1 py-2 px-4 rounded-md text-sm font-medium transition-all whitespace-nowrap snap-center md:snap-none {{ $currentTab === 'basic-info' ? 'bg-white text-royal-blue shadow-sm' : 'text-gray-600 hover:text-gray-800' }}">
                             Basic Info
                         </button>
-                        <button wire:click="setTab('location')"
-                                class="flex-1 py-2 px-3 rounded-md text-sm font-medium transition-all {{ $currentTab === 'location' ? 'bg-white text-royal-blue shadow-sm' : 'text-gray-600 hover:text-gray-800' }}">
-                            Location
-                        </button>
                         <button wire:click="setTab('details')"
-                                class="flex-1 py-2 px-3 rounded-md text-sm font-medium transition-all {{ $currentTab === 'details' ? 'bg-white text-royal-blue shadow-sm' : 'text-gray-600 hover:text-gray-800' }}">
+                                class="flex-shrink-0 md:flex-1 py-2 px-4 rounded-md text-sm font-medium transition-all whitespace-nowrap snap-center md:snap-none {{ $currentTab === 'details' ? 'bg-white text-royal-blue shadow-sm' : 'text-gray-600 hover:text-gray-800' }}">
                             Details
                         </button>
+                        <button wire:click="setTab('image')"
+                                class="flex-shrink-0 md:flex-1 py-2 px-4 rounded-md text-sm font-medium transition-all whitespace-nowrap snap-center md:snap-none {{ $currentTab === 'image' ? 'bg-white text-royal-blue shadow-sm' : 'text-gray-600 hover:text-gray-800' }}">
+                            Image
+                        </button>
+                        <button wire:click="setTab('location')"
+                                class="flex-shrink-0 md:flex-1 py-2 px-4 rounded-md text-sm font-medium transition-all whitespace-nowrap snap-center md:snap-none {{ $currentTab === 'location' ? 'bg-white text-royal-blue shadow-sm' : 'text-gray-600 hover:text-gray-800' }}">
+                            Location
+                        </button>
                         <button wire:click="setTab('private')"
-                                class="flex-1 py-2 px-3 rounded-md text-sm font-medium transition-all {{ $currentTab === 'private' ? 'bg-white text-royal-blue shadow-sm' : 'text-gray-600 hover:text-gray-800' }}">
+                                class="flex-shrink-0 md:flex-1 py-2 px-4 rounded-md text-sm font-medium transition-all whitespace-nowrap snap-center md:snap-none {{ $currentTab === 'private' ? 'bg-white text-royal-blue shadow-sm' : 'text-gray-600 hover:text-gray-800' }}">
                             Private
                         </button>
                     </div>
@@ -241,58 +259,6 @@
                         </div>
                     </div>
 
-                    <!-- Location Tab -->
-                    <div x-show="$wire.currentTab === 'location'"
-                         x-transition:enter="transition ease-out duration-300"
-                         x-transition:enter-start="opacity-0 transform translate-x-4"
-                         x-transition:enter-end="opacity-100 transform translate-x-0"
-                         x-transition:leave="transition ease-in duration-200"
-                         x-transition:leave-start="opacity-100 transform translate-x-0"
-                         x-transition:leave-end="opacity-0 transform -translate-x-4"
-                         class="space-y-4">
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div class="space-y-1 md:col-span-2">
-                                <label class="text-xs font-medium text-gray-500">Address</label>
-                                <input wire:model.live="address" type="text" class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-1 focus:ring-royal-blue focus:border-royal-blue outline-none" placeholder="Full address">
-                                @error('address') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
-                            </div>
-                            <div class="space-y-1">
-                                <label class="text-xs font-medium text-gray-500">Latitude</label>
-                                <input wire:model.live="latitude" type="text" class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-1 focus:ring-royal-blue focus:border-royal-blue outline-none" placeholder="40.7128">
-                                @error('latitude') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
-                            </div>
-                            <div class="space-y-1">
-                                <label class="text-xs font-medium text-gray-500">Longitude</label>
-                                <input wire:model.live="longitude" type="text" class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-1 focus:ring-royal-blue focus:border-royal-blue outline-none" placeholder="-74.0060">
-                                @error('longitude') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
-                            </div>
-                            <div class="space-y-1 md:col-span-2">
-                                <div class="flex items-end gap-3">
-                                    <div class="flex-1">
-                                        <label class="text-xs font-medium text-gray-500">Maps Embed URL</label>
-                                        <input wire:model.live="maps_embed_url" type="text" class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-1 focus:ring-royal-blue focus:border-royal-blue outline-none" placeholder="https://maps.google.com/...">
-                                        @error('maps_embed_url') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
-                                    </div>
-                                    <button wire:click="loadMap"
-                                            type="button"
-                                            class="px-4 py-2 bg-royal-blue text-white rounded-lg hover:bg-blue-800 transition-colors font-medium text-sm whitespace-nowrap">
-                                        Load Map
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Map Preview -->
-                        <div x-show="$wire.maps_embed_url" class="relative h-64 bg-gray-100 rounded-lg border border-gray-200 overflow-hidden">
-                            <iframe :src="$wire.maps_embed_url"
-                                    class="w-full h-full border-0"
-                                    allowfullscreen
-                                    loading="lazy"
-                                    referrerpolicy="no-referrer-when-downgrade">
-                            </iframe>
-                        </div>
-                    </div>
-
                     <!-- Details Tab -->
                     <div x-show="$wire.currentTab === 'details'"
                          x-transition:enter="transition ease-out duration-300"
@@ -401,6 +367,73 @@
                                     </div>
                                 </template>
                             </div>
+                        </div>
+                    </div>
+
+                    <!-- Image Tab (Blank - Reserved for future implementation) -->
+                    <div x-show="$wire.currentTab === 'image'"
+                         x-transition:enter="transition ease-out duration-300"
+                         x-transition:enter-start="opacity-0 transform translate-x-4"
+                         x-transition:enter-end="opacity-100 transform translate-x-0"
+                         x-transition:leave="transition ease-in duration-200"
+                         x-transition:leave-start="opacity-100 transform translate-x-0"
+                         x-transition:leave-end="opacity-0 transform -translate-x-4"
+                         class="h-64 flex items-center justify-center">
+                        <div class="text-center">
+                            <span class="material-symbols-outlined text-6xl text-gray-300">image</span>
+                            <p class="mt-2 text-gray-500">Image management coming soon</p>
+                        </div>
+                    </div>
+
+                    <!-- Location Tab -->
+                    <div x-show="$wire.currentTab === 'location'"
+                         x-transition:enter="transition ease-out duration-300"
+                         x-transition:enter-start="opacity-0 transform translate-x-4"
+                         x-transition:enter-end="opacity-100 transform translate-x-0"
+                         x-transition:leave="transition ease-in duration-200"
+                         x-transition:leave-start="opacity-100 transform translate-x-0"
+                         x-transition:leave-end="opacity-0 transform -translate-x-4"
+                         class="space-y-4">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="space-y-1 md:col-span-2">
+                                <label class="text-xs font-medium text-gray-500">Address</label>
+                                <input wire:model.live="address" type="text" class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-1 focus:ring-royal-blue focus:border-royal-blue outline-none" placeholder="Full address">
+                                @error('address') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
+                            </div>
+                            <div class="space-y-1">
+                                <label class="text-xs font-medium text-gray-500">Latitude</label>
+                                <input wire:model.live="latitude" type="text" class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-1 focus:ring-royal-blue focus:border-royal-blue outline-none" placeholder="40.7128">
+                                @error('latitude') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
+                            </div>
+                            <div class="space-y-1">
+                                <label class="text-xs font-medium text-gray-500">Longitude</label>
+                                <input wire:model.live="longitude" type="text" class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-1 focus:ring-royal-blue focus:border-royal-blue outline-none" placeholder="-74.0060">
+                                @error('longitude') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
+                            </div>
+                            <div class="space-y-1 md:col-span-2">
+                                <div class="flex items-end gap-3">
+                                    <div class="flex-1">
+                                        <label class="text-xs font-medium text-gray-500">Maps Embed URL</label>
+                                        <input wire:model.live="maps_embed_url" type="text" class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-1 focus:ring-royal-blue focus:border-royal-blue outline-none" placeholder="https://maps.google.com/...">
+                                        @error('maps_embed_url') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
+                                    </div>
+                                    <button wire:click="loadMap"
+                                            type="button"
+                                            class="px-4 py-2 bg-royal-blue text-white rounded-lg hover:bg-blue-800 transition-colors font-medium text-sm whitespace-nowrap">
+                                        Load Map
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Map Preview -->
+                        <div x-show="$wire.maps_embed_url" class="relative h-64 bg-gray-100 rounded-lg border border-gray-200 overflow-hidden">
+                            <iframe :src="$wire.maps_embed_url"
+                                    class="w-full h-full border-0"
+                                    allowfullscreen
+                                    loading="lazy"
+                                    referrerpolicy="no-referrer-when-downgrade">
+                            </iframe>
                         </div>
                     </div>
 

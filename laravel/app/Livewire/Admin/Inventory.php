@@ -7,6 +7,7 @@ use Livewire\Component;
 use Livewire\WithPagination;
 use App\Livewire\Admin\Inventory\EditPropertyModal;
 use App\Livewire\Admin\Inventory\DeleteConfirmationModal;
+use Illuminate\Support\Facades\Log;
 
 class Inventory extends Component
 {
@@ -15,9 +16,14 @@ class Inventory extends Component
     public $searchTerm = '';
     public $statusFilter = 'all';
     public $typeFilter = 'all';
+    public $sortBy = 'newest';
     public $viewMode = 'list'; // 'list' or 'grid'
     public $perPage = 10;
     public $editingPropertyId = null;
+    public $jumpToPage = null;
+
+    // How many pages to show on each side of current page
+    protected $onEachSide = 1;
 
     protected $listeners = [
         'property-updated' => 'handlePropertyUpdate',
@@ -35,6 +41,73 @@ class Inventory extends Component
         }
     }
 
+    /**
+     * Boot the component and check if current page is valid
+     */
+    public function boot()
+    {
+        // Check if we're on a page that no longer exists (e.g., after items were deleted)
+        $this->checkPageValidity();
+    }
+
+    /**
+     * Check if current page is valid and redirect to page 1 if not
+     */
+    protected function checkPageValidity()
+    {
+        // Get the current page from the query string
+        $currentPage = $this->getPage();
+        
+        // Calculate total pages based on current filters
+        $totalItems = $this->getFilteredTotalCount();
+        $totalPages = $totalItems > 0 ? ceil($totalItems / $this->perPage) : 1;
+        
+        // If current page is greater than total pages, reset to page 1
+        if ($currentPage > $totalPages && $currentPage > 1) {
+            $this->setPage(1);
+        }
+    }
+
+    /**
+     * Get filtered total count (same logic as getPropertiesProperty but just counting)
+     */
+    protected function getFilteredTotalCount()
+    {
+        $query = Property::query();
+        
+        // Apply same filters as getPropertiesProperty()
+        if ($this->searchTerm) {
+            $query->where(function ($q) {
+                if (is_numeric($this->searchTerm)) {
+                    $q->where('id', $this->searchTerm);
+                }
+                $q->orWhere('title', 'ILIKE', '%' . $this->searchTerm . '%')
+                  ->orWhere('address', 'ILIKE', '%' . $this->searchTerm . '%');
+            });
+        }
+        
+        if ($this->statusFilter !== 'all') {
+            $query->where('status', $this->statusFilter);
+        }
+        
+        if ($this->typeFilter !== 'all') {
+            $query->where('property_type', $this->typeFilter);
+        }
+        
+        return $query->count();
+    }
+
+    public function updatedViewMode($value)
+    {
+        // Save view mode preference to LocalStorage via JavaScript
+        $this->dispatch('viewModeChanged', $value)->to('livewire.admin.inventory');
+    }
+
+    public function setViewMode($mode)
+    {
+        $this->viewMode = $mode;
+    }
+
     public function updatingSearchTerm()
     {
         $this->resetPage();
@@ -50,14 +123,107 @@ class Inventory extends Component
         $this->resetPage();
     }
 
+    public function updatingSortBy()
+    {
+        $this->resetPage();
+    }
+
     public function updatingPerPage()
     {
         $this->resetPage();
     }
 
-    public function updatedViewMode()
+    /**
+     * Handle jumpToPage property changes (validation only, no auto-navigation)
+     */
+    public function updatedJumpToPage($value)
     {
-        // Handle view mode change if needed
+        // This method is kept for Livewire property hydration
+        // Navigation is handled via jumpToPageAction() method
+        // No auto-navigation on keystroke
+    }
+
+    /**
+     * Jump to a specific page when Go button is clicked or Enter is pressed
+     * NOTE: We do NOT access $this->properties here to avoid triggering lazy evaluation
+     * with stale paginator data. We calculate total pages from the filtered count instead.
+     */
+    public function jumpToPageAction()
+    {
+        if (!$this->jumpToPage) {
+            return;
+        }
+        
+        // Calculate total pages from filtered count (without accessing properties)
+        $totalItems = $this->getFilteredTotalCount();
+        $totalPages = $totalItems > 0 ? ceil($totalItems / $this->perPage) : 1;
+        
+        if ($this->jumpToPage >= 1 && $this->jumpToPage <= $totalPages) {
+            $this->setPage($this->jumpToPage);
+        }
+        
+        // Clear the input after navigation
+        $this->jumpToPage = null;
+    }
+
+    /**
+     * Get the pagination window for sliding window pagination
+     * Returns an array with 'leftGap', 'pages', 'rightGap' to determine what to show
+     */
+    public function getPaginationWindowProperty()
+    {
+        $currentPage = $this->properties->currentPage();
+        $totalPages = $this->totalPages;
+        $onEachSide = $this->onEachSide;
+
+        // If total pages is small, show all
+        if ($totalPages <= 7) {
+            return [
+                'showAll' => true,
+                'pages' => range(1, $totalPages),
+            ];
+        }
+
+        // Calculate the window around current page
+        $windowStart = max(1, $currentPage - $onEachSide);
+        $windowEnd = min($totalPages, $currentPage + $onEachSide);
+
+        // Determine if we need ellipsis
+        $showLeftEllipsis = $windowStart > 2;
+        $showRightEllipsis = $windowEnd < $totalPages - 1;
+
+        // Build pages array
+        $pages = [];
+
+        // Always add first page
+        $pages[] = 1;
+
+        // Add left ellipsis if needed
+        if ($showLeftEllipsis) {
+            $pages[] = '...';
+        }
+
+        // Add pages in the window
+        for ($i = $windowStart; $i <= $windowEnd; $i++) {
+            if ($i > 1 && $i < $totalPages) {
+                $pages[] = $i;
+            }
+        }
+
+        // Add right ellipsis if needed
+        if ($showRightEllipsis) {
+            $pages[] = '...';
+        }
+
+        // Always add last page
+        if ($totalPages > 1) {
+            $pages[] = $totalPages;
+        }
+
+        return [
+            'showAll' => false,
+            'pages' => $pages,
+        ];
     }
 
     public function handlePropertyUpdate($propertyId, $data)
@@ -100,6 +266,33 @@ class Inventory extends Component
         $this->dispatch('open-delete-modal', $propertyData)->to(DeleteConfirmationModal::class);
     }
 
+    public function getSortOptionsProperty()
+    {
+        return [
+            'newest' => 'Newest First',
+            'oldest' => 'Oldest First',
+            'updated_desc' => 'Latest Updated',
+            'price_asc' => 'Price: Low to High',
+            'price_desc' => 'Price: High to Low',
+            'title_asc' => 'Title: A to Z',
+            'title_desc' => 'Title: Z to A',
+            'size_asc' => 'Size: Small to Large',
+            'size_desc' => 'Size: Large to Small',
+        ];
+    }
+
+    public function getSortIcon($sortBy)
+    {
+        return match($sortBy) {
+            'newest', 'oldest' => 'schedule',
+            'updated_desc' => 'edit',
+            'price_asc', 'price_desc' => 'payments',
+            'title_asc', 'title_desc' => 'sort_by_alpha',
+            'size_asc', 'size_desc' => 'square_foot',
+            default => 'sort',
+        };
+    }
+
     public function getPropertiesProperty()
     {
         $query = Property::query();
@@ -124,6 +317,37 @@ class Inventory extends Component
         // Apply type filter
         if ($this->typeFilter !== 'all') {
             $query->where('property_type', $this->typeFilter);
+        }
+
+        // Apply sorting
+        switch ($this->sortBy) {
+            case 'newest':
+                $query->orderBy('created_at', 'desc');
+                break;
+            case 'oldest':
+                $query->orderBy('created_at', 'asc');
+                break;
+            case 'updated_desc':
+                $query->orderBy('updated_at', 'desc');
+                break;
+            case 'price_asc':
+                $query->orderBy('price', 'asc');
+                break;
+            case 'price_desc':
+                $query->orderBy('price', 'desc');
+                break;
+            case 'title_asc':
+                $query->orderBy('title', 'asc');
+                break;
+            case 'title_desc':
+                $query->orderBy('title', 'desc');
+                break;
+            case 'size_asc':
+                $query->orderBy('area_sqft', 'asc');
+                break;
+            case 'size_desc':
+                $query->orderBy('area_sqft', 'desc');
+                break;
         }
 
         return $query->paginate($this->perPage);
