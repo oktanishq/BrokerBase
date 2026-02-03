@@ -7,6 +7,7 @@ use Livewire\Component;
 use Livewire\WithPagination;
 use App\Livewire\Admin\Inventory\EditPropertyModal;
 use App\Livewire\Admin\Inventory\DeleteConfirmationModal;
+use Illuminate\Support\Facades\Log;
 
 class Inventory extends Component
 {
@@ -144,13 +145,25 @@ class Inventory extends Component
 
     /**
      * Jump to a specific page when Go button is clicked or Enter is pressed
+     * NOTE: We do NOT access $this->properties here to avoid triggering lazy evaluation
+     * with stale paginator data. We calculate total pages from the filtered count instead.
      */
     public function jumpToPageAction()
     {
-        if ($this->jumpToPage && $this->jumpToPage >= 1 && $this->jumpToPage <= $this->totalPages) {
-            $this->setPage($this->jumpToPage);
-            $this->jumpToPage = null; // Clear the input after navigation
+        if (!$this->jumpToPage) {
+            return;
         }
+        
+        // Calculate total pages from filtered count (without accessing properties)
+        $totalItems = $this->getFilteredTotalCount();
+        $totalPages = $totalItems > 0 ? ceil($totalItems / $this->perPage) : 1;
+        
+        if ($this->jumpToPage >= 1 && $this->jumpToPage <= $totalPages) {
+            $this->setPage($this->jumpToPage);
+        }
+        
+        // Clear the input after navigation
+        $this->jumpToPage = null;
     }
 
     /**

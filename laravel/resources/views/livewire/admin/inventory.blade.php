@@ -18,6 +18,9 @@
             this.viewMode = value;
             localStorage.setItem('inventory_view', value);
         });
+        
+        // DEBUG: Track Livewire events
+        console.log('[DEBUG JS] Component initialized, viewMode:', this.viewMode);
     },
     closeDropdowns() {
         this.statusOpen = false;
@@ -26,6 +29,7 @@
     },
     toggleViewMode() {
         const newMode = this.viewMode === 'list' ? 'grid' : 'list';
+        console.log('[DEBUG JS] toggleViewMode:', newMode);
         this.viewMode = newMode;
         localStorage.setItem('inventory_view', newMode);
         $wire.setViewMode(newMode);
