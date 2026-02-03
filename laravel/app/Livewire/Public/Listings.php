@@ -315,11 +315,18 @@ class Listings extends Component
 
     public function applyFiltersToQuery($query)
     {
-        // Apply search
+        // Apply search - case-insensitive, searches ID, title, address, and price
         if (!empty($this->searchQuery)) {
-            $query->where(function($q) {
-                $q->where('title', 'like', '%' . $this->searchQuery . '%')
-                  ->orWhere('address', 'like', '%' . $this->searchQuery . '%');
+            $searchTerm = '%' . strtolower(trim($this->searchQuery)) . '%';
+            $query->where(function($q) use ($searchTerm) {
+                // Search by ID (exact match or partial)
+                $q->where('id', 'like', '%' . trim($this->searchQuery) . '%')
+                  // Search by title (case-insensitive)
+                  ->orWhereRaw('LOWER(title) LIKE ?', [$searchTerm])
+                  // Search by address (case-insensitive)
+                  ->orWhereRaw('LOWER(address) LIKE ?', [$searchTerm])
+                  // Search by price (numeric comparison if input is numeric)
+                  ->orWhere('price', 'like', '%' . trim($this->searchQuery) . '%');
             });
         }
 
@@ -432,8 +439,9 @@ class Listings extends Component
         $agencyName = $this->settings['agency_name'] ?? 'Elite Homes';
         $message = "Hii i'm interested in\n*{$property['title']}*\nat {$property['address']}\nUID: {$property['id']}\nLink: {$domain}/property/{$property['id']}";
         $encodedMessage = urlencode($message);
-        $phone = preg_replace('/[^\d]/', '', $this->settings['w_no'] ?? '');
-        return "https://wa.me/{$phone}?text={$encodedMessage}";
+        $settings = $this->settings ?? [];
+        $phone = preg_replace('/[^\d]/', '', $settings['w_no'] ?? '');
+        return $phone ? "https://wa.me/{$phone}?text={$encodedMessage}" : '#';
     }
 
     public function getPropertyBadge($property)

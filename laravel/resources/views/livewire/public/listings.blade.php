@@ -193,11 +193,14 @@
                                wire:model="jumpToPage"
                                wire:keydown.enter="jumpToPageAction()"
                                min="1" 
-                               max="{{ $this->totalPages }}" 
+                               max="{{ $this->totalPages }}"
+                               step="1"
+                               oninput="this.value = this.value.replace(/[^0-9]/g, ''); if(this.value < 1) this.value = 1;"
                                placeholder="Page"
                                class="w-16 py-2 px-2 text-center text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:royal-blue/20 focus:border-royal-blue transition-all" />
                         <button wire:click="jumpToPageAction()" 
-                                class="px-3 py-2 text-sm font-medium text-white bg-royal-blue rounded-lg hover:bg-blue-800 transition-colors">
+                               @disabled(!$this->jumpToPage || $this->jumpToPage < 1 || $this->jumpToPage > $this->totalPages)
+                               class="px-3 py-2 text-sm font-medium text-white bg-royal-blue rounded-lg hover:bg-blue-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
                             Go
                         </button>
                     </div>
@@ -286,11 +289,14 @@
                                    wire:model="jumpToPage"
                                    wire:keydown.enter="jumpToPageAction()"
                                    min="1" 
-                                   max="{{ $this->totalPages }}" 
+                                   max="{{ $this->totalPages }}"
+                                   step="1"
+                                   oninput="this.value = this.value.replace(/[^0-9]/g, ''); if(this.value < 1) this.value = 1;"
                                    placeholder="Page"
                                    class="w-16 py-2 px-2 text-center text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:royal-blue/20 focus:border-royal-blue transition-all" />
                             <button wire:click="jumpToPageAction()" 
-                                    class="px-3 py-2 text-sm font-medium text-white bg-royal-blue rounded-lg hover:bg-blue-800 transition-colors">
+                                    @disabled(!$this->jumpToPage || $this->jumpToPage < 1 || $this->jumpToPage > $this->totalPages)
+                                    class="px-3 py-2 text-sm font-medium text-white bg-royal-blue rounded-lg hover:bg-blue-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
                                 Go
                             </button>
                         </div>
