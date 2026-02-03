@@ -69,20 +69,70 @@ class Inventory extends Component
     }
 
     /**
+     * Sanitize search input to prevent SQL injection
+     * Removes or escapes special SQL characters
+     */
+    protected function sanitizeSearchInput($input)
+    {
+        if (empty($input)) {
+            return '';
+        }
+        
+        // Convert to string and trim
+        $input = trim((string) $input);
+        
+        // Remove or escape dangerous SQL characters
+        $input = preg_replace('/[\x00-\x1f\x7f]/u', '', $input);
+        $input = str_replace(["'", '"', '\\', '\x00', '\n', '\r', '\t'], '', $input);
+        
+        // Limit to 100 characters
+        return substr($input, 0, 100);
+    }
+
+    /**
+     * Validate that a value is numeric for comparisons
+     */
+    protected function validateNumeric($value, $default = null)
+    {
+        if (empty($value) && $value !== '0') {
+            return $default;
+        }
+        
+        // Remove currency symbols, commas, and spaces
+        $cleaned = preg_replace('/[^0-9.]/', '', (string) $value);
+        
+        if (!is_numeric($cleaned) || floatval($cleaned) < 0) {
+            return $default;
+        }
+        
+        return floatval($cleaned);
+    }
+
+    /**
      * Get filtered total count (same logic as getPropertiesProperty but just counting)
      */
     protected function getFilteredTotalCount()
     {
         $query = Property::query();
         
-        // Apply same filters as getPropertiesProperty()
-        if ($this->searchTerm) {
-            $query->where(function ($q) {
-                if (is_numeric($this->searchTerm)) {
-                    $q->where('id', $this->searchTerm);
+        // Apply search with sanitization
+        $sanitizedSearch = $this->sanitizeSearchInput($this->searchTerm);
+        if (!empty($sanitizedSearch)) {
+            $searchTerm = '%' . strtolower($sanitizedSearch) . '%';
+            $query->where(function ($q) use ($sanitizedSearch, $searchTerm) {
+                // Search by ID (exact match or partial) - validate numeric
+                $numericId = $this->validateNumeric($sanitizedSearch);
+                if ($numericId !== null) {
+                    $q->where('id', 'like', '%' . $numericId . '%');
                 }
-                $q->orWhere('title', 'ILIKE', '%' . $this->searchTerm . '%')
-                  ->orWhere('address', 'ILIKE', '%' . $this->searchTerm . '%');
+                // Search by title (case-insensitive)
+                $q->orWhereRaw('LOWER(title) LIKE ?', [$searchTerm])
+                  // Search by address (case-insensitive)
+                  ->orWhereRaw('LOWER(address) LIKE ?', [$searchTerm])
+                  // Search by price (numeric comparison if input is numeric)
+                  ->orWhere('price', 'like', '%' . $sanitizedSearch . '%')
+                  // Search by property type (case-insensitive)
+                  ->orWhereRaw('LOWER(property_type) LIKE ?', [$searchTerm]);
             });
         }
         
@@ -297,15 +347,24 @@ class Inventory extends Component
     {
         $query = Property::query();
 
-        // Apply search
-        if ($this->searchTerm) {
-            $query->where(function ($q) {
-                // Only search by ID if search term is numeric
-                if (is_numeric($this->searchTerm)) {
-                    $q->where('id', $this->searchTerm);
+        // Apply search with sanitization
+        $sanitizedSearch = $this->sanitizeSearchInput($this->searchTerm);
+        if (!empty($sanitizedSearch)) {
+            $searchTerm = '%' . strtolower($sanitizedSearch) . '%';
+            $query->where(function ($q) use ($sanitizedSearch, $searchTerm) {
+                // Search by ID (exact match or partial) - validate numeric
+                $numericId = $this->validateNumeric($sanitizedSearch);
+                if ($numericId !== null) {
+                    $q->where('id', 'like', '%' . $numericId . '%');
                 }
-                $q->orWhere('title', 'ILIKE', '%' . $this->searchTerm . '%')
-                  ->orWhere('address', 'ILIKE', '%' . $this->searchTerm . '%');
+                // Search by title (case-insensitive)
+                $q->orWhereRaw('LOWER(title) LIKE ?', [$searchTerm])
+                  // Search by address (case-insensitive)
+                  ->orWhereRaw('LOWER(address) LIKE ?', [$searchTerm])
+                  // Search by price (numeric comparison if input is numeric)
+                  ->orWhere('price', 'like', '%' . $sanitizedSearch . '%')
+                  // Search by property type (case-insensitive)
+                  ->orWhereRaw('LOWER(property_type) LIKE ?', [$searchTerm]);
             });
         }
 

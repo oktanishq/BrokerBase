@@ -82,8 +82,8 @@
             <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400 group-focus-within:text-blue-600 transition-colors">
                 <span class="material-symbols-outlined">search</span>
             </span>
-            <input wire:model.live.debounce.300ms="searchTerm" class="w-full py-2.5 pl-10 pr-4 text-sm text-gray-700 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-                   placeholder="Search by id, title, location..." type="text"/>
+            <input wire:model.live.debounce.300ms="searchTerm" maxlength="100" class="w-full py-2.5 pl-10 pr-4 text-sm text-gray-700 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                   placeholder="Search by id, title, location, price or type..." type="text"/>
         </div>
 
         <!-- Filters and View Toggle -->
