@@ -96,6 +96,62 @@ class Listings extends Component
     }
 
     /**
+     * Sanitize search input to prevent SQL injection
+     * Removes or escapes special SQL characters
+     */
+    protected function sanitizeSearchInput($input)
+    {
+        if (empty($input)) {
+            return '';
+        }
+        
+        // Convert to string and trim
+        $input = trim((string) $input);
+        
+        // Remove or escape dangerous SQL characters
+        // Allow alphanumeric, spaces, basic punctuation, and common property-related characters
+        $input = preg_replace('/[\x00-\x1f\x7f]/u', '', $input); // Remove control characters
+        $input = str_replace(["'", '"', '\\', '\x00', '\n', '\r', '\t'], '', $input);
+        
+        // Limit to 100 characters
+        return substr($input, 0, 100);
+    }
+
+    /**
+     * Validate that a value is numeric for price comparisons
+     */
+    protected function validateNumeric($value, $default = null)
+    {
+        if (empty($value) && $value !== '0') {
+            return $default;
+        }
+        
+        // Remove currency symbols, commas, and spaces
+        $cleaned = preg_replace('/[^0-9.]/', '', (string) $value);
+        
+        // Validate it's a valid positive number
+        if (!is_numeric($cleaned) || floatval($cleaned) < 0) {
+            return $default;
+        }
+        
+        return floatval($cleaned);
+    }
+
+    /**
+     * Validate an array contains only numeric values
+     */
+    protected function validateNumericArray($array, $default = [])
+    {
+        if (empty($array) || !is_array($array)) {
+            return $default;
+        }
+        
+        return array_filter($array, function($value) {
+            return is_numeric($value) && $value >= 0;
+        });
+    }
+
+    /**
      * Get filtered total count (same logic as getPropertiesProperty but just counting)
      */
     protected function getFilteredTotalCount()
@@ -105,11 +161,22 @@ class Listings extends Component
         // Base filter: Only show available properties on homepage
         $query->where('status', 'available');
         
-        // Apply same filters as getPropertiesProperty()
-        if (!empty($this->searchQuery)) {
-            $query->where(function($q) {
-                $q->where('title', 'like', '%' . $this->searchQuery . '%')
-                  ->orWhere('address', 'like', '%' . $this->searchQuery . '%');
+        // Apply search with sanitization
+        $sanitizedSearch = $this->sanitizeSearchInput($this->searchQuery);
+        if (!empty($sanitizedSearch)) {
+            $searchTerm = '%' . strtolower($sanitizedSearch) . '%';
+            $query->where(function($q) use ($sanitizedSearch, $searchTerm) {
+                // Search by ID (exact match or partial) - validate numeric
+                $numericId = $this->validateNumeric($sanitizedSearch);
+                if ($numericId !== null) {
+                    $q->where('id', 'like', '%' . $numericId . '%');
+                }
+                // Search by title (case-insensitive)
+                $q->orWhereRaw('LOWER(title) LIKE ?', [$searchTerm])
+                  // Search by address (case-insensitive)
+                  ->orWhereRaw('LOWER(address) LIKE ?', [$searchTerm])
+                  // Search by price (numeric comparison if input is numeric)
+                  ->orWhere('price', 'like', '%' . $sanitizedSearch . '%');
             });
         }
         
@@ -166,7 +233,10 @@ class Listings extends Component
         }
         
         if (!empty($this->currentFilters['bathrooms'])) {
-            $query->where('bathrooms', $this->currentFilters['bathrooms']);
+            $validatedBathrooms = $this->validateNumeric($this->currentFilters['bathrooms']);
+            if ($validatedBathrooms !== null) {
+                $query->where('bathrooms', $validatedBathrooms);
+            }
         }
         
         return $query->count();
@@ -316,17 +386,21 @@ class Listings extends Component
     public function applyFiltersToQuery($query)
     {
         // Apply search - case-insensitive, searches ID, title, address, and price
-        if (!empty($this->searchQuery)) {
-            $searchTerm = '%' . strtolower(trim($this->searchQuery)) . '%';
-            $query->where(function($q) use ($searchTerm) {
-                // Search by ID (exact match or partial)
-                $q->where('id', 'like', '%' . trim($this->searchQuery) . '%')
-                  // Search by title (case-insensitive)
-                  ->orWhereRaw('LOWER(title) LIKE ?', [$searchTerm])
+        $sanitizedSearch = $this->sanitizeSearchInput($this->searchQuery);
+        if (!empty($sanitizedSearch)) {
+            $searchTerm = '%' . strtolower($sanitizedSearch) . '%';
+            $query->where(function($q) use ($sanitizedSearch, $searchTerm) {
+                // Search by ID (exact match or partial) - validate numeric
+                $numericId = $this->validateNumeric($sanitizedSearch);
+                if ($numericId !== null) {
+                    $q->where('id', 'like', '%' . $numericId . '%');
+                }
+                // Search by title (case-insensitive)
+                $q->orWhereRaw('LOWER(title) LIKE ?', [$searchTerm])
                   // Search by address (case-insensitive)
                   ->orWhereRaw('LOWER(address) LIKE ?', [$searchTerm])
                   // Search by price (numeric comparison if input is numeric)
-                  ->orWhere('price', 'like', '%' . trim($this->searchQuery) . '%');
+                  ->orWhere('price', 'like', '%' . $sanitizedSearch . '%');
             });
         }
 
@@ -337,7 +411,6 @@ class Listings extends Component
                     $query->where('status', 'available');
                     break;
                 case 'rent':
-                    // Assuming rental properties have a different status or type
                     break;
                 case '2bhk':
                     $query->where('bedrooms', 2);
@@ -351,21 +424,30 @@ class Listings extends Component
             }
         }
 
-        // Apply advanced filters
+        // Apply advanced filters with validation
         if (!empty($this->currentFilters['propertyType'])) {
-            $query->where('property_type', $this->currentFilters['propertyType']);
+            $allowedTypes = ['apartment', 'villa', 'plot', 'commercial', 'office'];
+            if (in_array($this->currentFilters['propertyType'], $allowedTypes)) {
+                $query->where('property_type', $this->currentFilters['propertyType']);
+            }
         }
 
-        if (!empty($this->currentFilters['minPrice'])) {
-            $query->where('price', '>=', $this->currentFilters['minPrice']);
+        // Validate and sanitize minPrice
+        $minPrice = $this->validateNumeric($this->currentFilters['minPrice'] ?? null);
+        if ($minPrice !== null) {
+            $query->where('price', '>=', $minPrice);
         }
 
-        if (!empty($this->currentFilters['maxPrice'])) {
-            $query->where('price', '<=', $this->currentFilters['maxPrice']);
+        // Validate and sanitize maxPrice
+        $maxPrice = $this->validateNumeric($this->currentFilters['maxPrice'] ?? null);
+        if ($maxPrice !== null) {
+            $query->where('price', '<=', $maxPrice);
         }
 
-        if (!empty($this->currentFilters['configuration'])) {
-            $query->whereIn('bedrooms', $this->currentFilters['configuration']);
+        // Validate configuration array
+        $validatedConfigs = $this->validateNumericArray($this->currentFilters['configuration'] ?? []);
+        if (!empty($validatedConfigs)) {
+            $query->whereIn('bedrooms', $validatedConfigs);
         }
 
         if (!empty($this->currentFilters['carpetArea'])) {
@@ -391,11 +473,18 @@ class Listings extends Component
         }
 
         if (!empty($this->currentFilters['bathrooms'])) {
-            $query->where('bathrooms', $this->currentFilters['bathrooms']);
+            $validatedBathrooms = $this->validateNumeric($this->currentFilters['bathrooms']);
+            if ($validatedBathrooms !== null) {
+                $query->where('bathrooms', $validatedBathrooms);
+            }
         }
 
         if (!empty($this->currentFilters['furnishing'])) {
-            // This might need additional logic based on how furnishing is stored
+            // Validate furnishing is one of allowed values
+            $allowedFurnishing = ['unfurnished', 'semifurnished', 'fullyfurnished'];
+            if (in_array($this->currentFilters['furnishing'], $allowedFurnishing)) {
+                $query->where('furnishing', $this->currentFilters['furnishing']);
+            }
         }
 
         return $query;
@@ -403,19 +492,44 @@ class Listings extends Component
 
     public function applyFilters($filters)
     {
-        $this->currentFilters = $filters;
+        // Sanitize and validate all filter values
+        $sanitizedFilters = [];
+        
+        if (isset($filters['propertyType'])) {
+            $allowedTypes = ['apartment', 'villa', 'plot', 'commercial', 'office'];
+            $sanitizedFilters['propertyType'] = in_array($filters['propertyType'], $allowedTypes) 
+                ? $filters['propertyType'] : '';
+        }
+        
+        $sanitizedFilters['minPrice'] = $this->validateNumeric($filters['minPrice'] ?? null);
+        $sanitizedFilters['maxPrice'] = $this->validateNumeric($filters['maxPrice'] ?? null);
+        $sanitizedFilters['configuration'] = $this->validateNumericArray($filters['configuration'] ?? []);
+        $sanitizedFilters['carpetArea'] = isset($filters['carpetArea']) ? preg_replace('/[^0-9]/', '', $filters['carpetArea']) : '';
+        $sanitizedFilters['bathrooms'] = $this->validateNumeric($filters['bathrooms'] ?? null);
+        
+        $this->currentFilters = $sanitizedFilters;
         $this->resetPage();
     }
 
     public function resetFilters()
     {
-        $this->currentFilters = [];
+        $this->currentFilters = [
+            'propertyType' => '',
+            'minPrice' => '',
+            'maxPrice' => '',
+            'configuration' => [],
+            'carpetArea' => '',
+            'floorPreference' => '',
+            'bathrooms' => '',
+            'furnishing' => '',
+        ];
         $this->resetPage();
     }
 
     public function applySearch($search)
     {
-        $this->searchQuery = $search;
+        // Sanitize search input before storing
+        $this->searchQuery = $this->sanitizeSearchInput($search);
         $this->resetPage();
     }
 

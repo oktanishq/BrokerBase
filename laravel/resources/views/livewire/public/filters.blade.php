@@ -16,7 +16,7 @@
 
             <label class="relative flex-1 items-center">
                 <span class="absolute left-4 text-[#666e85] material-symbols-outlined top-1/2 -translate-y-1/2">search</span>
-                <input wire:model.live.debounce.300ms="search" class="w-full bg-[#f1f1f4] text-[#121317] placeholder:text-[#666e85] h-12 rounded-full pl-20 pr-4 focus:outline-none focus:ring-2 focus:ring-primary/20 border-none text-base transition-all" placeholder="Search by ID, location, title or price..." type="text"/>
+                <input wire:model.live.debounce.300ms="search" maxlength="100" class="w-full bg-[#f1f1f4] text-[#121317] placeholder:text-[#666e85] h-12 rounded-full pl-20 pr-4 focus:outline-none focus:ring-2 focus:ring-primary/20 border-none text-base transition-all" placeholder="Search by ID, location, title or price..." type="text"/>
             </label>
         </div>
     </div>
@@ -207,7 +207,7 @@
                                             @if(in_array($cat['key'], ['propertyType', 'configuration', 'carpetArea', 'floorPreference', 'bathrooms', 'furnishing']))
                                                 <!-- Search for filterable categories -->
                                                 <div class="mb-3">
-                                                    <input wire:model.live="filterSearches.{{ $cat['key'] }}"
+                                                    <input wire:model.live="filterSearches.{{ $cat['key'] }}" maxlength="100"
                                                            type="text"
                                                            placeholder="Search {{ strtolower($cat['name']) }}..."
                                                            class="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none">
@@ -236,6 +236,7 @@
                                                                    placeholder="No minimum"
                                                                    min="0"
                                                                    step="100000"
+                                                                   maxlength="12"
                                                                    class="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none">
                                                         </div>
                                                         <div>
@@ -245,6 +246,7 @@
                                                                    placeholder="No maximum"
                                                                    min="0"
                                                                    step="100000"
+                                                                   maxlength="12"
                                                                    class="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none">
                                                         </div>
                                                     </div>
@@ -344,6 +346,7 @@
             <div class="relative bg-white rounded-lg p-6 w-full max-w-md mx-4">
                 <h3 class="text-lg font-bold text-[#121317] mb-4">Save Filter</h3>
                 <input wire:model="savedFilterName"
+                       maxlength="50"
                        type="text"
                        placeholder="Enter filter name..."
                        class="w-full px-3 py-2 border border-gray-200 rounded-lg mb-4 focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none">
