@@ -51,6 +51,8 @@ class CreateProperty extends Component
     public $isSavingDraft = false;
     public $isProcessingStep = false;
     public $isPublishing = false;
+    public $draftSaved = false;
+    public $draftSavedAt = null;
 
     // Static data
     public $steps = ['Basics', 'Location', 'Media', 'Vault'];
@@ -78,8 +80,52 @@ class CreateProperty extends Component
         // Initialize amenities data
         $this->availableAmenities = AmenitiesData::getAll();
 
-        // Load draft data without triggering any loading states
-        $this->loadDraft();
+        // Try to load draft from database first, then fallback to session
+        $this->loadDraftFromDatabase();
+        
+        // If no database draft, load from session as backup
+        if (empty($this->title)) {
+            $this->loadDraft();
+        }
+    }
+
+    /**
+     * Load draft data from database if exists
+     */
+    protected function loadDraftFromDatabase()
+    {
+        $draftId = session('draft_property_id');
+        
+        if ($draftId) {
+            $property = Property::where('id', $draftId)
+                ->where('user_id', Auth::id())
+                ->where('status', 'draft')
+                ->first();
+            
+            if ($property) {
+                $this->title = $property->title ?? '';
+                $this->type = $property->property_type ?? 'apartment';
+                $this->price = $property->price ?? '';
+                $this->area = $property->area_sqft ?? '';
+                $this->bedrooms = $property->bedrooms ?? 3;
+                $this->bathrooms = $property->bathrooms ?? 2;
+                $this->description = $property->description ?? '';
+                $this->amenities = $property->amenities ?? [];
+                $this->address = $property->address ?? '';
+                $this->latitude = $property->latitude ?? '';
+                $this->longitude = $property->longitude ?? '';
+                $this->mapsEmbedUrl = $property->maps_embed_url ?? '';
+                $this->watermark = $property->watermark_enabled ?? true;
+                $this->ownerName = $property->owner_name ?? '';
+                $this->ownerPhone = $property->owner_phone ?? '';
+                $this->netPrice = $property->net_price ?? '';
+                $this->privateNotes = $property->private_notes ?? '';
+                $this->draftSaved = true;
+                $this->draftSavedAt = $property->updated_at ? $property->updated_at->format('M d, Y h:i A') : null;
+                return true;
+            }
+        }
+        return false;
     }
 
     // Navigation methods
@@ -414,10 +460,86 @@ class CreateProperty extends Component
 
     public function saveAsDraft()
     {
+        // Validate that title is present
+        if (empty(trim($this->title))) {
+            session()->flash('error', 'Please enter a property title before saving as draft.');
+            return;
+        }
+
         $this->isSavingDraft = true;
-        $this->saveDraft();
-        session()->flash('success', 'Draft saved successfully');
-        $this->isSavingDraft = false;
+
+        try {
+            // Normalize amenities before saving
+            $this->normalizeAmenities();
+
+            // Create or update property with draft status
+            $propertyData = [
+                'title' => $this->title,
+                'property_type' => $this->type ?? 'apartment',
+                'price' => $this->price ?: null,
+                'area_sqft' => $this->area ?: null,
+                'bedrooms' => $this->bedrooms,
+                'bathrooms' => $this->bathrooms,
+                'description' => $this->description ?: null,
+                'amenities' => $this->amenities,
+                'address' => $this->address ?: null,
+                'latitude' => $this->latitude ?: null,
+                'longitude' => $this->longitude ?: null,
+                'maps_embed_url' => $this->mapsEmbedUrl ?: null,
+                'owner_name' => $this->ownerName ?: null,
+                'owner_phone' => $this->ownerPhone ?: null,
+                'net_price' => $this->netPrice ?: null,
+                'private_notes' => $this->privateNotes ?: null,
+                'watermark_enabled' => $this->watermark,
+                'status' => 'draft',
+                'user_id' => Auth::id(),
+                'updated_at' => now(),
+            ];
+
+            // Check if we have an existing draft ID from session
+            $draftId = session('draft_property_id');
+
+            if ($draftId) {
+                // Update existing draft
+                $property = Property::where('id', $draftId)->where('user_id', Auth::id())->first();
+                if ($property) {
+                    $property->update($propertyData);
+                    // Handle images if any uploaded
+                    if (!empty($this->images)) {
+                        $this->processImages($property);
+                    }
+                } else {
+                    // Draft not found, create new
+                    $property = Property::create($propertyData);
+                    session(['draft_property_id' => $property->id]);
+                    if (!empty($this->images)) {
+                        $this->processImages($property);
+                    }
+                }
+            } else {
+                // Create new draft
+                $property = Property::create($propertyData);
+                session(['draft_property_id' => $property->id]);
+                if (!empty($this->images)) {
+                    $this->processImages($property);
+                }
+            }
+
+            // Update session draft data as backup
+            $this->saveDraft();
+
+            // Set success state
+            $this->draftSaved = true;
+            $this->draftSavedAt = now()->format('M d, Y h:i A');
+
+            session()->flash('success', 'Draft saved successfully! You can continue editing later.');
+
+        } catch (\Exception $e) {
+            Log::error('Draft save failed: ' . $e->getMessage());
+            session()->flash('error', 'Failed to save draft. Please try again.');
+        } finally {
+            $this->isSavingDraft = false;
+        }
     }
 
     // Form submission
