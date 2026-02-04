@@ -62,19 +62,27 @@
 
         <!-- Sticky Bottom Navigation -->
         <div class="sticky bottom-0 bg-white border-t border-gray-200 px-6 py-4 flex items-center justify-between z-20">
-            <button wire:click="saveAsDraft"
-                    @if($isSavingDraft) disabled @endif
-                    type="button"
-                    class="text-sm font-medium text-gray-500 hover:text-gray-700 transition-colors disabled:opacity-50">
-                @if($isSavingDraft)
-                    <span class="flex items-center gap-2">
-                        <span class="animate-spin rounded-full h-4 w-4 border-b-2 border-gray-500"></span>
-                        Saving...
+            <div class="flex items-center gap-3">
+                <button wire:click="saveAsDraft"
+                        @if($isSavingDraft) disabled @endif
+                        type="button"
+                        class="text-sm font-medium text-gray-500 hover:text-gray-700 transition-colors disabled:opacity-50">
+                    @if($isSavingDraft)
+                        <span class="flex items-center gap-2">
+                            <span class="animate-spin rounded-full h-4 w-4 border-b-2 border-gray-500"></span>
+                            Saving...
+                        </span>
+                    @else
+                        Save as Draft
+                    @endif
+                </button>
+                @if($draftSaved && $draftSavedAt)
+                    <span class="text-xs text-green-600 flex items-center gap-1">
+                        <span class="material-symbols-outlined text-sm">check_circle</span>
+                        Saved {{ $draftSavedAt }}
                     </span>
-                @else
-                    Save as Draft
                 @endif
-            </button>
+            </div>
             <div class="flex items-center gap-3">
                 <button wire:click="previousStep"
                         @if($currentStep <= 0) disabled @endif

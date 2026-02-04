@@ -29,7 +29,7 @@ class CreateProperty extends Component
     public $bedrooms = 3;
     public $bathrooms = 2;
     public $description = '';
-    public $amenities = ['Swimming Pool', 'Parking'];
+    public $amenities = [];
     public $address = '';
     public $latitude = '';
     public $longitude = '';
@@ -51,6 +51,8 @@ class CreateProperty extends Component
     public $isSavingDraft = false;
     public $isProcessingStep = false;
     public $isPublishing = false;
+    public $draftSaved = false;
+    public $draftSavedAt = null;
 
     // Static data
     public $steps = ['Basics', 'Location', 'Media', 'Vault'];
@@ -60,7 +62,8 @@ class CreateProperty extends Component
         ['value' => 'apartment', 'label' => 'Apartment', 'icon' => 'apartment'],
         ['value' => 'villa', 'label' => 'Villa', 'icon' => 'villa'],
         ['value' => 'plot', 'label' => 'Plot', 'icon' => 'landscape'],
-        ['value' => 'commercial', 'label' => 'Commercial', 'icon' => 'storefront']
+        ['value' => 'commercial', 'label' => 'Commercial', 'icon' => 'storefront'],
+        ['value' => 'office', 'label' => 'Office', 'icon' => 'business_center']
     ];
 
     // Advanced amenities system
@@ -77,8 +80,52 @@ class CreateProperty extends Component
         // Initialize amenities data
         $this->availableAmenities = AmenitiesData::getAll();
 
-        // Load draft data without triggering any loading states
-        $this->loadDraft();
+        // Try to load draft from database first, then fallback to session
+        $this->loadDraftFromDatabase();
+        
+        // If no database draft, load from session as backup
+        if (empty($this->title)) {
+            $this->loadDraft();
+        }
+    }
+
+    /**
+     * Load draft data from database if exists
+     */
+    protected function loadDraftFromDatabase()
+    {
+        $draftId = session('draft_property_id');
+        
+        if ($draftId) {
+            $property = Property::where('id', $draftId)
+                ->where('user_id', Auth::id())
+                ->where('status', 'draft')
+                ->first();
+            
+            if ($property) {
+                $this->title = $property->title ?? '';
+                $this->type = $property->property_type ?? 'apartment';
+                $this->price = $property->price ?? '';
+                $this->area = $property->area_sqft ?? '';
+                $this->bedrooms = $property->bedrooms ?? 3;
+                $this->bathrooms = $property->bathrooms ?? 2;
+                $this->description = $property->description ?? '';
+                $this->amenities = $property->amenities ?? [];
+                $this->address = $property->address ?? '';
+                $this->latitude = $property->latitude ?? '';
+                $this->longitude = $property->longitude ?? '';
+                $this->mapsEmbedUrl = $property->maps_embed_url ?? '';
+                $this->watermark = $property->watermark_enabled ?? true;
+                $this->ownerName = $property->owner_name ?? '';
+                $this->ownerPhone = $property->owner_phone ?? '';
+                $this->netPrice = $property->net_price ?? '';
+                $this->privateNotes = $property->private_notes ?? '';
+                $this->draftSaved = true;
+                $this->draftSavedAt = $property->updated_at ? $property->updated_at->format('M d, Y h:i A') : null;
+                return true;
+            }
+        }
+        return false;
     }
 
     // Navigation methods
@@ -190,24 +237,61 @@ class CreateProperty extends Component
         $this->showAmenitiesDropdown = !empty($this->amenitiesSearch);
     }
 
+    /**
+     * Normalize amenities array to ensure it's a clean indexed array
+     */
+    protected function normalizeAmenities()
+    {
+        // Ensure amenities is an array
+        if (!is_array($this->amenities)) {
+            $this->amenities = [];
+        }
+
+        // Filter out empty/null values and reindex
+        $this->amenities = array_values(array_filter($this->amenities, function ($amenity) {
+            return $amenity !== null && $amenity !== '' && trim($amenity) !== '';
+        }));
+    }
+
+    /**
+     * Validate that amenities is a valid indexed array
+     */
+    protected function validateAmenities()
+    {
+        // Ensure amenities is an array
+        if (!is_array($this->amenities)) {
+            $this->amenities = [];
+            return;
+        }
+
+        // Ensure it's a sequential indexed array (not associative)
+        $keys = array_keys($this->amenities);
+        if (array_keys($keys) !== $keys) {
+            // It's an associative array, convert to indexed
+            $this->amenities = array_values($this->amenities);
+        }
+
+        // Normalize to remove any corrupted data
+        $this->normalizeAmenities();
+    }
+
     public function addAmenity($amenityName = null)
     {
+        // Normalize amenities first
+        $this->validateAmenities();
+
         // If specific amenity name provided (from dropdown), add it
         if ($amenityName) {
-            if (!in_array($amenityName, $this->amenities)) {
+            if (!in_array($amenityName, $this->amenities, true)) {
                 $this->amenities[] = $amenityName;
             }
         }
         // If no amenity name but search has text, add it as custom amenity
         elseif (!empty(trim($this->amenitiesSearch))) {
             $customAmenity = trim($this->amenitiesSearch);
-            if (!in_array($customAmenity, $this->amenities)) {
+            if (!in_array($customAmenity, $this->amenities, true)) {
                 $this->amenities[] = $customAmenity;
             }
-        }
-        // Legacy: add empty for manual input (shouldn't happen with new system)
-        else {
-            $this->amenities[] = '';
         }
 
         // Reset search and close dropdown
@@ -216,18 +300,18 @@ class CreateProperty extends Component
         $this->saveDraft();
     }
 
-    public function removeAmenity($identifier)
+    public function removeAmenity($amenityName)
     {
-        if (is_numeric($identifier)) {
-            // Old system: remove by index
-            unset($this->amenities[$identifier]);
-            $this->amenities = array_values($this->amenities);
-        } else {
-            // New system: remove by amenity name
-            $this->amenities = array_filter($this->amenities, function ($amenity) use ($identifier) {
-                return $amenity !== $identifier;
-            });
-        }
+        // Validate amenities is an indexed array
+        $this->validateAmenities();
+
+        // Remove by amenity name only
+        $this->amenities = array_filter($this->amenities, function ($amenity) use ($amenityName) {
+            return $amenity !== $amenityName;
+        });
+
+        // Reindex array
+        $this->amenities = array_values($this->amenities);
         $this->saveDraft();
     }
 
@@ -263,6 +347,43 @@ class CreateProperty extends Component
             $this->images = array_values($this->images); // Reindex array
             $this->saveDraft();
         }
+    }
+
+    /**
+     * Set an image as the primary image and move it to first position
+     */
+    public function setPrimaryImage($index)
+    {
+        // Simplified: first image is always primary
+        // Just reorder to put the selected image first
+        if (isset($this->images[$index]) && $index !== 0) {
+            $imageToMove = $this->images[$index];
+            unset($this->images[$index]);
+            $this->images = array_values($this->images);
+            array_unshift($this->images, $imageToMove);
+            $this->saveDraft();
+        }
+    }
+
+    /**
+     * Reorder images after drag and drop
+     * Called from SortableJS
+     */
+    public function reorderImages($newOrder)
+    {
+        if (!is_array($newOrder) || count($newOrder) !== count($this->images)) {
+            return;
+        }
+        
+        $reorderedImages = [];
+        foreach ($newOrder as $index) {
+            if (isset($this->images[$index])) {
+                $reorderedImages[] = $this->images[$index];
+            }
+        }
+        
+        $this->images = $reorderedImages;
+        $this->saveDraft();
     }
 
 
@@ -322,6 +443,9 @@ class CreateProperty extends Component
     // Draft management
     public function saveDraft()
     {
+        // Normalize amenities before saving
+        $this->normalizeAmenities();
+
         $draftData = [
             'title' => $this->title,
             'type' => $this->type,
@@ -357,7 +481,7 @@ class CreateProperty extends Component
             $this->bedrooms = $draft['bedrooms'] ?? 3;
             $this->bathrooms = $draft['bathrooms'] ?? 2;
             $this->description = $draft['description'] ?? '';
-            $this->amenities = $draft['amenities'] ?? ['Swimming Pool', 'Parking'];
+            $this->amenities = $draft['amenities'] ?? [];
             $this->address = $draft['address'] ?? '';
             $this->latitude = $draft['latitude'] ?? '';
             $this->longitude = $draft['longitude'] ?? '';
@@ -373,10 +497,86 @@ class CreateProperty extends Component
 
     public function saveAsDraft()
     {
+        // Validate that title is present
+        if (empty(trim($this->title))) {
+            session()->flash('error', 'Please enter a property title before saving as draft.');
+            return;
+        }
+
         $this->isSavingDraft = true;
-        $this->saveDraft();
-        session()->flash('success', 'Draft saved successfully');
-        $this->isSavingDraft = false;
+
+        try {
+            // Normalize amenities before saving
+            $this->normalizeAmenities();
+
+            // Create or update property with draft status
+            $propertyData = [
+                'title' => $this->title,
+                'property_type' => $this->type ?? 'apartment',
+                'price' => $this->price ?: null,
+                'area_sqft' => $this->area ?: null,
+                'bedrooms' => $this->bedrooms,
+                'bathrooms' => $this->bathrooms,
+                'description' => $this->description ?: null,
+                'amenities' => $this->amenities,
+                'address' => $this->address ?: null,
+                'latitude' => $this->latitude ?: null,
+                'longitude' => $this->longitude ?: null,
+                'maps_embed_url' => $this->mapsEmbedUrl ?: null,
+                'owner_name' => $this->ownerName ?: null,
+                'owner_phone' => $this->ownerPhone ?: null,
+                'net_price' => $this->netPrice ?: null,
+                'private_notes' => $this->privateNotes ?: null,
+                'watermark_enabled' => $this->watermark,
+                'status' => 'draft',
+                'user_id' => Auth::id(),
+                'updated_at' => now(),
+            ];
+
+            // Check if we have an existing draft ID from session
+            $draftId = session('draft_property_id');
+
+            if ($draftId) {
+                // Update existing draft
+                $property = Property::where('id', $draftId)->where('user_id', Auth::id())->first();
+                if ($property) {
+                    $property->update($propertyData);
+                    // Handle images if any uploaded
+                    if (!empty($this->images)) {
+                        $this->processImages($property);
+                    }
+                } else {
+                    // Draft not found, create new
+                    $property = Property::create($propertyData);
+                    session(['draft_property_id' => $property->id]);
+                    if (!empty($this->images)) {
+                        $this->processImages($property);
+                    }
+                }
+            } else {
+                // Create new draft
+                $property = Property::create($propertyData);
+                session(['draft_property_id' => $property->id]);
+                if (!empty($this->images)) {
+                    $this->processImages($property);
+                }
+            }
+
+            // Update session draft data as backup
+            $this->saveDraft();
+
+            // Set success state
+            $this->draftSaved = true;
+            $this->draftSavedAt = now()->format('M d, Y h:i A');
+
+            session()->flash('success', 'Draft saved successfully! You can continue editing later.');
+
+        } catch (\Exception $e) {
+            Log::error('Draft save failed: ' . $e->getMessage());
+            session()->flash('error', 'Failed to save draft. Please try again.');
+        } finally {
+            $this->isSavingDraft = false;
+        }
     }
 
     // Form submission
@@ -396,6 +596,9 @@ class CreateProperty extends Component
                     return;
                 }
             }
+
+            // Normalize amenities before saving
+            $this->normalizeAmenities();
 
             // Create property
             $property = Property::create([
@@ -467,17 +670,15 @@ class CreateProperty extends Component
                 $imageUploadService->applyWatermark($uploadResult['path']);
             }
 
+            // Mark first image as primary
+            $uploadResult['is_primary'] = ($index === 0);
+            
             $uploadedImages[] = $uploadResult;
         }
 
-        // Save images to property
+        // Save images to property using single column approach
         if (!empty($uploadedImages)) {
             $property->saveImages($uploadedImages, $this->watermark);
-
-            // Set primary image
-            if (isset($uploadedImages[0])) {
-                $property->update(['primary_image_path' => $uploadedImages[0]['path']]);
-            }
         }
     }
 

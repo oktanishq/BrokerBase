@@ -78,11 +78,11 @@ class PropertyController extends Controller
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
-            'property_type' => 'required|in:apartment,villa,plot,commercial',
+            'property_type' => 'required|in:apartment,villa,plot,commercial,office',
             'price' => 'nullable|numeric|min:0',
             'area_sqft' => 'nullable|integer|min:0',
             'net_price' => 'nullable|numeric|min:0',
-            'address' => 'nullable|string', // Made optional to match frontend
+            'address' => 'nullable|string',
             'latitude' => 'nullable|numeric',
             'longitude' => 'nullable|numeric',
             'maps_embed_url' => 'nullable|url',
@@ -97,7 +97,7 @@ class PropertyController extends Controller
             'label_type' => 'nullable|in:none,new,popular,verified,custom',
             'custom_label_color' => 'nullable|string|regex:/^#[0-9A-F]{6}$/i',
             'watermark_enabled' => 'nullable|boolean',
-            // Handle amenities as JSON string from FormData
+            'images' => 'nullable|json',
             'amenities' => 'nullable|json',
         ]);
 
@@ -181,7 +181,7 @@ class PropertyController extends Controller
         $validated = $request->validate([
             'title' => 'sometimes|required|string|max:255',
             'description' => 'nullable|string',
-            'property_type' => 'sometimes|required|in:apartment,villa,plot,commercial',
+            'property_type' => 'sometimes|required|in:apartment,villa,plot,commercial,office',
             'price' => 'nullable|numeric|min:0',
             'area_sqft' => 'nullable|integer|min:0',
             'net_price' => 'nullable|numeric|min:0',
@@ -200,6 +200,7 @@ class PropertyController extends Controller
             'owner_phone' => 'nullable|string|max:50',
             'private_notes' => 'nullable|string',
             'watermark_enabled' => 'nullable|boolean',
+            'images' => 'nullable|json',
         ]);
 
         try {
@@ -277,7 +278,7 @@ class PropertyController extends Controller
         $validated = $request->validate([
             'title' => 'nullable|string|max:255',
             'description' => 'nullable|string',
-            'property_type' => 'nullable|in:apartment,villa,plot,commercial',
+            'property_type' => 'nullable|in:apartment,villa,plot,commercial,office',
             'price' => 'nullable|numeric|min:0',
             'area_sqft' => 'nullable|integer|min:0',
             'address' => 'nullable|string',
@@ -287,6 +288,7 @@ class PropertyController extends Controller
             'bedrooms' => 'nullable|integer|min:0',
             'bathrooms' => 'nullable|integer|min:0',
             'amenities' => 'nullable|array',
+            'images' => 'nullable|json',
         ]);
 
         try {
@@ -318,12 +320,13 @@ class PropertyController extends Controller
 
     /**
      * Handle image uploads
+     * Uses single column approach - stores all images in 'images' JSON column
      */
     private function handleImageUploads(Property $property, array $images): void
     {
         $userId = Auth::id();
         $propertyId = $property->id;
-        $imageMetadata = [];
+        $uploadedImages = [];
 
         foreach ($images as $index => $image) {
             if (!$image->isValid()) {
@@ -347,20 +350,16 @@ class PropertyController extends Controller
                     $this->imageUploadService->applyWatermark($uploadResult['path']);
                 }
                 
-                // Store metadata
-                $imageMetadata[] = [
+                // Store metadata in new format
+                $uploadedImages[] = [
                     'path' => $uploadResult['path'],
                     'original_name' => $uploadResult['original_name'],
                     'size' => $uploadResult['size'],
                     'mime_type' => $uploadResult['mime_type'],
-                    'order' => $uploadResult['order'],
+                    'order' => $index + 1,
                     'is_watermarked' => $property->watermark_enabled,
+                    'is_primary' => $index === 0,
                 ];
-                
-                // Set first image as primary
-                if ($index === 0 && !$property->primary_image_path) {
-                    $property->update(['primary_image_path' => $uploadResult['path']]);
-                }
                 
                 Log::info("Image uploaded successfully: {$uploadResult['path']}");
                 
@@ -370,10 +369,10 @@ class PropertyController extends Controller
             }
         }
         
-        // Update gallery images
-        if (!empty($imageMetadata)) {
-            $property->update(['images_metadata' => $imageMetadata]);
-            Log::info("Updated property {$propertyId} with " . count($imageMetadata) . " images");
+        // Save images using the Property model's single column approach
+        if (!empty($uploadedImages)) {
+            $property->saveImages($uploadedImages, $property->watermark_enabled);
+            Log::info("Updated property {$propertyId} with " . count($uploadedImages) . " images");
         }
     }
 
@@ -381,20 +380,21 @@ class PropertyController extends Controller
 
     /**
      * Delete all property images
+     * Uses single column approach - reads from 'images' JSON column
      */
     private function deletePropertyImages(Property $property): void
     {
         try {
             $imagePaths = [];
             
-            // Collect all image paths
-            if ($property->primary_image_path) {
-                $imagePaths[] = $property->primary_image_path;
-            }
+            // Collect all image paths from single 'images' column
+            $allImages = $property->all_images;
             
-            if ($property->images_metadata) {
-                foreach ($property->images_metadata as $image) {
-                    $imagePaths[] = $image['path'];
+            if (!empty($allImages) && is_array($allImages)) {
+                foreach ($allImages as $image) {
+                    if (isset($image['path'])) {
+                        $imagePaths[] = $image['path'];
+                    }
                 }
             }
             

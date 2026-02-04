@@ -91,7 +91,7 @@
                         <!-- Property Image -->
                         <img alt="Property image"
                              class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                             src="{{ $property['primary_image_path'] ? asset('storage/' . $property['primary_image_path']) : 'https://via.placeholder.com/400x300' }}">
+                             src="{{ $property['image'] ?? 'https://via.placeholder.com/400x300' }}">
                         <div class="absolute bottom-0 left-0 w-full h-1/3 bg-gradient-to-t from-black/50 to-transparent pointer-events-none"></div>
                     </div>
 

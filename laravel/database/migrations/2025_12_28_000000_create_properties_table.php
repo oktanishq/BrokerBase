@@ -7,6 +7,12 @@ use Illuminate\Support\Facades\DB;
 
 return new class extends Migration
 {
+    /**
+     * Run the migrations.
+     * 
+     * Creates the properties table matching the pgAdmin SQL script.
+     * Uses single-column image storage with 'images' JSON column.
+     */
     public function up(): void
     {
         Schema::create('properties', function (Blueprint $table) {
@@ -16,7 +22,7 @@ return new class extends Migration
             // Core Property Information
             $table->string('title');
             $table->text('description')->nullable();
-            $table->enum('property_type', ['apartment', 'villa', 'plot', 'commercial', 'office']);
+            $table->string('property_type', 255);
             
             // Pricing & Area
             $table->decimal('price', 12, 2)->nullable();
@@ -24,7 +30,7 @@ return new class extends Migration
             $table->decimal('net_price', 12, 2)->nullable();
             
             // Location
-            $table->text('address')->nullable(); // Made optional to match frontend
+            $table->text('address')->nullable();
             $table->decimal('latitude', 10, 8)->nullable();
             $table->decimal('longitude', 11, 8)->nullable();
             $table->string('maps_embed_url', 500)->nullable();
@@ -34,9 +40,9 @@ return new class extends Migration
             $table->integer('bathrooms')->default(0);
             
             // Status & Marketing
-            $table->enum('status', ['draft', 'available', 'booked', 'sold'])->default('draft');
+            $table->string('status', 255)->default('draft');
             $table->boolean('is_featured')->default(false);
-            $table->enum('label_type', ['none', 'new', 'popular', 'verified', 'custom'])->default('none');
+            $table->string('label_type', 255)->default('none');
             $table->string('custom_label_color', 7)->default('#3B82F6');
             $table->integer('views_count')->default(0);
             
@@ -48,9 +54,9 @@ return new class extends Migration
             $table->string('owner_phone')->nullable();
             $table->text('private_notes')->nullable();
             
-            // Media Management
-            $table->string('primary_image_path')->nullable();
-            $table->json('images_metadata')->default('[]');
+            // Media Management - Single Column Approach
+            // Stores all images in one JSON column with metadata
+            $table->json('images')->nullable();
             $table->boolean('watermark_enabled')->default(true);
             
             // User Management
@@ -75,12 +81,15 @@ return new class extends Migration
             $table->index('published_at');
         });
 
-        // Add check constraints to match PostgreSQL schema
+        // Add check constraints matching pgAdmin script
         DB::statement("ALTER TABLE properties ADD CONSTRAINT properties_property_type_check CHECK (property_type::text = ANY (ARRAY['apartment'::character varying, 'villa'::character varying, 'plot'::character varying, 'commercial'::character varying, 'office'::character varying]::text[]))");
         DB::statement("ALTER TABLE properties ADD CONSTRAINT properties_label_type_check CHECK (label_type::text = ANY (ARRAY['none'::character varying, 'new'::character varying, 'popular'::character varying, 'verified'::character varying, 'custom'::character varying]::text[]))");
         DB::statement("ALTER TABLE properties ADD CONSTRAINT properties_status_check CHECK (status::text = ANY (ARRAY['draft'::character varying, 'available'::character varying, 'booked'::character varying, 'sold'::character varying]::text[]))");
     }
 
+    /**
+     * Reverse the migrations.
+     */
     public function down(): void
     {
         Schema::dropIfExists('properties');
