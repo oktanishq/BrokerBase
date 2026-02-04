@@ -320,7 +320,7 @@ class Property extends Model
 
     /**
      * Save images to the single 'images' column
-     * Uses the is_primary flag from the input array
+     * First image is always marked as primary
      */
     public function saveImages(array $images, bool $watermarkEnabled = true): void
     {
@@ -330,7 +330,7 @@ class Property extends Model
             $formattedImages[] = [
                 'path' => $image['path'],
                 'order' => $index + 1,
-                'is_primary' => $image['is_primary'] ?? ($index === 0),
+                'is_primary' => ($index === 0), // First image is always primary
                 'original_name' => $image['original_name'] ?? null,
                 'size' => $image['size'] ?? null,
                 'mime_type' => $image['mime_type'] ?? null,

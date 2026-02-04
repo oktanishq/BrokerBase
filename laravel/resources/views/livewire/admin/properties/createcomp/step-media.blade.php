@@ -87,10 +87,10 @@
         }"
         class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
         @foreach($images as $index => $image)
-            <div class="relative group rounded-lg overflow-hidden bg-gray-100 cursor-grab active:cursor-grabbing touch-none"
+            <div class="relative group rounded-lg overflow-hidden cursor-grab active:cursor-grabbing touch-none
+                        {{ $index === 0 ? 'ring-2 ring-royal-blue' : 'bg-gray-100' }}"
                  data-image-index="{{ $index }}"
                  x-data="{ 
-                     isPrimary: {{ $index === $primaryImageIndex ? 'true' : 'false' }},
                      pendingDelete: false,
                      startDeleteTimer() {
                          this.pendingDelete = true;
@@ -104,45 +104,38 @@
                  @mouseleave="cancelDeleteTimer()">
                 
                 <!-- Image Container - 4:5 Ratio with object-cover -->
-                <div class="aspect-[4/5] w-full relative">
+                <div class="aspect-[4/5] w-full relative {{ $index === 0 ? '' : '' }}">
                     <img src="{{ $image->temporaryUrl() }}"
                          alt="Property Image {{ $index + 1 }}"
                          class="w-full h-full object-cover">
                     
-                    <!-- Primary Badge -->
-                    <div x-show="isPrimary"
-                         x-transition
-                         class="absolute top-2 left-2 bg-royal-blue text-white text-[10px] font-bold px-2 py-0.5 rounded shadow-sm">
-                        <span class="material-symbols-outlined text-xs mr-0.5">star</span>
-                        Primary
-                    </div>
+                    <!-- Primary Label (only on first image) -->
+                    @if($index === 0)
+                        <div class="absolute top-2 left-2 bg-royal-blue text-white text-[10px] font-bold px-2 py-0.5 rounded shadow-sm z-10">
+                            Primary
+                        </div>
+                    @endif
                 </div>
 
                 <!-- Delete Button -->
                 <button wire:click="removeImage({{ $index }})"
                         type="button"
                         x-ref="deleteBtn"
-                        class="ignore-drag absolute top-2 right-2 bg-white/90 p-1 rounded hover:text-red-600 text-gray-500 shadow-sm opacity-0 group-hover:opacity-100 transition-opacity"
+                        class="ignore-drag absolute top-2 right-2 bg-white/90 p-1 rounded hover:text-red-600 text-gray-500 shadow-sm opacity-0 group-hover:opacity-100 transition-opacity z-20"
                         title="Double-click to delete"
                         @dblclick="$wire.removeImage({{ $index }})">
                     <span class="material-symbols-outlined text-sm">delete</span>
                 </button>
 
-                <!-- Hover Overlay with Actions -->
+                <!-- Hover Overlay -->
                 <div class="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors pointer-events-none"></div>
 
-                <!-- Bottom Actions - Primary Selection -->
-                <div class="ignore-drag absolute bottom-0 left-0 right-0 p-2 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity">
-                    <label class="flex items-center justify-center gap-2 cursor-pointer">
-                        <input type="radio"
-                               name="primary_image_radio"
-                               value="{{ $index }}"
-                               x-model="isPrimary"
-                               @change="@this.setPrimaryImage({{ $index }})"
-                               class="w-4 h-4 text-royal-blue border-gray-300 focus:ring-royal-blue">
-                        <span class="text-xs text-white font-medium drop-shadow">Set as Primary</span>
-                    </label>
-                </div>
+                <!-- Primary Indicator Label on Hover -->
+                @if($index === 0)
+                    <div class="ignore-drag absolute bottom-0 left-0 right-0 p-2 bg-gradient-to-t from-royal-blue/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity">
+                        <span class="text-xs text-white font-medium">Primary Image (Cover)</span>
+                    </div>
+                @endif
             </div>
         @endforeach
     </div>
@@ -160,7 +153,7 @@
     @if(count($images) > 1)
         <div class="flex items-center gap-2 text-xs text-gray-500 bg-gray-50 px-3 py-2 rounded-lg">
             <span class="material-symbols-outlined text-sm">info</span>
-            <span>Drag images to reorder. Click "Set as Primary" to make an image the cover.</span>
+            <span>Drag images to reorder. The first image will be the primary/cover image.</span>
         </div>
     @endif
 
