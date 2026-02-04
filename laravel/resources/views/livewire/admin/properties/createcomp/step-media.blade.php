@@ -85,7 +85,7 @@
                 });
             }
         }"
-        class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+        class="grid grid-cols-3 sm:grid-cols-3 md:grid-cols-4 gap-3 sm:gap-4">
         @foreach($images as $index => $image)
             <div class="relative group rounded-lg overflow-hidden cursor-grab active:cursor-grabbing touch-none
                         {{ $index === 0 ? 'ring-2 ring-royal-blue' : 'bg-gray-100' }}"
@@ -99,6 +99,11 @@
                      cancelDeleteTimer() {
                          this.pendingDelete = false;
                          this.$refs.deleteBtn.title = 'Delete image';
+                     },
+                     confirmDelete() {
+                         if(confirm('Delete this image?')) {
+                             $wire.removeImage({{ $index }});
+                         }
                      }
                  }"
                  @mouseleave="cancelDeleteTimer()">
@@ -117,13 +122,13 @@
                     @endif
                 </div>
 
-                <!-- Delete Button -->
-                <button wire:click="removeImage({{ $index }})"
-                        type="button"
+                <!-- Delete Button - Always visible on mobile, hover on desktop -->
+                <button type="button"
                         x-ref="deleteBtn"
-                        class="ignore-drag absolute top-2 right-2 bg-white/90 p-1 rounded hover:text-red-600 text-gray-500 shadow-sm opacity-0 group-hover:opacity-100 transition-opacity z-20"
-                        title="Double-click to delete"
-                        @dblclick="$wire.removeImage({{ $index }})">
+                        class="ignore-drag absolute top-2 right-2 bg-white/90 p-1.5 rounded-full hover:text-red-600 text-gray-500 shadow-sm z-20
+                               opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-all duration-200 cursor-pointer"
+                        title="Delete image"
+                        @click="confirmDelete()">
                     <span class="material-symbols-outlined text-sm">delete</span>
                 </button>
 
