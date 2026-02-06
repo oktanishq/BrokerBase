@@ -34,7 +34,7 @@ class CreateProperty extends Component
     public $latitude = '';
     public $longitude = '';
     public $mapsEmbedUrl = '';
-    public $watermark = true;
+    public $watermark = false;
     public $ownerName = '';
     public $ownerPhone = '';
     public $netPrice = '';
@@ -115,7 +115,7 @@ class CreateProperty extends Component
                 $this->latitude = $property->latitude ?? '';
                 $this->longitude = $property->longitude ?? '';
                 $this->mapsEmbedUrl = $property->maps_embed_url ?? '';
-                $this->watermark = $property->watermark_enabled ?? true;
+                $this->watermark = $property->watermark_enabled ?? false;
                 $this->ownerName = $property->owner_name ?? '';
                 $this->ownerPhone = $property->owner_phone ?? '';
                 $this->netPrice = $property->net_price ?? '';
@@ -486,7 +486,7 @@ class CreateProperty extends Component
             $this->latitude = $draft['latitude'] ?? '';
             $this->longitude = $draft['longitude'] ?? '';
             $this->mapsEmbedUrl = $draft['mapsEmbedUrl'] ?? '';
-            $this->watermark = $draft['watermark'] ?? true;
+            $this->watermark = $draft['watermark'] ?? false;
             $this->ownerName = $draft['ownerName'] ?? '';
             $this->ownerPhone = $draft['ownerPhone'] ?? '';
             $this->netPrice = $draft['netPrice'] ?? '';

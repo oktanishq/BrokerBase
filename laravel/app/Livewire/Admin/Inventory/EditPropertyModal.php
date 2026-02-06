@@ -4,10 +4,15 @@ namespace App\Livewire\Admin\Inventory;
 
 use App\Models\Property;
 use App\Data\AmenitiesData;
+use App\Services\ImageUploadService;
+use Illuminate\Support\Facades\Storage;
 use Livewire\Component;
+use Livewire\WithFileUploads;
 
 class EditPropertyModal extends Component
 {
+    use WithFileUploads;
+
     public $isOpen = false;
     public $property = null;
     public $saving = false;
@@ -36,10 +41,33 @@ class EditPropertyModal extends Component
     public $net_price = '';
     public $private_notes = '';
 
+    // Image management - Single combined array approach
+    // All images (existing + new) are stored in a unified format for seamless reordering
+    public $allImages = [];           // Combined array of all images
+    public $newImageFiles = [];        // Temporary files uploaded via wire:model
+    public $deletedImagePaths = [];    // Paths of existing images marked for deletion
+
     // Advanced amenities system
     public $amenitiesSearch = '';
     public $showAmenitiesDropdown = false;
     public $availableAmenities = [];
+
+    /**
+     * Normalize amenities array to ensure it's a clean indexed array
+     * Prevents corruption from unset() operations
+     */
+    protected function normalizeAmenities(): void
+    {
+        if (!is_array($this->amenities)) {
+            $this->amenities = [];
+            return;
+        }
+        
+        // Filter out empty/null values and reindex
+        $this->amenities = array_values(array_filter($this->amenities, function ($amenity) {
+            return $amenity !== null && $amenity !== '' && trim($amenity) !== '';
+        }));
+    }
 
     protected $listeners = [
         'open-edit-modal' => 'openModal',
@@ -74,7 +102,10 @@ class EditPropertyModal extends Component
         $this->maps_embed_url = $this->property['maps_embed_url'] ?? '';
         $this->bedrooms = $this->property['bedrooms'] ?? '';
         $this->bathrooms = $this->property['bathrooms'] ?? '';
+        
+        // Load and normalize amenities data
         $this->amenities = $this->property['amenities'] ?? [];
+        $this->normalizeAmenities();
         $this->watermark_enabled = $this->property['watermark_enabled'] ?? true;
         $this->status = $this->property['status'] ?? 'available';
         $this->is_featured = $this->property['is_featured'] ?? false;
@@ -84,6 +115,43 @@ class EditPropertyModal extends Component
         $this->owner_phone = $this->property['owner_phone'] ?? '';
         $this->net_price = $this->property['net_price'] ? number_format((float)$this->property['net_price']) : '';
         $this->private_notes = $this->property['private_notes'] ?? '';
+
+        // Initialize image management
+        $this->allImages = [];
+        $this->newImageFiles = [];
+        $this->deletedImagePaths = [];
+
+        // Load existing images from database into allImages array
+        if (isset($this->property['images'])) {
+            $imagesData = $this->property['images'];
+            
+            // Handle double-encoded JSON
+            if (is_string($imagesData)) {
+                $decoded = json_decode($imagesData, true);
+                if (is_string($decoded)) {
+                    $decoded = json_decode($decoded, true);
+                }
+                $imagesData = $decoded;
+            }
+            
+            if (is_array($imagesData)) {
+                // Add existing images to allImages array with 'existing' type
+                foreach ($imagesData as $img) {
+                    if (!is_array($img)) continue;
+                    
+                    // Ensure URL is properly generated
+                    $path = $img['path'] ?? '';
+                    if ($path && !isset($img['url'])) {
+                        $img['url'] = Storage::url($path);
+                    }
+                    
+                    $this->allImages[] = [
+                        'type' => 'existing',
+                        'data' => $img
+                    ];
+                }
+            }
+        }
 
         // Initialize amenities data
         $this->availableAmenities = AmenitiesData::getAll();
@@ -104,6 +172,7 @@ class EditPropertyModal extends Component
         $this->bedrooms = '';
         $this->bathrooms = '';
         $this->amenities = [];
+        $this->normalizeAmenities();
         $this->watermark_enabled = true;
         $this->status = 'available';
         $this->is_featured = false;
@@ -115,10 +184,32 @@ class EditPropertyModal extends Component
         $this->private_notes = '';
         $this->currentTab = 'overview';
 
+        // Reset image management
+        $this->allImages = [];
+        $this->newImageFiles = [];
+        $this->deletedImagePaths = [];
+
         // Reset amenities system
         $this->amenitiesSearch = '';
         $this->showAmenitiesDropdown = false;
         $this->availableAmenities = AmenitiesData::getAll();
+    }
+
+    /**
+     * Normalize amenities for database storage
+     * Ensures clean indexed array is saved
+     */
+    protected function normalizeAmenitiesForSave(array $amenities): array
+    {
+        // Filter out empty/null values and reindex
+        $normalized = array_values(array_filter($amenities, function ($amenity) {
+            return $amenity !== null && $amenity !== '' && trim($amenity) !== '';
+        }));
+        
+        // Ensure all values are strings
+        return array_map(function ($amenity) {
+            return (string) $amenity;
+        }, $normalized);
     }
 
     public function setTab($tab)
@@ -128,25 +219,19 @@ class EditPropertyModal extends Component
 
     public function addAmenity($amenityName = null)
     {
-        // If specific amenity name provided (from dropdown), add it
         if ($amenityName) {
             if (!in_array($amenityName, $this->amenities)) {
                 $this->amenities[] = $amenityName;
             }
-        }
-        // If no amenity name but search has text, add it as custom amenity
-        elseif (!empty(trim($this->amenitiesSearch))) {
+        } elseif (!empty(trim($this->amenitiesSearch))) {
             $customAmenity = trim($this->amenitiesSearch);
             if (!in_array($customAmenity, $this->amenities)) {
                 $this->amenities[] = $customAmenity;
             }
-        }
-        // Legacy: add empty for manual input (shouldn't happen with new system)
-        else {
+        } else {
             $this->amenities[] = '';
         }
 
-        // Reset search and close dropdown
         $this->amenitiesSearch = '';
         $this->showAmenitiesDropdown = false;
     }
@@ -154,11 +239,9 @@ class EditPropertyModal extends Component
     public function removeAmenity($identifier)
     {
         if (is_numeric($identifier)) {
-            // Old system: remove by index
             unset($this->amenities[$identifier]);
             $this->amenities = array_values($this->amenities);
         } else {
-            // New system: remove by amenity name
             $this->amenities = array_filter($this->amenities, function ($amenity) use ($identifier) {
                 return $amenity !== $identifier;
             });
@@ -177,13 +260,11 @@ class EditPropertyModal extends Component
 
     public function loadMap()
     {
-        // Check if coordinates are provided
         if (!$this->latitude || !$this->longitude) {
             session()->flash('error', 'Please enter latitude and longitude to load the map');
             return;
         }
 
-        // Validate coordinates
         $lat = (float)$this->latitude;
         $lng = (float)$this->longitude;
 
@@ -197,17 +278,127 @@ class EditPropertyModal extends Component
             return;
         }
 
-        // Generate Google Maps embed URL
         $this->maps_embed_url = "https://maps.google.com/maps?q={$lat},{$lng}&z=15&output=embed&t=&z=15&ie=UTF8&iwloc=&output=embed&maptype=satellite&source=embed&disableDefaultUI=true&zoomControl=false&mapTypeControl=false&streetViewControl=false&rotateControl=false&fullscreenControl=false&scrollwheel=false";
 
-        // Flash success message
         session()->flash('success', 'Map loaded successfully!');
     }
 
-    // Advanced amenities methods
     public function updatedAmenitiesSearch()
     {
         $this->showAmenitiesDropdown = !empty($this->amenitiesSearch);
+    }
+
+    // ==================== Image Management Methods ====================
+
+    /**
+     * Handle newly uploaded files - convert to unified format immediately
+     * This allows seamless reordering with existing images
+     */
+    public function updatedNewImageFiles($files)
+    {
+        if (!is_array($files)) {
+            $files = [$files];
+        }
+
+        $imageUploadService = new ImageUploadService();
+
+        foreach ($files as $file) {
+            if ($file instanceof \Illuminate\Http\UploadedFile) {
+                // Validate image
+                $validation = $imageUploadService->validateImage($file);
+                
+                if (!$validation['valid']) {
+                    session()->flash('error', 'Invalid image: ' . implode(', ', $validation['errors']));
+                    // Remove invalid file
+                    foreach ($this->newImageFiles as $key => $existingFile) {
+                        if ($existingFile instanceof \Illuminate\Http\UploadedFile && 
+                            $existingFile->getClientOriginalName() === $file->getClientOriginalName() &&
+                            $existingFile->getSize() === $file->getSize()) {
+                            unset($this->newImageFiles[$key]);
+                            $this->newImageFiles = array_values($this->newImageFiles);
+                            break;
+                        }
+                    }
+                    continue;
+                }
+
+                // Add to allImages array as a new image
+                $this->allImages[] = [
+                    'type' => 'new',
+                    'data' => [
+                        'temporary_file' => $file,
+                        'temporary_url' => $file->temporaryUrl(),
+                        'original_name' => $file->getClientOriginalName() ?? 'image.jpg',
+                        'size' => $file->getSize(),
+                        'mime_type' => $file->getMimeType(),
+                    ]
+                ];
+            }
+        }
+
+        // Clear the file input after processing
+        $this->newImageFiles = [];
+    }
+
+    /**
+     * Remove an image by index
+     */
+    public function removeImage($index)
+    {
+        if (isset($this->allImages[$index])) {
+            $imageItem = $this->allImages[$index];
+            
+            // If it's an existing image, mark for deletion
+            if ($imageItem['type'] === 'existing') {
+                $path = $imageItem['data']['path'] ?? '';
+                if ($path && !in_array($path, $this->deletedImagePaths)) {
+                    $this->deletedImagePaths[] = $path;
+                }
+            }
+            
+            // Remove from array
+            unset($this->allImages[$index]);
+            $this->allImages = array_values($this->allImages);
+        }
+    }
+
+    /**
+     * Reorder images after drag and drop
+     * $newOrder contains the new positions (0, 1, 2...)
+     */
+    public function reorderImages($newOrder)
+    {
+        $reorderedImages = [];
+        
+        foreach ($newOrder as $newIndex) {
+            if (isset($this->allImages[$newIndex])) {
+                $reorderedImages[] = $this->allImages[$newIndex];
+            }
+        }
+        
+        $this->allImages = array_values($reorderedImages);
+    }
+
+    /**
+     * Get the count of images that need to be uploaded (new images)
+     */
+    public function getNewImageCount(): int
+    {
+        $count = 0;
+        foreach ($this->allImages as $image) {
+            if ($image['type'] === 'new') {
+                $count++;
+            }
+        }
+        return $count;
+    }
+
+    /**
+     * Get images filtered by type for display
+     */
+    public function getDisplayImages(): array
+    {
+        return $this->allImages;
     }
 
     public function saveChanges()
@@ -224,7 +415,7 @@ class EditPropertyModal extends Component
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
             'property_type' => 'required|in:apartment,villa,plot,commercial,office',
-            'price' => 'required|numeric|min:0',
+            'price' => 'nullable|numeric|min:0',
             'area_sqft' => 'nullable|numeric|min:0',
             'address' => 'nullable|string|max:500',
             'latitude' => 'nullable|numeric|between:-90,90',
@@ -243,9 +434,9 @@ class EditPropertyModal extends Component
             'title.max' => 'The property title must not exceed 255 characters.',
             'property_type.required' => 'Please select a property type.',
             'property_type.in' => 'Please select a valid property type.',
-            'price.required' => 'Please enter the property price.',
+            'price.required' => 'Please enter the property price (or leave empty for TBD).',
             'price.numeric' => 'The price must be a valid number.',
-            'price.min' => 'The price must be a positive number.',
+            'price.min' => 'The price must be a positive number or leave empty for TBD.',
             'area_sqft.numeric' => 'The area must be a valid number.',
             'area_sqft.min' => 'The area must be a positive number.',
             'address.max' => 'The address must not exceed 500 characters.',
@@ -269,12 +460,73 @@ class EditPropertyModal extends Component
 
         try {
             $property = Property::findOrFail($this->property['id']);
+            
+            $userId = auth()->id() ?? $property->user_id ?? 1;
+            $propertyId = $property->id;
+            
+            $imageUploadService = new ImageUploadService();
+            $finalImages = [];
+            
+            // Process all images in order
+            foreach ($this->allImages as $index => $imageItem) {
+                $type = $imageItem['type'];
+                $data = $imageItem['data'];
+                
+                if ($type === 'existing') {
+                    // Keep existing image, just update order and is_primary
+                    $data['order'] = $index + 1;
+                    $data['is_primary'] = $index === 0;
+                    
+                    // Fix URL if needed
+                    if (isset($data['path']) && !isset($data['url'])) {
+                        $data['url'] = Storage::url($data['path']);
+                    }
+                    if (isset($data['url']) && strpos($data['url'], '127.0.0.1:8000') !== false) {
+                        $data['url'] = str_replace('127.0.0.1:8000', 'localhost', $data['url']);
+                    }
+                    
+                    $finalImages[] = $data;
+                } else {
+                    // Upload new image
+                    $file = $data['temporary_file'] ?? null;
+                    if ($file instanceof \Illuminate\Http\UploadedFile) {
+                        $uploadedImage = $imageUploadService->uploadPropertyImageForEdit(
+                            $file,
+                            $userId,
+                            $propertyId,
+                            $index + 1
+                        );
+                        
+                        if ($uploadedImage) {
+                            $uploadedImage['is_primary'] = $index === 0;
+                            $finalImages[] = $uploadedImage;
+                        }
+                    }
+                }
+            }
+            
+            // Apply watermark if enabled
+            if ($this->watermark_enabled) {
+                foreach ($finalImages as &$img) {
+                    if (!($img['is_watermarked'] ?? false)) {
+                        $imageUploadService->applyWatermark($img['path']);
+                        $img['is_watermarked'] = true;
+                    }
+                }
+                unset($img);
+            }
+            
+            // Delete marked images from storage
+            if (!empty($this->deletedImagePaths)) {
+                $imageUploadService->deletePropertyImages($this->deletedImagePaths);
+            }
 
-            $updateData = [
+            // Update the property
+            $property->fill([
                 'title' => $this->title,
                 'description' => $this->description,
                 'property_type' => $this->property_type,
-                'price' => $this->price,
+                'price' => $this->price ?: null,
                 'area_sqft' => $this->area_sqft ?: null,
                 'address' => $this->address ?: null,
                 'latitude' => $this->latitude ?: null,
@@ -282,7 +534,7 @@ class EditPropertyModal extends Component
                 'maps_embed_url' => $this->maps_embed_url ?: null,
                 'bedrooms' => $this->bedrooms ?: null,
                 'bathrooms' => $this->bathrooms ?: null,
-                'amenities' => $this->amenities,
+                'amenities' => $this->normalizeAmenitiesForSave($this->amenities),
                 'watermark_enabled' => $this->watermark_enabled,
                 'status' => $this->status,
                 'is_featured' => $this->is_featured,
@@ -292,26 +544,21 @@ class EditPropertyModal extends Component
                 'owner_phone' => $this->owner_phone ?: null,
                 'net_price' => $this->net_price ?: null,
                 'private_notes' => $this->private_notes ?: null,
-            ];
+            ]);
+            
+            $property->images = $finalImages;
+            $property->save();
 
-            $property->update($updateData);
-
-            // Emit event to refresh inventory with updated data
+            // Emit event to refresh inventory
             $this->dispatch('property-updated', propertyId: $this->property['id'], data: $property->toArray());
 
-            // Close modal
             $this->closeModal();
-
-            // Show success message
             session()->flash('success', 'Property updated successfully!');
         } catch (\Illuminate\Validation\ValidationException $e) {
-            // Handle validation errors specifically
             session()->flash('error', 'Validation failed: ' . implode(', ', $e->errors()));
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
-            // Handle property not found
             session()->flash('error', 'Property not found.');
         } catch (\Exception $error) {
-            // Handle other errors
             session()->flash('error', 'Failed to update property: ' . $error->getMessage());
         } finally {
             $this->saving = false;

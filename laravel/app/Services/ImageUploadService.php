@@ -276,6 +276,49 @@ class ImageUploadService
     }
 
     /**
+     * Upload property image for edit modal (returns complete data structure)
+     */
+    public function uploadPropertyImageForEdit(UploadedFile $image, int $userId, int $propertyId, int $order = 1): ?array
+    {
+        // Validate image first
+        $validation = $this->validateImage($image);
+        if (!$validation['valid']) {
+            return null;
+        }
+        
+        $originalName = $image->getClientOriginalName();
+        $extension = $image->getClientOriginalExtension();
+        $fileName = Str::uuid() . '.' . $extension;
+        
+        // Determine directory based on order (first image = primary)
+        $directory = $order === 1 ? 'primary' : 'gallery';
+        $fullDirectory = "properties/{$userId}/{$propertyId}/{$directory}";
+        
+        // Create directory if not exists
+        Storage::disk('public')->makeDirectory($fullDirectory);
+        
+        // Store original image
+        $path = $image->storeAs($fullDirectory, $fileName, 'public');
+        
+        // Generate different sizes
+        $this->generateImageSizes($path);
+        
+        // Build full URL
+        $url = Storage::disk('public')->url($path);
+        
+        return [
+            'path' => $path,
+            'url' => $url,
+            'order' => $order,
+            'is_primary' => $order === 1,
+            'original_name' => $originalName,
+            'size' => $image->getSize(),
+            'mime_type' => $image->getMimeType(),
+            'is_watermarked' => false,
+        ];
+    }
+
+    /**
      * Validate uploaded image
      */
     public function validateImage(UploadedFile $image): array
@@ -289,15 +332,22 @@ class ImageUploadService
         }
         
         // Check file type
-        $allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
+        $allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
         if (!in_array($image->getMimeType(), $allowedTypes)) {
-            $errors[] = 'Only JPEG, PNG, GIF, and WebP images are allowed';
+            $errors[] = 'Only JPEG, PNG, and WebP images are allowed';
         }
         
-        // Check if image is valid
+        // Check if image is valid and get dimensions
         $imageInfo = @getimagesize($image->getPathname());
         if (!$imageInfo) {
             $errors[] = 'Invalid image file';
+        } else {
+            [$width, $height] = $imageInfo;
+            
+            // Check max resolution (1920x1080 or one side max 1920px)
+            if ($width > 1920 || $height > 1920) {
+                $errors[] = 'Image dimensions must not exceed 1920x1080 pixels';
+            }
         }
         
         return [

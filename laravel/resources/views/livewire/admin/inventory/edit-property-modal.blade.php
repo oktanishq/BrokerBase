@@ -29,6 +29,22 @@
             <!-- Modal Body -->
             <div class="overflow-y-auto flex-1 flex flex-col">
 
+                <!-- Session Error Messages -->
+                @if(session('error'))
+                    <div class="mx-6 mt-4 bg-red-50 border border-red-200 rounded-lg px-4 py-3 flex items-center gap-3">
+                        <span class="material-symbols-outlined text-red-500">error</span>
+                        <span class="text-sm text-red-700">{{ session('error') }}</span>
+                    </div>
+                @endif
+
+                <!-- Session Success Messages -->
+                @if(session('success'))
+                    <div class="mx-6 mt-4 bg-green-50 border border-green-200 rounded-lg px-4 py-3 flex items-center gap-3">
+                        <span class="material-symbols-outlined text-green-500">check_circle</span>
+                        <span class="text-sm text-green-700">{{ session('success') }}</span>
+                    </div>
+                @endif
+
                 <!-- Property Preview Section -->
                 @if($property)
                     <div class="p-6 pb-4">
@@ -52,8 +68,6 @@
                     <div class="absolute right-4 top-1 bottom-1 w-8 bg-gradient-to-l from-gray-100 to-transparent pointer-events-none z-10 md:hidden" :class="scrollLeft < $el.scrollWidth - $el.clientWidth - 16 ? 'opacity-100' : 'opacity-0'"></div>
                     
                     <!-- Tabs Container -->
-                    <!-- Mobile: Horizontal scroll with hidden scrollbar -->
-                    <!-- Desktop: Equal spacing with justify-evenly -->
                     <div class="flex overflow-x-auto md:overflow-visible justify-evenly md:justify-between gap-1 bg-gray-100 p-1 rounded-lg scrollbar-hide snap-x md:snap-none" 
                          style="scrollbar-width: none; -ms-overflow-style: none;"
                          x-on:scroll="scrollLeft = $el.scrollLeft">
@@ -243,11 +257,18 @@
                                 <div class="relative">
                                     <span class="absolute left-3 top-2 text-gray-400">₹</span>
                                     <input wire:model.live="price"
-                                           x-data="{ formatPrice(event) { event.target.value = event.target.value.replace(/[^0-9]/g, '').replace(/\B(?=(\d{3})+(?!\d))/g, ','); } }"
+                                           x-data="{ 
+                                                formatPrice(event) { 
+                                                    event.target.value = event.target.value.replace(/[^0-9]/g, '').replace(/\B(?=(\d{3})+(?!\d))/g, ','); 
+                                                },
+                                                get isEmpty() {
+                                                    return !$wire.price || $wire.price === '';
+                                                }
+                                           }"
                                            @input="formatPrice($event)"
                                            type="text"
-                                           class="w-full pl-7 pr-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-1 focus:ring-royal-blue focus:border-royal-blue outline-none font-mono"
-                                           placeholder="420,000">
+                                           class="w-full pl-7 pr-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-1 focus:ring-royal-blue focus:border-royal-blue outline-none font-mono placeholder-gray-300"
+                                           :placeholder="isEmpty ? 'TBD' : ''">
                                 </div>
                                 @error('price') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
                             </div>
@@ -370,7 +391,7 @@
                         </div>
                     </div>
 
-                    <!-- Image Tab (Blank - Reserved for future implementation) -->
+                    <!-- Image Tab -->
                     <div x-show="$wire.currentTab === 'image'"
                          x-transition:enter="transition ease-out duration-300"
                          x-transition:enter-start="opacity-0 transform translate-x-4"
@@ -378,11 +399,161 @@
                          x-transition:leave="transition ease-in duration-200"
                          x-transition:leave-start="opacity-100 transform translate-x-0"
                          x-transition:leave-end="opacity-0 transform -translate-x-4"
-                         class="h-64 flex items-center justify-center">
-                        <div class="text-center">
-                            <span class="material-symbols-outlined text-6xl text-gray-300">image</span>
-                            <p class="mt-2 text-gray-500">Image management coming soon</p>
+                         class="space-y-4">
+
+                        <!-- Section Header -->
+                        <div class="flex items-center justify-between">
+                            <h3 class="text-sm font-medium text-gray-700">Property Images</h3>
+                            <span class="text-xs text-gray-400">First image will be primary</span>
                         </div>
+
+                        <!-- Drag & Drop Upload Area -->
+                        <div x-data="{
+                                isDragging: false,
+                                handleDrop(event) {
+                                    event.preventDefault();
+                                    this.isDragging = false;
+                                    
+                                    const files = Array.from(event.dataTransfer.files).filter(file =>
+                                        file.type.startsWith('image/')
+                                    );
+                                    
+                                    if (files.length > 0) {
+                                        const dt = new DataTransfer();
+                                        files.forEach(file => dt.items.add(file));
+                                        
+                                        const input = document.getElementById('edit-property-images');
+                                        input.files = dt.files;
+                                        input.dispatchEvent(new Event('change', { bubbles: true }));
+                                    }
+                                },
+                                handleDragOver(event) {
+                                    event.preventDefault();
+                                },
+                                handleDragEnter(event) {
+                                    event.preventDefault();
+                                    this.isDragging = true;
+                                },
+                                handleDragLeave(event) {
+                                    event.preventDefault();
+                                    this.isDragging = false;
+                                }
+                            }"
+                            @drop="handleDrop($event)"
+                            @dragover="handleDragOver($event)"
+                            @dragenter="handleDragEnter($event)"
+                            @dragleave="handleDragLeave($event)"
+                            :class="isDragging ? 'border-blue-400 bg-blue-100' : 'border-blue-200 bg-blue-50/50'"
+                            class="border-2 border-dashed rounded-xl p-6 flex flex-col items-center justify-center text-center cursor-pointer transition-colors">
+                            <div class="size-10 rounded-full bg-white text-royal-blue shadow-sm flex items-center justify-center mb-2">
+                                <span class="material-symbols-outlined text-2xl">cloud_upload</span>
+                            </div>
+                            <p class="text-royal-blue font-medium text-sm">Drag photos here or <label for="edit-property-images" class="underline decoration-amber-500 decoration-2 underline-offset-2 cursor-pointer">Browse</label></p>
+                            <p class="text-xs text-gray-500 mt-1">JPG, PNG, WEBP • Max 10MB • 1920x1080px</p>
+                            <input wire:model="newImageFiles"
+                                    id="edit-property-images"
+                                    type="file"
+                                    multiple
+                                    accept="image/*"
+                                    class="hidden">
+                        </div>
+
+                        <!-- Sortable Image Grid -->
+                        <div x-data="{
+                                sortable: null,
+                                init() {
+                                    this.initSortable();
+                                    this.$watch('$wire.allImages', () => {
+                                        this.$nextTick(() => this.initSortable());
+                                    });
+                                },
+                                initSortable() {
+                                    if (this.sortable) {
+                                        this.sortable.destroy();
+                                    }
+                                    this.sortable = new Sortable(this.$el, {
+                                        animation: 150,
+                                        ghostClass: 'sortable-ghost',
+                                        chosenClass: 'sortable-chosen',
+                                        dragClass: 'sortable-drag',
+                                        filter: '.ignore-drag',
+                                        onEnd: (evt) => {
+                                            const newOrder = [];
+                                            this.$el.querySelectorAll('[data-image-uuid]').forEach(el => {
+                                                newOrder.push(parseInt(el.dataset.imageUuid));
+                                            });
+                                            @this.reorderImages(newOrder);
+                                        }
+                                    });
+                                }
+                            }"
+                            class="grid grid-cols-3 sm:grid-cols-3 md:grid-cols-4 gap-2 sm:gap-3">
+
+                            {{-- All Images (Combined - Existing + New) --}}
+                            @foreach($allImages as $index => $imageItem)
+                                <div class="relative group rounded-lg overflow-hidden cursor-grab active:cursor-grabbing touch-none
+                                            {{ $index === 0 ? 'ring-2 ring-royal-blue' : 'bg-gray-100' }}"
+                                     data-image-uuid="{{ $index }}">
+                                    
+                                    <!-- Image Container - 4:5 Ratio with object-cover -->
+                                    <div class="aspect-[4/5] w-full relative">
+                                        @if($imageItem['type'] === 'existing')
+                                            <img src="{{ $imageItem['data']['url'] ?? asset('storage/' . $imageItem['data']['path']) }}"
+                                                 alt="Property Image {{ $index + 1 }}"
+                                                 class="w-full h-full object-cover">
+                                        @else
+                                            <img src="{{ $imageItem['data']['temporary_url'] }}"
+                                                 alt="New Image {{ $index + 1 }}"
+                                                 class="w-full h-full object-cover">
+                                        @endif
+                                        
+                                        <!-- Primary Badge (only on first image) -->
+                                        @if($index === 0)
+                                            <div class="absolute top-2 left-2 bg-royal-blue text-white text-[10px] font-bold px-2 py-0.5 rounded shadow-sm z-10">
+                                                Primary
+                                            </div>
+                                        @endif
+
+                                        <!-- New Image Badge (for newly uploaded images) -->
+                                        @if($imageItem['type'] === 'new')
+                                            <div class="absolute top-2 left-2 {{ $index === 0 ? 'bg-royal-blue' : 'bg-green-500' }} text-white text-[10px] font-bold px-2 py-0.5 rounded shadow-sm z-10">
+                                                {{ $index === 0 ? 'Primary' : 'New' }}
+                                            </div>
+                                        @endif
+                                    </div>
+
+                                    <!-- Delete Button - Always visible on mobile, hover on desktop -->
+                                    <button type="button"
+                                            data-image-index="{{ $index }}"
+                                            class="ignore-drag absolute top-2 right-2 bg-white/90 p-1.5 rounded-full hover:text-red-600 text-gray-500 shadow-sm z-20
+                                                   opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-all duration-200 cursor-pointer"
+                                            title="Delete image"
+                                            @click="if(confirm('Delete this image?')) { $wire.removeImage($event.target.closest('[data-image-index]').dataset.imageIndex); }">
+                                        <span class="material-symbols-outlined text-sm">delete</span>
+                                    </button>
+
+                                    <!-- Hover Overlay -->
+                                    <div class="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors pointer-events-none"></div>
+                                </div>
+                            @endforeach
+                        </div>
+
+                        <!-- Empty State -->
+                        @if(empty($allImages))
+                            <div class="text-center py-8">
+                                <span class="material-symbols-outlined text-5xl text-gray-300">photo_library</span>
+                                <p class="text-gray-500 mt-2 text-sm">No images uploaded yet</p>
+                                <p class="text-xs text-gray-400">Drag and drop or browse to add images</p>
+                            </div>
+                        @endif
+
+                        <!-- Image Order Info -->
+                        @if(count($allImages) > 1)
+                            <div class="flex items-center gap-2 text-xs text-gray-500 bg-gray-50 px-3 py-2 rounded-lg">
+                                <span class="material-symbols-outlined text-sm">info</span>
+                                <span>Drag images to reorder. The first image will be the primary/cover image.</span>
+                            </div>
+                        @endif
                     </div>
 
                     <!-- Location Tab -->
@@ -503,4 +674,18 @@
             </div>
         </div>
     @endif
+
+    <!-- SortableJS Styles for Image Grid -->
+    <style>
+        .sortable-ghost {
+            opacity: 0.4;
+            background-color: #dbeafe !important;
+        }
+        .sortable-chosen {
+            box-shadow: 0 0 0 2px #3b82f6;
+        }
+        .sortable-drag {
+            opacity: 0.5;
+        }
+    </style>
 </div>
