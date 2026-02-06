@@ -493,14 +493,7 @@
                             @foreach($allImages as $index => $imageItem)
                                 <div class="relative group rounded-lg overflow-hidden cursor-grab active:cursor-grabbing touch-none
                                             {{ $index === 0 ? 'ring-2 ring-royal-blue' : 'bg-gray-100' }}"
-                                     data-image-uuid="{{ $index }}"
-                                     x-data="{ 
-                                         confirmDelete() {
-                                             if(confirm('Delete this image?')) {
-                                                 $wire.removeImage({{ $index }});
-                                             }
-                                         }
-                                     }">
+                                     data-image-uuid="{{ $index }}">
                                     
                                     <!-- Image Container - 4:5 Ratio with object-cover -->
                                     <div class="aspect-[4/5] w-full relative">
@@ -531,10 +524,11 @@
 
                                     <!-- Delete Button - Always visible on mobile, hover on desktop -->
                                     <button type="button"
+                                            data-image-index="{{ $index }}"
                                             class="ignore-drag absolute top-2 right-2 bg-white/90 p-1.5 rounded-full hover:text-red-600 text-gray-500 shadow-sm z-20
                                                    opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-all duration-200 cursor-pointer"
                                             title="Delete image"
-                                            @click="confirmDelete()">
+                                            @click="if(confirm('Delete this image?')) { $wire.removeImage($event.target.closest('[data-image-index]').dataset.imageIndex); }">
                                         <span class="material-symbols-outlined text-sm">delete</span>
                                     </button>
 
