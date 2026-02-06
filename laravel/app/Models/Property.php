@@ -119,10 +119,28 @@ class Property extends Model
     /**
      * Get all images with metadata and URLs
      * Uses single 'images' column instead of dual-column approach
+     * Handles corrupted double-encoded JSON data
      */
     public function getAllImagesAttribute(): array
     {
-        if (!$this->images || !is_array($this->images) || empty($this->images)) {
+        $imagesData = $this->images;
+        
+        if (!$imagesData) {
+            return [];
+        }
+        
+        // Handle corrupted double-encoded JSON data
+        // If images is a string, it means the data was double-encoded
+        if (is_string($imagesData)) {
+            $decoded = json_decode($imagesData, true);
+            // If still a string, decode again
+            if (is_string($decoded)) {
+                $decoded = json_decode($decoded, true);
+            }
+            $imagesData = $decoded;
+        }
+        
+        if (!is_array($imagesData) || empty($imagesData)) {
             return [];
         }
         
@@ -137,7 +155,7 @@ class Property extends Model
                 'mime_type' => $image['mime_type'] ?? null,
                 'is_watermarked' => $image['is_watermarked'] ?? ($this->watermark_enabled ?? true),
             ];
-        }, $this->images);
+        }, $imagesData);
     }
 
     /**
