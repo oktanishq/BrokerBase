@@ -28,7 +28,5 @@
 
 <livewire:public.listings />
 </main>
-@stack('scripts')
-
 </body>
 </html>
