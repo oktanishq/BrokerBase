@@ -42,7 +42,7 @@ class EditPropertyModal extends Component
     public $private_notes = '';
 
     // Image management
-    public $newImages = [];         // Newly uploaded images
+    public $newImages = [];         // Newly uploaded images (Using WithFileUploads trait, do NOT cast)
     public $existingImages = [];     // Images from database
     public $deletedImagePaths = [];  // Paths of images marked for deletion
 
@@ -133,6 +133,11 @@ class EditPropertyModal extends Component
                 // Filter out any null values
                 $this->existingImages = array_filter($this->existingImages);
                 $this->existingImages = array_values($this->existingImages);
+            }
+            
+            // SAFEGUARD: Ensure existingImages is always an array
+            if (!is_array($this->existingImages)) {
+                $this->existingImages = [];
             }
         }
 
@@ -450,6 +455,18 @@ class EditPropertyModal extends Component
             $imageUploadService = new ImageUploadService();
             $allImages = $this->existingImages;
             
+            // SAFEGUARD: Ensure allImages is always an array (handle Livewire serialization)
+            if (is_string($allImages)) {
+                $decoded = json_decode($allImages, true);
+                if (is_string($decoded)) {
+                    $decoded = json_decode($decoded, true);
+                }
+                $allImages = $decoded ?? [];
+            }
+            if (!is_array($allImages)) {
+                $allImages = [];
+            }
+            
             // Remove deleted images from the list
             $allImages = array_values(array_filter($allImages, function($img) {
                 return !in_array($img['path'] ?? '', $this->deletedImagePaths);
@@ -508,7 +525,9 @@ class EditPropertyModal extends Component
                 $imageUploadService->deletePropertyImages($this->deletedImagePaths);
             }
 
-            $updateData = [
+            // Update the property with all data using fill() + save()
+            // This avoids the double-encoding issue with update() and casts
+            $property->fill([
                 'title' => $this->title,
                 'description' => $this->description,
                 'property_type' => $this->property_type,
@@ -530,10 +549,11 @@ class EditPropertyModal extends Component
                 'owner_phone' => $this->owner_phone ?: null,
                 'net_price' => $this->net_price ?: null,
                 'private_notes' => $this->private_notes ?: null,
-                'images' => json_encode($finalImages),
-            ];
-
-            $property->update($updateData);
+            ]);
+            
+            // Set images as array - the cast will encode it ONCE during save()
+            $property->images = $finalImages;
+            $property->save();
 
             // Emit event to refresh inventory with updated data
             $this->dispatch('property-updated', propertyId: $this->property['id'], data: $property->toArray());
