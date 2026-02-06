@@ -29,6 +29,22 @@
             <!-- Modal Body -->
             <div class="overflow-y-auto flex-1 flex flex-col">
 
+                <!-- Session Error Messages -->
+                @if(session('error'))
+                    <div class="mx-6 mt-4 bg-red-50 border border-red-200 rounded-lg px-4 py-3 flex items-center gap-3">
+                        <span class="material-symbols-outlined text-red-500">error</span>
+                        <span class="text-sm text-red-700">{{ session('error') }}</span>
+                    </div>
+                @endif
+
+                <!-- Session Success Messages -->
+                @if(session('success'))
+                    <div class="mx-6 mt-4 bg-green-50 border border-green-200 rounded-lg px-4 py-3 flex items-center gap-3">
+                        <span class="material-symbols-outlined text-green-500">check_circle</span>
+                        <span class="text-sm text-green-700">{{ session('success') }}</span>
+                    </div>
+                @endif
+
                 <!-- Property Preview Section -->
                 @if($property)
                     <div class="p-6 pb-4">
@@ -239,15 +255,22 @@
                                 @error('property_type') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
                             </div>
                             <div class="space-y-1">
-                                <label class="text-xs font-medium text-gray-500">Price</label>
+                                <label class="text-xs font-medium text-gray-500">Price <span class="text-xs text-gray-400">(optional, leave empty for TBD)</span></label>
                                 <div class="relative">
                                     <span class="absolute left-3 top-2 text-gray-400">₹</span>
                                     <input wire:model.live="price"
-                                           x-data="{ formatPrice(event) { event.target.value = event.target.value.replace(/[^0-9]/g, '').replace(/\B(?=(\d{3})+(?!\d))/g, ','); } }"
+                                           x-data="{ 
+                                                formatPrice(event) { 
+                                                    event.target.value = event.target.value.replace(/[^0-9]/g, '').replace(/\B(?=(\d{3})+(?!\d))/g, ','); 
+                                                },
+                                                get isEmpty() {
+                                                    return !$wire.price || $wire.price === '';
+                                                }
+                                           }"
                                            @input="formatPrice($event)"
                                            type="text"
-                                           class="w-full pl-7 pr-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-1 focus:ring-royal-blue focus:border-royal-blue outline-none font-mono"
-                                           placeholder="420,000">
+                                           class="w-full pl-7 pr-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-1 focus:ring-royal-blue focus:border-royal-blue outline-none font-mono placeholder-gray-300"
+                                           :placeholder="isEmpty ? 'TBD' : ''">
                                 </div>
                                 @error('price') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
                             </div>
@@ -569,19 +592,6 @@
                                 <span>Drag images to reorder. The first image will be the primary/cover image.</span>
                             </div>
                         @endif
-
-                        <!-- Watermark Toggle -->
-                        <div class="flex items-center justify-between pt-2">
-                            <label class="inline-flex items-center cursor-pointer gap-3">
-                                <span class="text-sm font-medium text-slate-700">Apply Watermark</span>
-                                <div class="relative">
-                                    <input wire:model.live="watermark_enabled"
-                                           type="checkbox"
-                                           class="sr-only peer">
-                                    <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-royal-blue"></div>
-                                </div>
-                            </label>
-                        </div>
                     </div>
 
                     <!-- Location Tab -->
