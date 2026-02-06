@@ -364,7 +364,8 @@ class EditPropertyModal extends Component
     }
 
     /**
-     * Upload new images
+     * Validate uploaded images (callback after wire:model adds files)
+     * Note: wire:model automatically adds files to $newImages, so we only validate here
      */
     public function updatedNewImages($images)
     {
@@ -372,18 +373,28 @@ class EditPropertyModal extends Component
             $images = [$images];
         }
         
-        foreach ($images as $image) {
+        foreach ($images as $index => $image) {
             if ($image instanceof \Illuminate\Http\UploadedFile) {
                 // Validate image
                 $imageUploadService = new ImageUploadService();
                 $validation = $imageUploadService->validateImage($image);
                 
                 if (!$validation['valid']) {
-                    session()->flash('error', implode(', ', $validation['errors']));
-                    continue;
+                    // Show error for this specific file
+                    session()->flash('error', 'Invalid image: ' . implode(', ', $validation['errors']));
+                    
+                    // Remove invalid file from $newImages (wire:model already added it)
+                    // Find and remove the matching file by temporary path/name
+                    foreach ($this->newImages as $key => $existingImage) {
+                        if ($existingImage instanceof \Illuminate\Http\UploadedFile && 
+                            $existingImage->getClientOriginalName() === $image->getClientOriginalName() &&
+                            $existingImage->getSize() === $image->getSize()) {
+                            unset($this->newImages[$key]);
+                            $this->newImages = array_values($this->newImages);
+                            break;
+                        }
+                    }
                 }
-                
-                $this->newImages[] = $image;
             }
         }
     }
