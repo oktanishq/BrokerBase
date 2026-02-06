@@ -41,10 +41,11 @@ class EditPropertyModal extends Component
     public $net_price = '';
     public $private_notes = '';
 
-    // Image management
-    public $newImages = [];         // Newly uploaded images (Using WithFileUploads trait, do NOT cast)
-    public $existingImages = [];     // Images from database
-    public $deletedImagePaths = [];  // Paths of images marked for deletion
+    // Image management - Single combined array approach
+    // All images (existing + new) are stored in a unified format for seamless reordering
+    public $allImages = [];           // Combined array of all images
+    public $newImageFiles = [];        // Temporary files uploaded via wire:model
+    public $deletedImagePaths = [];    // Paths of existing images marked for deletion
 
     // Advanced amenities system
     public $amenitiesSearch = '';
@@ -95,49 +96,40 @@ class EditPropertyModal extends Component
         $this->net_price = $this->property['net_price'] ? number_format((float)$this->property['net_price']) : '';
         $this->private_notes = $this->property['private_notes'] ?? '';
 
-        // Load existing images from database
-        $this->existingImages = [];
-        $this->newImages = [];
+        // Initialize image management
+        $this->allImages = [];
+        $this->newImageFiles = [];
         $this->deletedImagePaths = [];
 
+        // Load existing images from database into allImages array
         if (isset($this->property['images'])) {
             $imagesData = $this->property['images'];
             
-            // If images is a string, decode it (handle previously corrupted double-encoded data)
+            // Handle double-encoded JSON
             if (is_string($imagesData)) {
                 $decoded = json_decode($imagesData, true);
-                // If still a string after decode, it's double-encoded - decode again
                 if (is_string($decoded)) {
                     $decoded = json_decode($decoded, true);
                 }
                 $imagesData = $decoded;
             }
             
-            // Ensure we have an array
             if (is_array($imagesData)) {
-                // Normalize existing images - ensure proper URL format
-                $this->existingImages = array_map(function($img) {
-                    if (!is_array($img)) {
-                        return null;
-                    }
+                // Add existing images to allImages array with 'existing' type
+                foreach ($imagesData as $img) {
+                    if (!is_array($img)) continue;
                     
-                    // Ensure URL is properly generated using Storage::url
+                    // Ensure URL is properly generated
                     $path = $img['path'] ?? '';
                     if ($path && !isset($img['url'])) {
                         $img['url'] = Storage::url($path);
                     }
                     
-                    return $img;
-                }, $imagesData);
-                
-                // Filter out any null values
-                $this->existingImages = array_filter($this->existingImages);
-                $this->existingImages = array_values($this->existingImages);
-            }
-            
-            // SAFEGUARD: Ensure existingImages is always an array
-            if (!is_array($this->existingImages)) {
-                $this->existingImages = [];
+                    $this->allImages[] = [
+                        'type' => 'existing',
+                        'data' => $img
+                    ];
+                }
             }
         }
 
@@ -172,8 +164,8 @@ class EditPropertyModal extends Component
         $this->currentTab = 'overview';
 
         // Reset image management
-        $this->newImages = [];
-        $this->existingImages = [];
+        $this->allImages = [];
+        $this->newImageFiles = [];
         $this->deletedImagePaths = [];
 
         // Reset amenities system
@@ -189,25 +181,19 @@ class EditPropertyModal extends Component
 
     public function addAmenity($amenityName = null)
     {
-        // If specific amenity name provided (from dropdown), add it
         if ($amenityName) {
             if (!in_array($amenityName, $this->amenities)) {
                 $this->amenities[] = $amenityName;
             }
-        }
-        // If no amenity name but search has text, add it as custom amenity
-        elseif (!empty(trim($this->amenitiesSearch))) {
+        } elseif (!empty(trim($this->amenitiesSearch))) {
             $customAmenity = trim($this->amenitiesSearch);
             if (!in_array($customAmenity, $this->amenities)) {
                 $this->amenities[] = $customAmenity;
             }
-        }
-        // Legacy: add empty for manual input (shouldn't happen with new system)
-        else {
+        } else {
             $this->amenities[] = '';
         }
 
-        // Reset search and close dropdown
         $this->amenitiesSearch = '';
         $this->showAmenitiesDropdown = false;
     }
@@ -215,11 +201,9 @@ class EditPropertyModal extends Component
     public function removeAmenity($identifier)
     {
         if (is_numeric($identifier)) {
-            // Old system: remove by index
             unset($this->amenities[$identifier]);
             $this->amenities = array_values($this->amenities);
         } else {
-            // New system: remove by amenity name
             $this->amenities = array_filter($this->amenities, function ($amenity) use ($identifier) {
                 return $amenity !== $identifier;
             });
@@ -238,13 +222,11 @@ class EditPropertyModal extends Component
 
     public function loadMap()
     {
-        // Check if coordinates are provided
         if (!$this->latitude || !$this->longitude) {
             session()->flash('error', 'Please enter latitude and longitude to load the map');
             return;
         }
 
-        // Validate coordinates
         $lat = (float)$this->latitude;
         $lng = (float)$this->longitude;
 
@@ -258,14 +240,11 @@ class EditPropertyModal extends Component
             return;
         }
 
-        // Generate Google Maps embed URL
         $this->maps_embed_url = "https://maps.google.com/maps?q={$lat},{$lng}&z=15&output=embed&t=&z=15&ie=UTF8&iwloc=&output=embed&maptype=satellite&source=embed&disableDefaultUI=true&zoomControl=false&mapTypeControl=false&streetViewControl=false&rotateControl=false&fullscreenControl=false&scrollwheel=false";
 
-        // Flash success message
         session()->flash('success', 'Map loaded successfully!');
     }
 
-    // Advanced amenities methods
     public function updatedAmenitiesSearch()
     {
         $this->showAmenitiesDropdown = !empty($this->amenitiesSearch);
@@ -274,129 +253,114 @@ class EditPropertyModal extends Component
     // ==================== Image Management Methods ====================
 
     /**
-     * Get all images combined (existing + new)
+     * Handle newly uploaded files - convert to unified format immediately
+     * This allows seamless reordering with existing images
      */
-    public function getAllImagesProperty(): array
+    public function updatedNewImageFiles($files)
     {
-        $allImages = [];
-        
-        // Add existing images that are not deleted
-        foreach ($this->existingImages as $index => $image) {
-            if (!in_array($image['path'] ?? '', $this->deletedImagePaths)) {
-                $image['order'] = $index + 1;
-                $image['is_primary'] = $index === 0;
-                $allImages[] = $image;
+        if (!is_array($files)) {
+            $files = [$files];
+        }
+
+        $imageUploadService = new ImageUploadService();
+
+        foreach ($files as $file) {
+            if ($file instanceof \Illuminate\Http\UploadedFile) {
+                // Validate image
+                $validation = $imageUploadService->validateImage($file);
+                
+                if (!$validation['valid']) {
+                    session()->flash('error', 'Invalid image: ' . implode(', ', $validation['errors']));
+                    // Remove invalid file
+                    foreach ($this->newImageFiles as $key => $existingFile) {
+                        if ($existingFile instanceof \Illuminate\Http\UploadedFile && 
+                            $existingFile->getClientOriginalName() === $file->getClientOriginalName() &&
+                            $existingFile->getSize() === $file->getSize()) {
+                            unset($this->newImageFiles[$key]);
+                            $this->newImageFiles = array_values($this->newImageFiles);
+                            break;
+                        }
+                    }
+                    continue;
+                }
+
+                // Add to allImages array as a new image
+                $this->allImages[] = [
+                    'type' => 'new',
+                    'data' => [
+                        'temporary_file' => $file,
+                        'temporary_url' => $file->temporaryUrl(),
+                        'original_name' => $file->getClientOriginalName() ?? 'image.jpg',
+                        'size' => $file->getSize(),
+                        'mime_type' => $file->getMimeType(),
+                    ]
+                ];
             }
         }
-        
-        // Add new images
-        foreach ($this->newImages as $index => $image) {
-            $allImages[] = [
-                'path' => $image['path'] ?? '',
-                'url' => $image['url'] ?? $image->temporaryUrl(),
-                'order' => count($allImages) + 1,
-                'is_primary' => count($allImages) === 0,
-                'original_name' => $image->getClientOriginalName() ?? 'image.jpg',
-                'size' => $image->getSize(),
-                'mime_type' => $image->getMimeType(),
-                'is_watermarked' => false,
-            ];
-        }
-        
-        return $allImages;
+
+        // Clear the file input after processing
+        $this->newImageFiles = [];
     }
 
     /**
-     * Remove a newly uploaded image
+     * Remove an image by index
      */
-    public function removeNewImage($index)
+    public function removeImage($index)
     {
-        unset($this->newImages[$index]);
-        $this->newImages = array_values($this->newImages);
-    }
-
-    /**
-     * Mark an existing image for deletion
-     */
-    public function deleteExistingImage($index)
-    {
-        if (isset($this->existingImages[$index])) {
-            $imagePath = $this->existingImages[$index]['path'] ?? '';
-            if ($imagePath && !in_array($imagePath, $this->deletedImagePaths)) {
-                $this->deletedImagePaths[] = $imagePath;
+        if (isset($this->allImages[$index])) {
+            $imageItem = $this->allImages[$index];
+            
+            // If it's an existing image, mark for deletion
+            if ($imageItem['type'] === 'existing') {
+                $path = $imageItem['data']['path'] ?? '';
+                if ($path && !in_array($path, $this->deletedImagePaths)) {
+                    $this->deletedImagePaths[] = $path;
+                }
             }
-            unset($this->existingImages[$index]);
-            $this->existingImages = array_values($this->existingImages);
+            
+            // Remove from array
+            unset($this->allImages[$index]);
+            $this->allImages = array_values($this->allImages);
         }
     }
 
     /**
      * Reorder images after drag and drop
+     * $newOrder contains the new positions (0, 1, 2...)
      */
     public function reorderImages($newOrder)
     {
-        // $newOrder contains the new order of indices for existingImages
-        // But since we have two arrays (existing + new), we need to handle this differently
-        // For simplicity, we'll combine and reorder
-        
-        $allImages = $this->getAllImagesProperty();
         $reorderedImages = [];
         
-        foreach ($newOrder as $index) {
-            if (isset($allImages[$index])) {
-                $reorderedImages[] = $allImages[$index];
+        foreach ($newOrder as $newIndex) {
+            if (isset($this->allImages[$newIndex])) {
+                $reorderedImages[] = $this->allImages[$newIndex];
             }
         }
         
-        // Separate back into existing and new
-        $this->existingImages = [];
-        $this->newImages = [];
-        
-        foreach ($reorderedImages as $image) {
-            if (isset($image['path']) && strpos($image['path'], 'temporary') === false) {
-                // Existing image
-                $this->existingImages[] = $image;
-            } else {
-                // New image - skip for now as we can't persist temporary uploads
-                // In production, you would upload these first
-            }
-        }
+        $this->allImages = array_values($reorderedImages);
     }
 
     /**
-     * Validate uploaded images (callback after wire:model adds files)
-     * Note: wire:model automatically adds files to $newImages, so we only validate here
+     * Get the count of images that need to be uploaded (new images)
      */
-    public function updatedNewImages($images)
+    public function getNewImageCount(): int
     {
-        if (!is_array($images)) {
-            $images = [$images];
-        }
-        
-        foreach ($images as $index => $image) {
-            if ($image instanceof \Illuminate\Http\UploadedFile) {
-                // Validate image
-                $imageUploadService = new ImageUploadService();
-                $validation = $imageUploadService->validateImage($image);
-                
-                if (!$validation['valid']) {
-                    // Show error for this specific file
-                    session()->flash('error', 'Invalid image: ' . implode(', ', $validation['errors']));
-                    
-                    // Remove invalid file from $newImages (wire:model already added it)
-                    // Find and remove the matching file by temporary path/name
-                    foreach ($this->newImages as $key => $existingImage) {
-                        if ($existingImage instanceof \Illuminate\Http\UploadedFile && 
-                            $existingImage->getClientOriginalName() === $image->getClientOriginalName() &&
-                            $existingImage->getSize() === $image->getSize()) {
-                            unset($this->newImages[$key]);
-                            $this->newImages = array_values($this->newImages);
-                            break;
-                        }
-                    }
-                }
+        $count = 0;
+        foreach ($this->allImages as $image) {
+            if ($image['type'] === 'new') {
+                $count++;
             }
         }
+        return $count;
+    }
+
+    /**
+     * Get images filtered by type for display
+     */
+    public function getDisplayImages(): array
+    {
+        return $this->allImages;
     }
 
     public function saveChanges()
@@ -462,59 +426,50 @@ class EditPropertyModal extends Component
             $userId = auth()->id() ?? $property->user_id ?? 1;
             $propertyId = $property->id;
             
-            // Upload new images
             $imageUploadService = new ImageUploadService();
-            $allImages = $this->existingImages;
+            $finalImages = [];
             
-            // SAFEGUARD: Ensure allImages is always an array (handle Livewire serialization)
-            if (is_string($allImages)) {
-                $decoded = json_decode($allImages, true);
-                if (is_string($decoded)) {
-                    $decoded = json_decode($decoded, true);
-                }
-                $allImages = $decoded ?? [];
-            }
-            if (!is_array($allImages)) {
-                $allImages = [];
-            }
-            
-            // Remove deleted images from the list
-            $allImages = array_values(array_filter($allImages, function($img) {
-                return !in_array($img['path'] ?? '', $this->deletedImagePaths);
-            }));
-            
-            // Process new images
-            foreach ($this->newImages as $index => $image) {
-                if ($image instanceof \Illuminate\Http\UploadedFile) {
-                    $order = count($allImages) + $index + 1;
-                    $uploadedImage = $imageUploadService->uploadPropertyImageForEdit(
-                        $image, 
-                        $userId, 
-                        $propertyId, 
-                        $order
-                    );
+            // Process all images in order
+            foreach ($this->allImages as $index => $imageItem) {
+                $type = $imageItem['type'];
+                $data = $imageItem['data'];
+                
+                if ($type === 'existing') {
+                    // Keep existing image, just update order and is_primary
+                    $data['order'] = $index + 1;
+                    $data['is_primary'] = $index === 0;
                     
-                    if ($uploadedImage) {
-                        $allImages[] = $uploadedImage;
+                    // Fix URL if needed
+                    if (isset($data['path']) && !isset($data['url'])) {
+                        $data['url'] = Storage::url($data['path']);
+                    }
+                    if (isset($data['url']) && strpos($data['url'], '127.0.0.1:8000') !== false) {
+                        $data['url'] = str_replace('127.0.0.1:8000', 'localhost', $data['url']);
+                    }
+                    
+                    $finalImages[] = $data;
+                } else {
+                    // Upload new image
+                    $file = $data['temporary_file'] ?? null;
+                    if ($file instanceof \Illuminate\Http\UploadedFile) {
+                        $uploadedImage = $imageUploadService->uploadPropertyImageForEdit(
+                            $file,
+                            $userId,
+                            $propertyId,
+                            $index + 1
+                        );
+                        
+                        if ($uploadedImage) {
+                            $uploadedImage['is_primary'] = $index === 0;
+                            $finalImages[] = $uploadedImage;
+                        }
                     }
                 }
             }
             
-            // Normalize URLs for all images (ensure consistent URL format)
-            foreach ($allImages as &$img) {
-                if (isset($img['path']) && !isset($img['url'])) {
-                    $img['url'] = Storage::url($img['path']);
-                }
-                // Fix any malformed URLs
-                if (isset($img['url']) && strpos($img['url'], '127.0.0.1:8000') !== false) {
-                    $img['url'] = str_replace('127.0.0.1:8000', 'localhost', $img['url']);
-                }
-            }
-            unset($img);
-            
             // Apply watermark if enabled
             if ($this->watermark_enabled) {
-                foreach ($allImages as &$img) {
+                foreach ($finalImages as &$img) {
                     if (!($img['is_watermarked'] ?? false)) {
                         $imageUploadService->applyWatermark($img['path']);
                         $img['is_watermarked'] = true;
@@ -523,21 +478,12 @@ class EditPropertyModal extends Component
                 unset($img);
             }
             
-            // Update order and is_primary for all images
-            $finalImages = [];
-            foreach ($allImages as $index => $image) {
-                $image['order'] = $index + 1;
-                $image['is_primary'] = $index === 0;
-                $finalImages[] = $image;
-            }
-            
             // Delete marked images from storage
             if (!empty($this->deletedImagePaths)) {
                 $imageUploadService->deletePropertyImages($this->deletedImagePaths);
             }
 
-            // Update the property with all data using fill() + save()
-            // This avoids the double-encoding issue with update() and casts
+            // Update the property
             $property->fill([
                 'title' => $this->title,
                 'description' => $this->description,
@@ -562,26 +508,19 @@ class EditPropertyModal extends Component
                 'private_notes' => $this->private_notes ?: null,
             ]);
             
-            // Set images as array - the cast will encode it ONCE during save()
             $property->images = $finalImages;
             $property->save();
 
-            // Emit event to refresh inventory with updated data
+            // Emit event to refresh inventory
             $this->dispatch('property-updated', propertyId: $this->property['id'], data: $property->toArray());
 
-            // Close modal
             $this->closeModal();
-
-            // Show success message
             session()->flash('success', 'Property updated successfully!');
         } catch (\Illuminate\Validation\ValidationException $e) {
-            // Handle validation errors specifically
             session()->flash('error', 'Validation failed: ' . implode(', ', $e->errors()));
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
-            // Handle property not found
             session()->flash('error', 'Property not found.');
         } catch (\Exception $error) {
-            // Handle other errors
             session()->flash('error', 'Failed to update property: ' . $error->getMessage());
         } finally {
             $this->saving = false;
