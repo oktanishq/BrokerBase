@@ -52,6 +52,23 @@ class EditPropertyModal extends Component
     public $showAmenitiesDropdown = false;
     public $availableAmenities = [];
 
+    /**
+     * Normalize amenities array to ensure it's a clean indexed array
+     * Prevents corruption from unset() operations
+     */
+    protected function normalizeAmenities(): void
+    {
+        if (!is_array($this->amenities)) {
+            $this->amenities = [];
+            return;
+        }
+        
+        // Filter out empty/null values and reindex
+        $this->amenities = array_values(array_filter($this->amenities, function ($amenity) {
+            return $amenity !== null && $amenity !== '' && trim($amenity) !== '';
+        }));
+    }
+
     protected $listeners = [
         'open-edit-modal' => 'openModal',
         'close-edit-modal' => 'closeModal',
@@ -85,7 +102,10 @@ class EditPropertyModal extends Component
         $this->maps_embed_url = $this->property['maps_embed_url'] ?? '';
         $this->bedrooms = $this->property['bedrooms'] ?? '';
         $this->bathrooms = $this->property['bathrooms'] ?? '';
+        
+        // Load and normalize amenities data
         $this->amenities = $this->property['amenities'] ?? [];
+        $this->normalizeAmenities();
         $this->watermark_enabled = $this->property['watermark_enabled'] ?? true;
         $this->status = $this->property['status'] ?? 'available';
         $this->is_featured = $this->property['is_featured'] ?? false;
@@ -152,6 +172,7 @@ class EditPropertyModal extends Component
         $this->bedrooms = '';
         $this->bathrooms = '';
         $this->amenities = [];
+        $this->normalizeAmenities();
         $this->watermark_enabled = true;
         $this->status = 'available';
         $this->is_featured = false;
@@ -172,6 +193,23 @@ class EditPropertyModal extends Component
         $this->amenitiesSearch = '';
         $this->showAmenitiesDropdown = false;
         $this->availableAmenities = AmenitiesData::getAll();
+    }
+
+    /**
+     * Normalize amenities for database storage
+     * Ensures clean indexed array is saved
+     */
+    protected function normalizeAmenitiesForSave(array $amenities): array
+    {
+        // Filter out empty/null values and reindex
+        $normalized = array_values(array_filter($amenities, function ($amenity) {
+            return $amenity !== null && $amenity !== '' && trim($amenity) !== '';
+        }));
+        
+        // Ensure all values are strings
+        return array_map(function ($amenity) {
+            return (string) $amenity;
+        }, $normalized);
     }
 
     public function setTab($tab)
@@ -496,7 +534,7 @@ class EditPropertyModal extends Component
                 'maps_embed_url' => $this->maps_embed_url ?: null,
                 'bedrooms' => $this->bedrooms ?: null,
                 'bathrooms' => $this->bathrooms ?: null,
-                'amenities' => $this->amenities,
+                'amenities' => $this->normalizeAmenitiesForSave($this->amenities),
                 'watermark_enabled' => $this->watermark_enabled,
                 'status' => $this->status,
                 'is_featured' => $this->is_featured,
