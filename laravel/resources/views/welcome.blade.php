@@ -45,6 +45,7 @@
 </style>
 </head>
 <body class="bg-background-light dark:bg-background-dark text-gray-800 dark:text-gray-200 transition-colors duration-200">
+<?php $settings = \App\Models\Setting::first()?->toArray() ?? []; ?>
 <div class="flex min-h-screen">
     <livewire:public.sidebar />
 
@@ -54,7 +55,7 @@
         <livewire:public.filters />
         <livewire:public.listings />
 
-        <x-public.footer />
+        <x-public.footer :settings="$settings" />
     </main>
 </div>
 @stack('scripts')
