@@ -1,0 +1,54 @@
+<aside class="hidden lg:flex w-64 bg-primary text-white flex-col fixed h-full z-30 shadow-xl">
+    <div class="p-6 flex items-center space-x-3 border-b border-blue-800">
+        <div class="h-10 w-10 bg-white rounded-full flex items-center justify-center text-primary font-bold text-xl">
+            BB
+        </div>
+        <span class="font-bold text-xl tracking-wide">BrokerBase</span>
+    </div>
+    <nav class="flex-1 overflow-y-auto py-6 px-3 space-y-1">
+        <a class="flex items-center space-x-3 px-4 py-3 bg-blue-800 rounded-lg text-white font-medium" href="#">
+            <span class="material-icons">dashboard</span>
+            <span>All Listings</span>
+        </a>
+        <a class="flex items-center space-x-3 px-4 py-3 hover:bg-blue-800 rounded-lg text-blue-100 hover:text-white transition-colors" href="#">
+            <span class="material-icons">villa</span>
+            <span>Villas</span>
+        </a>
+        <a class="flex items-center space-x-3 px-4 py-3 hover:bg-blue-800 rounded-lg text-blue-100 hover:text-white transition-colors" href="#">
+            <span class="material-icons">apartment</span>
+            <span>Apartments</span>
+        </a>
+        <a class="flex items-center space-x-3 px-4 py-3 hover:bg-blue-800 rounded-lg text-blue-100 hover:text-white transition-colors" href="#">
+            <span class="material-icons">landscape</span>
+            <span>Plots</span>
+        </a>
+        <a class="flex items-center space-x-3 px-4 py-3 hover:bg-blue-800 rounded-lg text-blue-100 hover:text-white transition-colors" href="#">
+            <span class="material-icons">storefront</span>
+            <span>Commercial</span>
+        </a>
+        <div class="border-t border-blue-800 my-4 pt-4">
+            <div class="px-4 text-xs font-semibold text-blue-300 uppercase tracking-wider mb-2">Available</div>
+            <a class="flex items-center space-x-3 px-4 py-2 hover:bg-blue-800 rounded-lg text-blue-100 hover:text-white transition-colors text-sm" href="#">
+                <span class="material-icons text-sm">key</span>
+                <span>For Rent</span>
+            </a>
+            <a class="flex items-center space-x-3 px-4 py-2 hover:bg-blue-800 rounded-lg text-blue-100 hover:text-white transition-colors text-sm" href="#">
+                <span class="material-icons text-sm">sell</span>
+                <span>For Sale</span>
+            </a>
+            <a class="flex items-center space-x-3 px-4 py-2 hover:bg-blue-800 rounded-lg text-blue-100 hover:text-white transition-colors text-sm" href="#">
+                <span class="material-icons text-sm">assignment</span>
+                <span>For Lease</span>
+            </a>
+        </div>
+    </nav>
+    <div class="p-4 border-t border-blue-800">
+        <div class="bg-blue-800 rounded-xl p-3 flex items-center space-x-3">
+            <img alt="Agent" class="h-10 w-10 rounded-full border-2 border-white" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA67CT3qPT7Ne-zXYPjp0kjL6zjvCYN9zSRn0cHLKd4AByyRfHmPDNLZVxA_ZVUXUO4TYwuafOVY-dRZTbX6XOXeiRNH0yD5puwnO50VxVMkEDAvpBgIkoOM6iMsHENW4JpLpqa430C8ddCymXyuuojzpxxGacVDvBOFSeDswV5w-PbcGnQqTwy6gswJT8yjHfkxkXp0ImwDBR8BS8CPSGCHqDbdhrWxwz0UbE7QZiHiBHvQpr1ShNjWxk5hvmZJUT60si7x-vDyrYG"/>
+            <div class="flex-1 min-w-0">
+                <p class="text-sm font-medium text-white truncate">John Doe</p>
+                <p class="text-xs text-blue-200 truncate">Senior Broker</p>
+            </div>
+        </div>
+    </div>
+</aside>
