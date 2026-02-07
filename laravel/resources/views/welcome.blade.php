@@ -49,7 +49,7 @@
 <div class="flex min-h-screen">
     <livewire:public.sidebar />
 
-    <main class="lg:ml-64 flex-1 flex flex-col min-w-0">
+    <main class="xl:ml-64 flex-1 flex flex-col min-w-0">
         <x-public.site-header />
         <livewire:public.hero />
         <livewire:public.filters />

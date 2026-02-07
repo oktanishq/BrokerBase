@@ -1,4 +1,4 @@
-<aside class="hidden lg:flex w-64 bg-primary text-white flex-col fixed h-full z-30 shadow-xl">
+<aside class="hidden xl:flex w-64 bg-primary text-white flex-col fixed h-full z-30 shadow-xl">
     <div class="p-6 flex items-center space-x-3 border-b border-blue-800">
         <div class="h-10 w-10 bg-white rounded-full flex items-center justify-center text-primary font-bold text-xl overflow-hidden">
             @if(!empty($settings['logo_url']))
