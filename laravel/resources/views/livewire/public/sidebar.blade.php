@@ -80,7 +80,7 @@
         x-transition:leave-start="opacity-100"
         x-transition:leave-end="opacity-0"
         @click="mobileOpen = false"
-        class="fixed inset-0 bg-black/50 z-45 xl:hidden"
+        class="fixed inset-0 bg-black/50 z-[45] xl:hidden"
         style="display: none;">
     </div>
 
@@ -171,3 +171,4 @@
         </div>
     </div>
 </div>
+
