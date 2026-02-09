@@ -18,11 +18,11 @@
                     Redefining real estate management with premium digital solutions for professional brokers and property seekers.
                 </p>
                 <div class="flex space-x-4">
-                    <a class="bg-white/5 hover:bg-[#1877F2] hover:text-white p-2 rounded-full transition-all" href="{{ $settings['facebook_url'] ?? '#' }}">
-                        <i class="fa-brands fa-facebook-f h-5 w-5"></i>
+                    <a class="text-[#1877F2] hover:opacity-80 p-2 transition-opacity" href="{{ $settings['facebook_url'] ?? '#' }}">
+                        <i class="fa-brands fa-facebook-f h-6 w-6"></i>
                     </a>
-                    <a class="bg-white/5 hover:bg-[#E4405F] hover:text-white p-2 rounded-full transition-all" href="{{ $settings['instagram_url'] ?? '#' }}">
-                        <i class="fa-brands fa-instagram h-5 w-5"></i>
+                    <a class="text-[#E4405F] hover:opacity-80 p-2 transition-opacity" href="{{ $settings['instagram_url'] ?? '#' }}">
+                        <i class="fa-brands fa-instagram h-6 w-6"></i>
                     </a>
                 </div>
             </div>
