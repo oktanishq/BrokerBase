@@ -64,25 +64,25 @@
             </div>
         </div>
         <div class="pt-8 border-t border-blue-900/50 flex flex-col md:flex-row items-center justify-between gap-4">
-            <p class="text-sm text-blue-200/40">
-                © {{ date('Y') }} {{ $settings['agency_name'] ?? 'BrokerBase' }}. All rights reserved. {{ $settings['rera_id'] ? 'RERA ORN: ' . $settings['rera_id'] : '' }}
-            </p>
             <div class="flex flex-wrap items-center justify-center gap-4">
                 @if(!empty($settings['rera_id']))
-                <div class="flex items-center space-x-3 bg-white/5 border border-white/10 px-6 py-3 rounded-full">
+                <div class="flex items-center space-x-2 md:space-x-3 bg-white/5 border border-white/10 px-4 md:px-6 py-2 md:py-3 rounded-full">
                     <div class="flex flex-col">
-                        <span class="text-[10px] uppercase tracking-tighter text-blue-300/60 font-bold">Government of India</span>
-                        <span class="text-sm font-black text-white tracking-widest leading-none">RERA REGISTERED</span>
+                        <span class="text-[9px] md:text-[10px] uppercase tracking-tighter md:tracking-tighter text-blue-300/60 font-bold">Government of India</span>
+                        <span class="text-xs md:text-sm font-black text-white tracking-widest md:tracking-widest leading-none">RERA REGISTERED</span>
                     </div>
                 </div>
                 @endif
-                <div class="flex items-center space-x-2 bg-white/5 border border-white/10 px-6 py-3 rounded-full">
-                    <div class="bg-amber-500 rounded-full p-1 flex items-center justify-center">
-                        <span class="material-symbols-outlined text-white text-base font-bold">check</span>
+                <div class="flex items-center space-x-2 md:space-x-3 bg-white/5 border border-white/10 px-4 md:px-6 py-2 md:py-3 rounded-full">
+                    <div class="flex flex-col">
+                        <span class="text-[9px] md:text-[10px] uppercase tracking-tighter md:tracking-tighter text-green-600 font-bold">Verified By</span>
+                        <span class="text-xs md:text-sm font-black text-white tracking-widest leading-none">BROKER BASE</span>
                     </div>
-                    <span class="text-sm font-bold text-white">Verified by BrokerBase</span>
                 </div>
             </div>
+            <p class="text-sm text-blue-200/40">
+                © {{ date('Y') }} {{ $settings['agency_name'] ?? 'BrokerBase' }}. All rights reserved.
+            </p>
         </div>
     </div>
 </footer>
