@@ -10,8 +10,8 @@
             <span class="material-symbols-outlined text-[18px] sm:text-[20px]">share</span>
             <span class="hidden sm:inline">Share</span>
         </button>
-        <button class="flex items-center justify-center h-10 w-10 rounded-full bg-[#f1f1f4] text-[#121317] hover:bg-gray-200 transition-colors">
-            <span class="material-symbols-outlined text-[18px] sm:text-[20px]">menu</span>
+        <button @click="$dispatch('toggle-mobile-sidebar')" class="flex items-center justify-center h-10 w-10 text-[#121317] hover:bg-gray-100 transition-colors">
+            <i class="fas fa-bars text-[18px] sm:text-[20px]"></i>
         </button>
     </div>
     
@@ -26,9 +26,7 @@
          class="fixed top-20 right-4 z-50 bg-green-500 text-white px-4 py-2 rounded-lg shadow-lg font-medium">
         Link copied!
     </div>
-</header>
-
-<script>
+    <script>
 function headerData() {
     return {
         settings: {},
@@ -59,3 +57,6 @@ function headerData() {
     }
 }
 </script>
+</header>
+
+
