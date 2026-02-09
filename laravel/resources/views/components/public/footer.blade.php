@@ -32,8 +32,8 @@
                     <li><a class="hover:text-amber-500 transition-colors flex items-center group" href="#"><span class="material-icons text-xs mr-2 opacity-0 group-hover:opacity-100 transition-all -ml-4 group-hover:ml-0">chevron_right</span>About Us</a></li>
                     <li><a class="hover:text-amber-500 transition-colors flex items-center group" href="#"><span class="material-icons text-xs mr-2 opacity-0 group-hover:opacity-100 transition-all -ml-4 group-hover:ml-0">chevron_right</span>Featured</a></li>
                     <li><a class="hover:text-amber-500 transition-colors flex items-center group" href="#"><span class="material-icons text-xs mr-2 opacity-0 group-hover:opacity-100 transition-all -ml-4 group-hover:ml-0">chevron_right</span>Properties</a></li>
+                    <li><a class="hover:text-amber-500 transition-colors flex items-center group cursor-pointer" onclick="highlightContactDetails()"><span class="material-icons text-xs mr-2 opacity-0 group-hover:opacity-100 transition-all -ml-4 group-hover:ml-0">chevron_right</span> Contact us</a></li>
                     <li><a class="hover:text-amber-500 transition-colors flex items-center group" href="#"><span class="material-icons text-xs mr-2 opacity-0 group-hover:opacity-100 transition-all -ml-4 group-hover:ml-0">lock</span> Real Estate Blog</a></li>
-                    <li><a class="hover:text-amber-500 transition-colors flex items-center group" href="#"><span class="material-icons text-xs mr-2 opacity-0 group-hover:opacity-100 transition-all -ml-4 group-hover:ml-0">chevron_right</span> Contact us</a></li>
                 </ul>
             </div>
             <div>
@@ -45,7 +45,7 @@
                     <li><a class="hover:text-amber-500 transition-colors" href="#">Cookie Policy</a></li>
                 </ul>
             </div>
-            <div>
+            <div id="contact-details" class="contact-highlight transition-all duration-300">
                 <h4 class="font-bold text-white mb-6 uppercase tracking-widest text-sm">Contact Details</h4>
                 <ul class="space-y-4 text-sm">
                     <li class="flex items-start">
@@ -85,4 +85,28 @@
             </p>
         </div>
     </div>
+
+    <script>
+        function highlightContactDetails() {
+            const contactSection = document.getElementById('contact-details');
+            
+            // Scroll to the contact section
+            contactSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            
+            // Add the highlight class
+            contactSection.classList.add('ring-4', 'ring-white/60');
+            
+            // Remove the highlight class after animation completes (3 seconds)
+            setTimeout(() => {
+                contactSection.classList.remove('ring-4', 'ring-white/60');
+            }, 3000);
+        }
+    </script>
+
+    <style>
+        .contact-highlight {
+            outline: 3px solid transparent;
+            outline-offset: 0;
+        }
+    </style>
 </footer>
