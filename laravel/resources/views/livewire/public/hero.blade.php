@@ -44,7 +44,7 @@
             <div class="flex gap-3">
                 <a href="tel:{{ $this->getCleanedPhoneNumber() }}" class="flex-1 h-12 bg-primary hover:bg-blue-800 text-white font-bold rounded-xl shadow-md shadow-blue-900/10 hover:shadow-lg transition-all flex items-center justify-center gap-2 group">
                     <span class="material-symbols-outlined text-[20px] group-hover:scale-110 transition-transform">call</span>
-                    Call Dealer
+                    Contact Us
                 </a>
                 <a href="{{ $this->getWhatsAppMessage() }}" target="_blank" rel="noopener noreferrer" class="flex-1 h-12 bg-whatsapp hover:brightness-105 text-white font-bold rounded-xl shadow-md shadow-green-900/10 hover:shadow-lg transition-all flex items-center justify-center gap-2 group">
                     <i class="fa-brands fa-whatsapp text-[20px] group-hover:scale-110 transition-transform"></i>

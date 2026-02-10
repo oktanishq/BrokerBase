@@ -6,7 +6,7 @@
             <a :href="'tel:' + cleanedPhoneNumber" 
                class="flex-1 sm:flex-none h-12 px-8 bg-primary hover:bg-blue-800 text-white font-bold rounded-xl shadow-md shadow-blue-900/10 hover:shadow-lg transition-all flex items-center justify-center gap-2 group">
                 <span class="material-symbols-outlined text-[20px] group-hover:scale-110 transition-transform">call</span>
-                Call Dealer
+                Contact Us
             </a>
             <a :href="whatsAppUrl" 
                target="_blank" 
