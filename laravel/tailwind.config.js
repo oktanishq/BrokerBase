@@ -23,12 +23,6 @@ export default {
         "display": ["Inter", "sans-serif"],
         "body": ["Inter", "sans-serif"]
       },
-      borderRadius: {
-        "DEFAULT": "1rem",
-        "lg": "1.5rem",
-        "xl": "2rem",
-        "full": "9999px"
-      },
     },
   },
   plugins: [
