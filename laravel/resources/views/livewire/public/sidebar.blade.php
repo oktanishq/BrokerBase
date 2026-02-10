@@ -2,7 +2,7 @@
     <!-- Desktop Sidebar (xl and up) -->
     <aside class="hidden xl:flex w-64 bg-primary text-white flex-col fixed h-full z-30 shadow-xl">
         <!-- Logo & Branding -->
-        <div class="p-6 flex items-center space-x-3 border-b border-blue-800">
+        <a href="{{ url('/') }}" class="p-6 flex items-center space-x-3 border-b border-blue-800 hover:bg-blue-800/50 transition-colors">
             <div class="h-10 w-10 bg-white rounded-full flex items-center justify-center text-primary font-bold text-xl overflow-hidden">
                 @if(!empty($settings['logo_url']))
                     <img src="{{ $settings['logo_url'] }}" alt="{{ $settings['agency_name'] ?? 'Logo' }}" class="w-full h-full object-cover">
@@ -11,7 +11,7 @@
                 @endif
             </div>
             <span class="font-bold text-xl tracking-wide">{{ $settings['agency_name'] ?? 'BrokerBase' }}</span>
-        </div>
+        </a>
         
         <!-- Navigation -->
         <nav class="flex-1 overflow-y-auto py-6 px-3 space-y-1">
@@ -94,12 +94,12 @@
         x-transition:leave-start="translate-x-0"
         x-transition:leave-end="-translate-x-full"
         :class="mobileOpen ? 'translate-x-0' : '-translate-x-full'"
-        class="fixed inset-y-0 left-0 w-72 bg-primary text-white z-50 xl:hidden transform transition-transform duration-300"
+        class="fixed inset-y-0 left-0 w-72 bg-primary text-white z-50 xl:hidden flex flex-col transform transition-transform duration-300"
         style="display: none;">
         
         <!-- Mobile Header -->
         <div class="flex items-center justify-between p-4 border-b border-blue-800">
-            <div class="flex items-center space-x-3">
+            <a href="{{ url('/') }}" class="flex items-center space-x-3 hover:bg-blue-800/50 transition-colors -ml-2 p-2 rounded-lg">
                 <div class="h-10 w-10 bg-white rounded-full flex items-center justify-center text-primary font-bold text-xl overflow-hidden">
                     @if(!empty($settings['logo_url']))
                         <img src="{{ $settings['logo_url'] }}" alt="{{ $settings['agency_name'] ?? 'Logo' }}" class="w-full h-full object-cover">
@@ -108,7 +108,7 @@
                     @endif
                 </div>
                 <span class="font-bold text-lg tracking-wide">{{ $settings['agency_name'] ?? 'BrokerBase' }}</span>
-            </div>
+            </a>
             <button @click="mobileOpen = false" class="p-2 hover:bg-blue-800 rounded-lg transition-colors">
                 <i class="fas fa-times text-lg"></i>
             </button>
