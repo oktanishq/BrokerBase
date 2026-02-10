@@ -52,6 +52,7 @@
     <main class="xl:ml-64 flex-1 flex flex-col min-w-0">
         <x-public.site-header />
         <livewire:public.hero />
+        <x-public.Collection />
         <livewire:public.filters />
         <livewire:public.listings />
         <x-public.contact-section />
