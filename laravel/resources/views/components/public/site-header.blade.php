@@ -25,15 +25,15 @@
             <!-- Right column - buttons -->
             <div class="col-start-3 flex gap-2 sm:gap-3 justify-end">
                 <!-- Search Toggle Button (mobile only) -->
-                <button @click="mobileSearchOpen = !mobileSearchOpen" class="flex items-center justify-center h-10 w-10 text-[#121317] hover:bg-gray-100 transition-colors sm:hidden">
+                <button @click="mobileSearchOpen = !mobileSearchOpen" class="flex items-center justify-center h-10 w-10 rounded-full bg-gray-100 dark:bg-gray-700 text-[#121317] dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors sm:hidden">
                     <span class="material-symbols-outlined text-[20px]" x-text="mobileSearchOpen ? 'close' : 'search'"></span>
                 </button>
                 
-                <button @click="sharePage()" class="flex items-center justify-center gap-2 h-10 px-3 sm:px-4 rounded-full bg-[#f1f1f4] text-[#121317] hover:bg-gray-200 transition-colors font-medium text-sm">
+                <button @click="sharePage()" class="flex items-center justify-center gap-2 h-10 px-4 rounded-full bg-gray-100 dark:bg-gray-700 text-[#121317] dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors font-medium text-sm">
                     <span class="material-symbols-outlined text-[18px] sm:text-[20px]">share</span>
                     <span class="hidden sm:inline">Share</span>
                 </button>
-                <button @click="$dispatch('toggle-mobile-sidebar')" class="flex items-center justify-center h-10 w-10 text-[#121317] hover:bg-gray-100 transition-colors">
+                <button @click="$dispatch('toggle-mobile-sidebar')" class="flex items-center justify-center h-10 w-10 rounded-full bg-gray-100 dark:bg-gray-700 text-[#121317] dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors">
                     <i class="fas fa-bars text-[18px] sm:text-[20px]"></i>
                 </button>
             </div>
@@ -78,54 +78,6 @@
         </div>
     </div>
 
-    <!-- <header class="sticky top-0 z-50 bg-surface-light shadow-sm border-b border-gray-200">
-<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-<div class="flex justify-between items-center h-16">
-<div class="flex items-center">
-<div class="flex-shrink-0 flex items-center gap-3">
-<div class="h-10 w-10 bg-gray-100 rounded-full flex items-center justify-center border border-gray-200">
-<span class="font-bold text-primary text-sm">BB</span>
-</div>
-<span class="font-bold text-xl tracking-tight text-gray-900 dark:text-white">BrokerBase</span>
-</div>
-</div>
-<div class="flex-1 max-w-2xl mx-auto px-4 hidden sm:block">
-<div class="relative group">
-<div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-<span class="material-icons text-gray-400 group-focus-within:text-primary">search</span>
-</div>
-<input class="block w-full pl-10 pr-3 py-2 border-none rounded-full leading-5 bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-primary focus:bg-white dark:focus:bg-gray-900 sm:text-sm transition-all duration-200" placeholder="Search by ID, location, title, price..." type="text"/>
-</div>
-</div>
-<div class="hidden md:flex items-center space-x-4">
-<button @click="sharePage()" class="flex items-center justify-center gap-2 h-10 px-3 sm:px-4 rounded-full bg-[#f1f1f4] text-[#121317] hover:bg-gray-200 transition-colors font-medium text-sm">
-            <span class="material-symbols-outlined text-[18px] sm:text-[20px]">share</span>
-            <span class="hidden sm:inline">Share</span>
-        </button>
-<button class="p-2 text-gray-500 hover:text-gray-700">
-<span class="material-symbols-outlined">menu</span>
-</button>
-</div>
-<div class="flex items-center md:hidden">
-<button class="p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary">
-<span class="material-symbols-outlined">menu</span>
-</button>
-</div>
-</div>
-</div>
-<div class="border-t border-gray-200 bg-white py-3 px-4 shadow-inner sm:hidden">
-<div class="max-w-3xl mx-auto relative">
-<div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-<span class="material-symbols-outlined text-gray-400">search</span>
-</div>
-<input class="block w-full pl-10 pr-3 py-2.5 border border-gray-300 rounded-full leading-5 bg-gray-50 placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-primary focus:border-primary sm:text-sm transition duration-150 ease-in-out text-gray-900" placeholder="Search by ID, location, title, price or property type..." type="text"/>
-<button class="absolute inset-y-1 right-1 px-4 bg-primary text-white rounded-full text-sm font-medium hover:bg-blue-800 transition-colors">
-                    Search
-                </button>
-</div>
-</div>
-</header>
--->
     <script>
 function headerData() {
     return {
