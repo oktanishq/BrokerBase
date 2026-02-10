@@ -54,7 +54,7 @@
         <livewire:public.hero />
         <livewire:public.filters />
         <livewire:public.listings />
-
+        <x-public.contact-section />
         <x-public.footer :settings="$settings" />
     </main>
 </div>
