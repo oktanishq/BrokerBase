@@ -45,11 +45,6 @@
         </div>
         <div class="md:w-1/3 h-48 md:h-auto bg-gray-200 dark:bg-gray-700 relative">
             <iframe allowfullscreen="" class="absolute inset-0 w-full h-full border-0 opacity-80" loading="lazy" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3022.1839487053644!2d-73.98773128459413!3d40.75890017932676!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89c25855c6480299%3A0x55194ec5a1ae072e!2sTimes%20Square!5e0!3m2!1sen!2sus!4v1633023222533!5m2!1sen!2sus"></iframe>
-            <div class="absolute inset-0 flex items-center justify-center">
-                <div class="bg-white dark:bg-gray-800 p-2 rounded-full shadow-lg">
-                    <span class="material-symbols-outlined text-red-500 text-3xl">place</span>
-                </div>
-            </div>
             <div class="absolute bottom-2 right-2">
                 <span class="bg-white dark:bg-gray-800 text-xs px-2 py-1 rounded shadow text-gray-700 dark:text-gray-300">Locate Us</span>
             </div>
