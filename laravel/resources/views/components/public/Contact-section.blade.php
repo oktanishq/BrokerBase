@@ -2,7 +2,7 @@
     <div class="max-w-7xl mx-auto text-center">
         <h2 class="text-2xl font-extrabold text-gray-900 dark:text-white mb-4">Looking for something specific?</h2>
         <p class="text-gray-600 dark:text-gray-400 mb-8 max-w-lg mx-auto">Our specialists are ready to help you find your dream property tailored to your needs.</p>
-        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+        <div class="flex gap-4 justify-center">
             <a :href="'tel:' + cleanedPhoneNumber" 
                class="flex-1 sm:flex-none h-12 px-8 bg-primary hover:bg-blue-800 text-white font-bold rounded-xl shadow-md shadow-blue-900/10 hover:shadow-lg transition-all flex items-center justify-center gap-2 group">
                 <span class="material-symbols-outlined text-[20px] group-hover:scale-110 transition-transform">call</span>
