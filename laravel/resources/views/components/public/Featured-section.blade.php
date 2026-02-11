@@ -30,14 +30,21 @@
                         }
                     }
                     
-                    $viewsCount = $property['views_count'] ?? 0;
-                    $isPopular = $viewsCount > 100;
-                    
                     $propertyType = $property['property_type'] ?? 'apartment';
                     
-                    $showBed = in_array($propertyType, ['apartment', 'villa', 'lease']) && !empty($property['bedrooms']) && $property['bedrooms'] > 0;
-                    $showBath = in_array($propertyType, ['apartment', 'villa', 'commercial', 'lease']) && !empty($property['bathrooms']) && $property['bathrooms'] > 0;
+                    $propertyTypeIcons = [
+                        'apartment' => 'apartment',
+                        'office' => 'business',
+                        'commercial' => 'domain',
+                        'villa' => 'house',
+                        'plot' => 'terrain',
+                    ];
+                    $propertyTypeIcon = $propertyTypeIcons[$propertyType] ?? 'domain';
+                    
+                    $showBed = !empty($property['bedrooms']) && $property['bedrooms'] > 0;
+                    $showBath = !empty($property['bathrooms']) && $property['bathrooms'] > 0 && $property['property_type'] !== 'plot';
                     $showSqft = !empty($property['area_sqft']) && $property['area_sqft'] !== 'N/A';
+                    $showPropertyType = !$showBed;
                     
                     $whatsappPhone = $settings['w_no'] ?? '';
                     $domain = request()->getHost();
@@ -55,13 +62,6 @@
                             <div class="absolute top-3 left-3 z-10 text-white text-xs font-bold px-3 py-1.5 rounded-full shadow-sm"
                                  style="background-color: {{ $badge['color'] }}">
                                 {{ $badge['label'] }}
-                            </div>
-                        @endif
-                        
-                        {{-- Popular Badge --}}
-                        @if($isPopular)
-                            <div class="absolute top-3 {{ $badge ? 'left-20' : 'left-3' }} z-10 text-white text-xs font-bold px-3 py-1.5 rounded-full shadow-sm bg-green-500">
-                                Popular
                             </div>
                         @endif
                         
@@ -104,6 +104,12 @@
                                 <div class="flex items-center gap-1 text-gray-600 dark:text-gray-300 text-sm">
                                     <span class="material-symbols-outlined text-lg">square_foot</span>
                                     <span>{{ number_format($property['area_sqft']) }} sqft</span>
+                                </div>
+                            @endif
+                            @if($showPropertyType)
+                                <div class="flex items-center gap-1 text-gray-600 dark:text-gray-300 text-sm">
+                                    <span class="material-symbols-outlined text-lg">{{ $propertyTypeIcon }}</span>
+                                    <span>{{ ucfirst($propertyType) }}</span>
                                 </div>
                             @endif
                         </div>
