@@ -54,10 +54,3 @@
         </div>
     </div>
 </section>
-
-<div class="fixed bottom-6 right-6 z-10 lg:hidden">
-    <a href="tel:{{ $this->getCleanedPhoneNumber() }}" class="group flex items-center gap-2 bg-primary text-white h-14 pl-5 pr-6 rounded-full shadow-xl shadow-blue-900/30 hover:scale-105 hover:bg-blue-800 transition-all duration-300">
-        <span class="material-symbols-outlined text-[24px]">call</span>
-        <span class="font-bold text-base">Contact Dealer</span>
-    </a>
-</div>
