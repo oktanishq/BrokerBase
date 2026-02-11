@@ -46,6 +46,14 @@
 </head>
 <body class="bg-background-light dark:bg-background-dark text-gray-800 dark:text-gray-200 transition-colors duration-200">
 <?php $settings = \App\Models\Setting::first()?->toArray() ?? []; ?>
+<?php
+use App\Models\Property;
+$featuredProperties = Property::where('is_featured', true)
+    ->where('status', 'available')
+    ->latest()
+    ->take(6)
+    ->get();
+?>
 <div class="flex min-h-screen">
     <livewire:public.sidebar />
 
@@ -53,7 +61,7 @@
         <x-public.site-header />
         <livewire:public.hero />
         <x-public.Collection />
-        <x-public.featured-section />
+        <x-public.featured-section :properties="$featuredProperties" />
         <livewire:public.filters />
         <livewire:public.listings />
         <x-public.available />
