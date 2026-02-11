@@ -57,6 +57,7 @@
         <livewire:public.listings />
         <x-public.contact-section />
         <x-public.footer :settings="$settings" />
+        <x-public.bottom-navbar />
     </main>
 </div>
 @stack('scripts')
