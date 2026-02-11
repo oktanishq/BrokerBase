@@ -1,4 +1,4 @@
-<header x-data="headerData()" x-init="init()" class="sticky top-0 z-40">
+<header x-data="headerData()" x-init="init()" @toggle-mobile-search.window="mobileSearchOpen = !mobileSearchOpen" class="sticky top-0 z-40">
     <!-- Header Background Container -->
     <div class="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 shadow-sm transition-all duration-200">
         <!-- Desktop Header Grid -->
@@ -24,16 +24,11 @@
             
             <!-- Right column - buttons -->
             <div class="col-start-3 flex gap-2 sm:gap-3 justify-end">
-                <!-- Search Toggle Button (mobile only) -->
-                <button @click="mobileSearchOpen = !mobileSearchOpen" class="flex items-center justify-center h-10 w-10 rounded-full bg-gray-100 dark:bg-gray-700 text-[#121317] dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors sm:hidden">
-                    <span class="material-symbols-outlined text-[20px]" x-text="mobileSearchOpen ? 'close' : 'search'"></span>
-                </button>
-                
                 <button @click="sharePage()" class="flex items-center justify-center gap-2 h-10 px-4 rounded-full bg-gray-100 dark:bg-gray-700 text-[#121317] dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors font-medium text-sm">
                     <span class="material-symbols-outlined text-[18px] sm:text-[20px]">share</span>
                     <span class="hidden sm:inline">Share</span>
                 </button>
-                <button @click="$dispatch('toggle-mobile-sidebar')" class="flex items-center justify-center h-10 w-10 rounded-full bg-gray-100 dark:bg-gray-700 text-[#121317] dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors">
+                <button @click="$dispatch('toggle-mobile-sidebar')" class="flex items-center justify-center h-10 w-10 rounded-full bg-gray-100 dark:bg-gray-700 text-[#121317] dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors" title="Menu">
                     <i class="fas fa-bars text-[18px] sm:text-[20px]"></i>
                 </button>
             </div>
