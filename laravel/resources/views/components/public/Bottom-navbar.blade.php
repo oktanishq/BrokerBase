@@ -1,4 +1,4 @@
-<div x-data @toggle-mobile-search.window class="md:hidden sticky bottom-0 z-50 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 pb-4 pb-[env(safe-area-inset-bottom)]">
+<div x-data @toggle-mobile-search.window class="md:hidden sticky bottom-0 z-50 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 pb-[env(safe-area-inset-bottom)]">
     <div class="grid grid-cols-4 h-14">
         <a class="flex flex-col items-center justify-center text-primary" href="{{ url('/') }}">
             <span class="material-symbols-outlined">home</span>
