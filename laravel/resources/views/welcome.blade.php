@@ -53,6 +53,7 @@
         <x-public.site-header />
         <livewire:public.hero />
         <x-public.Collection />
+        <x-public.featured-section />
         <livewire:public.filters />
         <livewire:public.listings />
         <x-public.available />
