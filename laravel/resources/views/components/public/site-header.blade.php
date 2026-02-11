@@ -28,7 +28,7 @@
                     <span class="material-symbols-outlined text-[18px] sm:text-[20px]">share</span>
                     <span class="hidden sm:inline">Share</span>
                 </button>
-                <button @click="$dispatch('toggle-mobile-sidebar')" class="flex items-center justify-center h-10 w-10 rounded-full bg-gray-100 dark:bg-gray-700 text-[#121317] dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors" title="Menu">
+                <button @click="$dispatch('toggle-mobile-sidebar')" class="hidden md:flex items-center justify-center h-10 w-10 rounded-full bg-gray-100 dark:bg-gray-700 text-[#121317] dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors" title="Menu">
                     <i class="fas fa-bars text-[18px] sm:text-[20px]"></i>
                 </button>
             </div>
