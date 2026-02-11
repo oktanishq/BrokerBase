@@ -3,11 +3,11 @@
         <div class="flex items-center justify-between mb-6">
             <h2 class="text-xl font-bold text-gray-900 dark:text-white">Featured Properties</h2>
             <div class="flex gap-2">
-                <button class="p-1 rounded-full bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-300 transition-colors">
-                    <span class="material-symbols-outlined">chevron_left</span>
+                <button class="flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-colors bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-300">
+                    <span class="material-symbols-outlined text-lg">chevron_left</span>
                 </button>
-                <button class="p-1 rounded-full bg-primary text-white hover:bg-blue-800 transition-colors">
-                    <span class="material-symbols-outlined">chevron_right</span>
+                <button class="flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-colors bg-primary text-white hover:bg-blue-800">
+                    <span class="material-symbols-outlined text-lg">chevron_right</span>
                 </button>
             </div>
         </div>
@@ -18,9 +18,11 @@
                     <div class="absolute top-3 left-3 bg-white/90 dark:bg-black/80 backdrop-blur-sm px-2 py-1 rounded-md text-xs font-bold uppercase tracking-wider text-gray-800 dark:text-white shadow-sm">
                         For Sale
                     </div>
-                    <button class="absolute top-3 right-3 p-2 bg-white/20 hover:bg-white/40 backdrop-blur-md rounded-full text-white transition-colors">
-                        <span class="material-symbols-outlined text-xl">favorite</span>
-                    </button>
+                    <div class="absolute top-3 right-3 z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                        <button class="bg-white/90 backdrop-blur-md p-2 rounded-full text-gray-700 hover:text-red-500 hover:bg-white transition-colors shadow-sm">
+                            <span class="material-symbols-outlined text-[20px] block">favorite</span>
+                        </button>
+                    </div>
                 </div>
                 <div class="p-5 flex flex-col flex-grow">
                     <div class="flex justify-between items-start">
@@ -64,9 +66,11 @@
                     <div class="absolute top-3 left-3 bg-white/90 dark:bg-black/80 backdrop-blur-sm px-2 py-1 rounded-md text-xs font-bold uppercase tracking-wider text-gray-800 dark:text-white shadow-sm">
                         For Rent
                     </div>
-                    <button class="absolute top-3 right-3 p-2 bg-white/20 hover:bg-white/40 backdrop-blur-md rounded-full text-white transition-colors">
-                        <span class="material-symbols-outlined text-xl">favorite</span>
-                    </button>
+                    <div class="absolute top-3 right-3 z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                        <button class="bg-white/90 backdrop-blur-md p-2 rounded-full text-gray-700 hover:text-red-500 hover:bg-white transition-colors shadow-sm">
+                            <span class="material-symbols-outlined text-[20px] block">favorite</span>
+                        </button>
+                    </div>
                 </div>
                 <div class="p-5 flex flex-col flex-grow">
                     <div class="flex justify-between items-start">

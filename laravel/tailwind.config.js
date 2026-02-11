@@ -22,6 +22,19 @@ export default {
           800: "#1e40af",
           900: "#1e3a8a",
         },
+         "royal-blue": {
+          DEFAULT: "#1e3a8a",
+          50: "#eff6ff",
+          100: "#dbeafe",
+          200: "#bfdbfe",
+          300: "#93c5fd",
+          400: "#60a5fa",
+          500: "#3b82f6",
+          600: "#2563eb",
+          700: "#1d4ed8",
+          800: "#1e40af",
+          900: "#1e3a8a",
+        },
         "gold": {
           DEFAULT: "#d97706",
           50: "#fffbeb",
@@ -38,7 +51,10 @@ export default {
         },
         "background-light": "#f6f6f8",
         "background-dark": "#121620",
+        "gold": "#d97706", // Amber-600 for Gold text
+        "gold-premium": "#C5A059", // Premium Gold 
         "whatsapp": "#25D366",
+        "royal-blue": "#1e3a8a",
         "royal-blue-dark": "#172554",
         "primary-admin": "#f49e0b",
         "primary-admin-dark": "#d98b09",
