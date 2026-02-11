@@ -94,7 +94,7 @@
         x-transition:leave-start="translate-x-0"
         x-transition:leave-end="-translate-x-full"
         :class="mobileOpen ? 'translate-x-0' : '-translate-x-full'"
-        class="fixed inset-y-0 left-0 w-72 bg-primary text-white z-50 xl:hidden flex flex-col transform transition-transform duration-300"
+        class="fixed inset-y-0 left-0 w-72 bg-primary text-white z-[60] xl:hidden flex flex-col transform transition-transform duration-300"
         style="display: none;">
         
         <!-- Mobile Header -->
