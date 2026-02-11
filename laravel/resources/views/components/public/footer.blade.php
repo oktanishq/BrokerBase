@@ -29,8 +29,8 @@
             <div>
                 <h4 class="font-bold text-white mb-6 uppercase tracking-widest text-sm">Quick Links</h4>
                 <ul class="space-y-4 text-sm">
-                    <li><a class="hover:text-amber-500 transition-colors flex items-center group" href="#"><span class="material-icons text-xs mr-2 opacity-0 group-hover:opacity-100 transition-all -ml-4 group-hover:ml-0">chevron_right</span>About Us</a></li>
-                    <li><a class="hover:text-amber-500 transition-colors flex items-center group" href="#"><span class="material-icons text-xs mr-2 opacity-0 group-hover:opacity-100 transition-all -ml-4 group-hover:ml-0">chevron_right</span>Featured</a></li>
+                    <li><a class="hover:text-amber-500 transition-colors flex items-center group" href="#hero"><span class="material-icons text-xs mr-2 opacity-0 group-hover:opacity-100 transition-all -ml-4 group-hover:ml-0">chevron_right</span>About Us</a></li>
+                    <li><a class="hover:text-amber-500 transition-colors flex items-center group" href="#featured"><span class="material-icons text-xs mr-2 opacity-0 group-hover:opacity-100 transition-all -ml-4 group-hover:ml-0">chevron_right</span>Featured</a></li>
                     <li><a class="hover:text-amber-500 transition-colors flex items-center group" href="#"><span class="material-icons text-xs mr-2 opacity-0 group-hover:opacity-100 transition-all -ml-4 group-hover:ml-0">chevron_right</span>Properties</a></li>
                     <li><a class="hover:text-amber-500 transition-colors flex items-center group cursor-pointer" onclick="highlightContactDetails()"><span class="material-icons text-xs mr-2 opacity-0 group-hover:opacity-100 transition-all -ml-4 group-hover:ml-0">chevron_right</span> Contact us</a></li>
                     <li><a class="hover:text-amber-500 transition-colors flex items-center group" href="#"><span class="material-icons text-xs mr-2 opacity-0 group-hover:opacity-100 transition-all -ml-4 group-hover:ml-0">lock</span> Real Estate Blog</a></li>

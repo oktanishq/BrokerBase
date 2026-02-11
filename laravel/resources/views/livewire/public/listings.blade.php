@@ -1,4 +1,4 @@
-<section class="px-4 sm:px-6 lg:px-10 py-6 sm:py-8 bg-gray-50/50 flex-1">
+<section id="featured" class="px-4 sm:px-6 lg:px-10 py-6 sm:py-8 bg-gray-50/50 flex-1">
     <div class="max-w-[1280px] mx-auto">
         
         <!-- Sort Controls -->

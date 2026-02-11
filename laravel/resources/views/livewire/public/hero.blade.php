@@ -1,6 +1,6 @@
 <div>
     <div class="max-w-[1280px] mx-auto">
-<section class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden mx-6 lg:mx-10 my-6">
+<section id="hero" class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden mx-6 lg:mx-10 my-6">
     
         <div class="flex flex-col md:flex-row">
             <div class="p-6 md:p-8 flex-1 flex flex-col justify-center">
