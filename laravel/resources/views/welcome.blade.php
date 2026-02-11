@@ -55,6 +55,7 @@
         <x-public.Collection />
         <livewire:public.filters />
         <livewire:public.listings />
+        <x-public.available />
         <x-public.contact-section />
         <x-public.footer :settings="$settings" />
         <x-public.bottom-navbar />
