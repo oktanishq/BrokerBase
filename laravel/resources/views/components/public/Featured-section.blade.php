@@ -1,3 +1,5 @@
+@props(['properties' => [], 'settings' => []])
+
 <section class="px-4 sm:px-6 lg:px-10 py-6 sm:py-8">
     <div class="max-w-[1280px] mx-auto">
         <div class="flex items-center justify-between mb-6">
@@ -13,14 +15,56 @@
         </div>
         <div class="flex overflow-x-auto gap-6 pb-8 -mx-4 px-4 sm:mx-0 sm:px-0 scrollbar-hide snap-x snap-mandatory">
             @forelse($properties as $property)
+                @php
+                    $badge = null;
+                    if ($property['label_type'] && $property['label_type'] !== 'none') {
+                        $badges = [
+                            'new' => ['label' => 'New', 'color' => 'bg-blue-500'],
+                            'popular' => ['label' => 'Popular', 'color' => 'bg-orange-500'],
+                            'verified' => ['label' => 'Verified', 'color' => 'bg-teal-600'],
+                            'featured' => ['label' => 'Featured', 'color' => 'bg-purple-500'],
+                        ];
+                        $badge = $badges[$property['label_type']] ?? null;
+                        if ($property['label_type'] === 'custom' && $property['custom_label_color']) {
+                            $badge = ['label' => 'Custom', 'color' => $property['custom_label_color']];
+                        }
+                    }
+                    
+                    $viewsCount = $property['views_count'] ?? 0;
+                    $isPopular = $viewsCount > 100;
+                    
+                    $propertyType = $property['property_type'] ?? 'apartment';
+                    
+                    $showBed = in_array($propertyType, ['apartment', 'villa', 'lease']) && !empty($property['bedrooms']) && $property['bedrooms'] > 0;
+                    $showBath = in_array($propertyType, ['apartment', 'villa', 'commercial', 'lease']) && !empty($property['bathrooms']) && $property['bathrooms'] > 0;
+                    $showSqft = !empty($property['area_sqft']) && $property['area_sqft'] !== 'N/A';
+                    
+                    $whatsappPhone = $settings['w_no'] ?? '';
+                    $domain = request()->getHost();
+                    $waMessage = "Hii i'm interested in\n*{$property['title']}*\nat {$property['address']}\nUID: {$property['id']}\nLink: {$domain}/property/{$property['id']}";
+                    $waUrl = $whatsappPhone ? "https://wa.me/{$whatsappPhone}?text=" . urlencode($waMessage) : '#';
+                @endphp
                 <article class="snap-center shrink-0 w-80 sm:w-96 bg-white dark:bg-[#121620] rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden flex flex-col group hover:shadow-lg transition-shadow duration-300">
                     <div class="relative h-56">
                         <img alt="{{ $property['title'] }}" 
                              class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" 
                              src="{{ $property['image'] ?? 'https://via.placeholder.com/400x300' }}">
-                        <div class="absolute top-3 left-3 bg-white/90 dark:bg-black/80 backdrop-blur-sm px-2 py-1 rounded-md text-xs font-bold uppercase tracking-wider text-gray-800 dark:text-white shadow-sm">
-                            {{ $property['status'] === 'available' ? 'For Sale' : ucfirst($property['status']) }}
-                        </div>
+                        
+                        {{-- Badge --}}
+                        @if($badge)
+                            <div class="absolute top-3 left-3 z-10 text-white text-xs font-bold px-3 py-1.5 rounded-full shadow-sm"
+                                 style="background-color: {{ $badge['color'] }}">
+                                {{ $badge['label'] }}
+                            </div>
+                        @endif
+                        
+                        {{-- Popular Badge --}}
+                        @if($isPopular)
+                            <div class="absolute top-3 {{ $badge ? 'left-20' : 'left-3' }} z-10 text-white text-xs font-bold px-3 py-1.5 rounded-full shadow-sm bg-green-500">
+                                Popular
+                            </div>
+                        @endif
+                        
                         <div class="absolute top-3 right-3 z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                             <button class="bg-white/90 backdrop-blur-md p-2 rounded-full text-gray-700 hover:text-red-500 hover:bg-white transition-colors shadow-sm">
                                 <span class="material-symbols-outlined text-[20px] block">favorite</span>
@@ -44,19 +88,19 @@
                             {{ $property['address'] ?? 'Location TBD' }}
                         </div>
                         <div class="flex items-center justify-between border-t border-gray-100 dark:border-gray-700 pt-4 mb-4">
-                            @if($property['bedrooms'] && $property['bedrooms'] > 0)
+                            @if($showBed)
                                 <div class="flex items-center gap-1 text-gray-600 dark:text-gray-300 text-sm">
                                     <span class="material-symbols-outlined text-lg">bed</span>
                                     <span>{{ $property['bedrooms'] }} Beds</span>
                                 </div>
                             @endif
-                            @if($property['bathrooms'] && $property['bathrooms'] > 0)
+                            @if($showBath)
                                 <div class="flex items-center gap-1 text-gray-600 dark:text-gray-300 text-sm">
                                     <span class="material-symbols-outlined text-lg">bathtub</span>
                                     <span>{{ $property['bathrooms'] }} Baths</span>
                                 </div>
                             @endif
-                            @if($property['area_sqft'] && $property['area_sqft'] !== 'N/A')
+                            @if($showSqft)
                                 <div class="flex items-center gap-1 text-gray-600 dark:text-gray-300 text-sm">
                                     <span class="material-symbols-outlined text-lg">square_foot</span>
                                     <span>{{ number_format($property['area_sqft']) }} sqft</span>
@@ -67,7 +111,7 @@
                             <a href="{{ url('/property/' . $property['id']) }}" class="flex-1 py-2 px-4 rounded-lg border border-primary text-primary font-medium hover:bg-blue-50 dark:hover:bg-blue-900/30 transition-colors text-sm inline-flex items-center justify-center">
                                 View Details
                             </a>
-                            <a href="https://wa.me/1234567890?text=Interested in {{ urlencode($property['title']) }}" target="_blank" rel="noopener noreferrer" class="flex-1 py-2 px-4 rounded-lg bg-whatsapp text-white font-medium hover:bg-green-600 transition-colors flex items-center justify-center gap-2 text-sm">
+                            <a href="{{ $waUrl }}" target="_blank" rel="noopener noreferrer" class="flex-1 py-2 px-4 rounded-lg bg-whatsapp text-white font-medium hover:bg-green-600 transition-colors flex items-center justify-center gap-2 text-sm">
                                 <i class="fa-brands fa-whatsapp text-[16px]"></i>
                                 WhatsApp
                             </a>
