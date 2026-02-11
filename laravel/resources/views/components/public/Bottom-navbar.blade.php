@@ -10,7 +10,7 @@
 </a>
 <a class="flex flex-col items-center justify-center text-gray-500 dark:text-gray-400 hover:text-primary dark:hover:text-white transition-colors" href="#">
 <span class="material-symbols-outlined">favorite</span>
-<span class="text-[10px] font-medium mt-1">Saved</span>
+<span class="text-[10px] font-medium mt-1">Favorites</span>
 </a>
 <a class="flex flex-col items-center justify-center text-gray-500 dark:text-gray-400 hover:text-primary dark:hover:text-white transition-colors" href="#">
 <span class="material-symbols-outlined">person</span>
