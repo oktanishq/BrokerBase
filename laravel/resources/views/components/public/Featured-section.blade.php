@@ -21,13 +21,15 @@
                     <button class="absolute top-3 right-3 p-2 bg-white/20 hover:bg-white/40 backdrop-blur-md rounded-full text-white transition-colors">
                         <span class="material-symbols-outlined text-xl">favorite</span>
                     </button>
-                    <div class="absolute bottom-3 left-3 bg-primary text-white px-3 py-1 rounded-lg text-sm font-bold shadow-sm">
-                        ₹12 Cr
-                    </div>
                 </div>
                 <div class="p-5 flex flex-col flex-grow">
-                    <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-1 truncate">Modern Sunset Villa aasdf asdfa asdfasdfa asdfas</h3>
-                    <div class="flex items-center text-gray-500 dark:text-gray-400 text-sm mb-4">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <h3 class="text-gold font-bold text-lg sm:text-xl tracking-tight">₹12 Cr</h3>
+                            <h3 class="text-[#121317] font-bold text-base sm:text-lg leading-tight mt-1 group-hover:text-primary transition-colors truncate">Modern Sunset Villa aasdf asdfa asdfasdfa asdfas</h3>
+                        </div>
+                    </div>
+                    <div class="flex items-center text-gray-500 dark:text-gray-400 text-sm mb-4 mt-2">
                         <span class="material-symbols-outlined text-base mr-1">location_on</span>
                         Palm Jumeirah, Dubai
                     </div>
@@ -65,13 +67,15 @@
                     <button class="absolute top-3 right-3 p-2 bg-white/20 hover:bg-white/40 backdrop-blur-md rounded-full text-white transition-colors">
                         <span class="material-symbols-outlined text-xl">favorite</span>
                     </button>
-                    <div class="absolute bottom-3 left-3 bg-primary text-white px-3 py-1 rounded-lg text-sm font-bold shadow-sm">
-                        ₹123 L/yr
-                    </div>
                 </div>
                 <div class="p-5 flex flex-col flex-grow">
-                    <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-1 truncate">Executive Glass House</h3>
-                    <div class="flex items-center text-gray-500 dark:text-gray-400 text-sm mb-4">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <h3 class="text-gold font-bold text-lg sm:text-xl tracking-tight">₹123 L/yr</h3>
+                            <h3 class="text-[#121317] font-bold text-base sm:text-lg leading-tight mt-1 group-hover:text-primary transition-colors truncate">Executive Glass House</h3>
+                        </div>
+                    </div>
+                    <div class="flex items-center text-gray-500 dark:text-gray-400 text-sm mb-4 mt-2">
                         <span class="material-symbols-outlined text-base mr-1">location_on</span>
                         Downtown Dubai
                     </div>
