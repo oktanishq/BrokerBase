@@ -65,8 +65,7 @@
                         
                         {{-- Badge --}}
                         @if($badge)
-                            <div class="absolute top-3 left-3 z-10 text-white text-xs font-bold px-3 py-1.5 rounded-full shadow-sm"
-                                 style="background-color: {{ $badge['color'] }}">
+                            <div class="absolute top-3 left-3 z-10 text-white text-xs font-bold px-3 py-1.5 rounded-full shadow-sm {{ $badge['color'] }}">
                                 {{ $badge['label'] }}
                             </div>
                         @endif
