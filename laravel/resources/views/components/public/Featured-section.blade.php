@@ -1,19 +1,25 @@
 @props(['properties' => [], 'settings' => []])
 
-<section class="px-4 sm:px-6 lg:px-10 py-6 sm:py-8">
+<section class="px-4 sm:px-6 lg:px-10 py-6 sm:py-8" x-data="{ featuredScrollLeft: 0, featuredScrollRight: 0 }">
     <div class="max-w-[1280px] mx-auto">
         <div class="flex items-center justify-between mb-6">
             <h2 class="text-xl font-bold text-gray-900 dark:text-white">Featured Properties</h2>
             <div class="flex gap-2">
-                <button class="flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-colors bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-300">
+                <button 
+                    @click="$refs.featuredContainer.scrollBy({ left: -350, behavior: 'smooth' })"
+                    class="flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-colors bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-300"
+                    aria-label="Scroll left">
                     <span class="material-symbols-outlined text-lg">chevron_left</span>
                 </button>
-                <button class="flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-colors bg-primary text-white hover:bg-blue-800">
+                <button 
+                    @click="$refs.featuredContainer.scrollBy({ left: 350, behavior: 'smooth' })"
+                    class="flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-colors bg-primary text-white hover:bg-blue-800"
+                    aria-label="Scroll right">
                     <span class="material-symbols-outlined text-lg">chevron_right</span>
                 </button>
             </div>
         </div>
-        <div class="flex overflow-x-auto gap-6 pb-8 -mx-4 px-4 sm:mx-0 sm:px-0 scrollbar-hide snap-x snap-mandatory">
+        <div x-ref="featuredContainer" class="flex overflow-x-auto gap-6 pb-8 -mx-4 px-4 sm:mx-0 sm:px-0 scrollbar-hide snap-x snap-mandatory">
             @forelse($properties as $property)
                 @php
                     $badge = null;
