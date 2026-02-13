@@ -58,12 +58,12 @@ $featuredProperties = Property::where('is_featured', true)
     <livewire:public.sidebar />
 
     <main class="xl:ml-64 flex-1 flex flex-col min-w-0">
-        <x-public.site-header />
+        <x-public.site-header :settings="$settings" />
         <livewire:public.hero />
         <x-public.Collection />
         <x-public.featured-section :properties="$featuredProperties" :settings="$settings" />
         <x-public.available />
-        <x-public.contact-section />
+        <x-public.contact-section :settings="$settings" />
         <x-public.footer :settings="$settings" />
         <x-public.bottom-navbar />
     </main>

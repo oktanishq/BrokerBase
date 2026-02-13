@@ -1,4 +1,5 @@
-<header x-data="headerData()" x-init="init()" @toggle-mobile-search.window="mobileSearchOpen = !mobileSearchOpen" class="sticky top-0 z-40">
+@props(['settings' => []])
+<header x-data="headerData(@js($settings))" x-init="init()" @toggle-mobile-search.window="mobileSearchOpen = !mobileSearchOpen" class="sticky top-0 z-40">
     <!-- Header Background Container -->
     <div class="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 shadow-sm transition-all duration-200">
         <!-- Desktop Header Grid -->
@@ -74,14 +75,16 @@
     </div>
 
     <script>
-function headerData() {
+function headerData(initialSettings) {
     return {
-        settings: {},
+        settings: initialSettings || {},
         showNotification: false,
         mobileSearchOpen: false,
         
         async init() {
-            await this.loadSettings();
+            if (!this.settings.agency_name) {
+                await this.loadSettings();
+            }
         },
         
         async loadSettings() {
