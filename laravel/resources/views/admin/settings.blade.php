@@ -131,7 +131,7 @@
         <div class="lg:col-span-5 xl:col-span-4 relative">
             <div class="sticky top-6">
                 <div class="flex items-center justify-between mb-4 px-2">
-                    <h3 class="font-bold text-slate-800">Live Mobile Preview</h3>
+                    <h3 class="font-bold text-slate-800">Live Preview (Beta)</h3>
                     <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-700 animate-pulse">
                         <span class="size-2 bg-green-500 rounded-full"></span>
                                          Real-time
