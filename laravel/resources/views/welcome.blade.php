@@ -62,8 +62,6 @@ $featuredProperties = Property::where('is_featured', true)
         <livewire:public.hero />
         <x-public.Collection />
         <x-public.featured-section :properties="$featuredProperties" :settings="$settings" />
-        <livewire:public.filters />
-        <livewire:public.listings />
         <x-public.available />
         <x-public.contact-section />
         <x-public.footer :settings="$settings" />

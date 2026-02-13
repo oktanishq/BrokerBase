@@ -20,7 +20,7 @@
         <a class="group relative overflow-hidden rounded-xl bg-gradient-to-br from-teal-500 to-teal-700 p-6 shadow-md hover:shadow-lg transition-all duration-300 hover:-translate-y-1" href="#">
             <div class="absolute right-0 top-0 -mr-4 -mt-4 h-24 w-24 rounded-full bg-white/10 dark:bg-white/5 blur-xl"></div>
             <h3 class="relative z-10 text-lg font-semibold text-white">Lease</h3>
-            <p class="relative z-10 mt-1 text-sm text-white/80">Short-term & flexible</p>
+            <p class="relative z-10 mt-1 text-sm text-white/80">Highly Flexible</p>
             <span class="material-icons absolute top-4 right-4 text-3xl text-white/50 dark:text-white/40 group-hover:text-white transition-all duration-300 group-hover:scale-110">assignment</span>
         </a>
 
